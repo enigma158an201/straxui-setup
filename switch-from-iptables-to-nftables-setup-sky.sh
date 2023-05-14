@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euxo ppipefail
+set -euxo pipefail
 
 # https://www.gaelanlloyd.com/blog/migrating-debian-buster-from-iptables-to-nftables/
 # https://wiki.archlinux.org/title/Nftables#List_tables
@@ -61,6 +61,7 @@ function mainDisableIptablesIp6 {
 	echo "  >>> Mise en route du service nftables"
 	#restore-nft-conf
 	sudo systemctl enable --now nftables
+	sudo systemctl restart NetworkManager
 
 	if [ -x /usr/sbin/iptables-nft ]; then sudo update-alternatives --set iptables /usr/sbin/iptables-nft; fi
 	if [ -x /usr/sbin/ip6tables-nft ]; then sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi
