@@ -1,6 +1,6 @@
 # setup straxui wallet for linux ?
 
-## Comment utiliser ce depot git straxui-setup ?
+## Comment utiliser ce dépôt git straxui-setup ?
 
 ### Nota: TOUTES les commandes doivent être entrées sans le symbole $ en début de ligne 
 rappels: 
@@ -22,7 +22,7 @@ rappel: la commande `git clone <url>` va créer un dossier `straxui-setup/` dans
 
 ## Etape 2: exécution des scripts selon besoins
 
-### ATTENTION: pour TOUTES les opérations suivantes, il faut se placer dans le dossier du depot, pour se faire il faut entrer cette commande en l'adaptant:
+### ATTENTION: pour TOUTES les opérations suivantes, il faut se placer dans le dossier du repo, pour se faire il faut entrer cette commande en l'adaptant:
 ```
     $ cd <[/]chemin/ou/se/trouve/le/repo/straxui-setup/
 ```
