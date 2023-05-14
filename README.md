@@ -2,7 +2,7 @@
 
 ## Comment utiliser ce depot git straxui-setup ?
 
-## Nota: TOUTES les commandes doivent être entrées sans les symboles $ 
+## Nota: TOUTES les commandes doivent être entrées sans le symbole $ en début de ligne 
 rappels: 
 - le symbole $ sert à mettre en évidence l'invite utilisateur SANS droits super utilisateur
 - le symbole # sert à mettre en évidence l'invite utilisateur AVEC droits super utilisateur
