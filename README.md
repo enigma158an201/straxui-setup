@@ -1,4 +1,4 @@
-# setup straxui wallet for linux ?
+# setup straxui wallet for linux
 
 ## Comment utiliser ce dépôt git straxui-setup ?
 
