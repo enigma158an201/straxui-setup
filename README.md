@@ -43,4 +43,15 @@ ce script va installer les dépendances nécessaires à straxui, puis téléchar
 ```
     $ bash install-strax-wallet-gz.sh
 ```
-ce script va ~~installer les dépendances nécessaires à straxui, puis~~ télécharger l'archive strax wallet sur github puis l'extraire, et poser un raccourci .desktop dans le dossier $HOME 
+ce script va ~~installer les dépendances nécessaires à straxui, puis~~ télécharger l'archive strax wallet dans `/tmp` depuis github puis l'extraire dans `$HOME/bin/`, et poser un raccourci .desktop dans le dossier `$HOME/.local/share/applications` 
+
+## Etape 3: vérification de l'installation
+- on s'assure que le service pour le pare-feu nftables est actif:
+```
+    $ systemctl status nftables.service
+```
+- on vérifie que le fichier de configuration nftables est bien chargé:
+```
+    $ sudo nft list table inet filter
+```
+- 
