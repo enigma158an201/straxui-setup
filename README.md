@@ -31,13 +31,16 @@ rappel: la commande `git clone <url>` va créer un dossier `straxui-setup/` dans
 ```
     $ bash switch-from-iptables-to-nftables-setup-sky.sh
 ```
+Ce script va supprimer iptables, installer nftables avec une config pour strax et désactiver ip v6
 
 ### - pour installer le binaire strax sur debian bullseye via le paquet .deb:
 ```
     $ bash update-or-install-strax-wallet-deb-bullseye.sh
 ```
+ce script va installer les dépendances nécessaires à straxui, puis télécharger le paquet deb strax wallet sur github puis l'installer 
 
 ### - pour installer le binaire strax dans le $HOME/bin de l'utilisateur via le fichier .tar.gz (autres distro linux):
 ```
     $ bash install-strax-wallet-gz.sh
 ```
+ce script va ~~installer les dépendances nécessaires à straxui, puis~~ télécharger l'archive strax wallet sur github puis l'extraire, et poser un raccourci .desktop dans le dossier $HOME 
