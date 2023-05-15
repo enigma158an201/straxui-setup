@@ -50,21 +50,21 @@ function determineSiDeepin() {
 isUbuntu=$(determineSiUbuntu)
 isMint=$(determineSiMint)
 isUbuntuLike="$isUbuntu$isMint"
-if [ ! "$isUbuntuLike" = "" ]; then
+#if [ ! "$isUbuntuLike" = "" ]; then
 	# isTrusty=$(determineSiUbuntuTrusty)
 	# isXenial=$(determineSiUbuntuXenial)
 	# isBionic=$(determineSiUbuntuBionic)
-	isFocal=$(determineSiUbuntuFocal)
-	isJammy=$(determineSiUbuntuJammyl)
-fi
+	# isFocal=$(determineSiUbuntuFocal)
+	# isJammy=$(determineSiUbuntuJammy)
+#fi
 isDebian=$(determineSiDebian)
 if [ ! "$isDebian" = "" ] || [ ! "$isMint" = "" ]; then
 	isBuster=$(determineSiDebianBuster)
-	isBullseye=$(determineSiDebianBullsEye)
-	isBookworm=$(determineSiDebianBookworm)
+	# isBullseye=$(determineSiDebianBullsEye)
+	# isBookworm=$(determineSiDebianBookworm)
 	# isTesting=$(determineSiDebianTesting)
 	# isSid=$(determineSiDebianSid)
-	isLmde=$(determineSiMintLMDE)
+	# isLmde=$(determineSiMintLMDE)
 fi
 isDeepin=$(determineSiDeepin)
 isDebianLike="$isUbuntuLike$isDebian$isDeepin"
@@ -74,13 +74,13 @@ isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 	if [ ! "$isDebianLike" = "" ]; then
 		sudo apt install git jq curl
 		#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
-		if [ "$isBuster" = "" ]; then
+		if [ ! "$isBuster" = "" ]; then
 			sudo apt install libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
 			projectlatestcontentdeb=$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')
 			myfilenamedeb=$(basename "$projectlatestcontentdeb")
 			if [ ! -f "$myfilenamedeb" ]; then wget "$projectlatestcontentdeb"; fi
 			sudo dpkg -i "$myfilenamedeb"
-		elif [ ! "$isBuster" = "" ]; then
+		elif [ "$isBuster" = "" ]; then
 			sudo apt install libappindicator3-0.1-cil{,-dev}
 			straxuidestfolder=/opt/straxui
 			projectlatestcontentgz=$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')
