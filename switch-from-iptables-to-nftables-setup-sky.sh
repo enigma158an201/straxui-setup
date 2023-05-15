@@ -9,7 +9,7 @@ set -euxo pipefail
 # sudo nft list tables
 # or
 # sudo nft list table $family_type $table_name
-# or 
+# or
 # nft list chain $family_type $table_name $chain_name
 
 # nftables family 	iptables utility
@@ -17,9 +17,28 @@ set -euxo pipefail
 # ip6 				ip6tables
 # inet 				iptables and ip6tables
 # arp 				arptables
-# bridge 			ebtables 
+# bridge 			ebtables
 
 # myifname=enp10s0 # enp4s0
+
+comment() {
+	local regex="${1:?}"
+	local file="${2:?}"
+	local comment_mark="${3:-#}"
+	sudo sed -ri "s:^([ ]*)($regex):\\1$comment_mark\\2:" "$file"
+}
+insertLineBefore() {
+	local regex="${1:?}"
+	local newLine="${2:?}"
+	local file="${3:?}"
+	sed -ri "/^([ ]*)($regex)/i $newLine" "$file"		#sed -ri "s:^([ ]*)($regex):\\1$newLine\n\\2:" "$file"
+}
+insertLineAfter() {
+	local regex="${1:?}"
+	local newLine="${2:?}"
+	local file="${3:?}"
+	sed -ri "/^([ ]*)($regex)/a $newLine" "$file"
+}
 function grubUpdate() {
 	if [ -x /usr/sbin/update-grub ]; then sudo update-grub
 	elif [ -x /usr/sbin/grub2-mkconfig ]; then sudo grub2-mkconfig -o /boot/grub2/grub.cfg
@@ -27,8 +46,12 @@ function grubUpdate() {
 	fi
 }
 function getNetworkManagement() {
-	if [ -f /etc/netplan/* ]; then
-		grep -i renderer /etc/netplan/*
+	mynetplandst="/etc/netplan/"
+	if [ -d "$mynetplandst" ]; then
+		for myfile in "$mynetplandst"*; do
+			myNetworkRenderer="$(grep -i 'renderer' "$myfile")"
+			echo -e "${myNetworkRenderer##* }\n" #echo "${A##* }"
+		done
 	fi
 }
 function restore-nft-conf () {
@@ -41,6 +64,41 @@ function restore-nft-conf () {
 	else
 		echo "$isErrorFree"
 		exit 1 # return 1
+	fi
+}
+function disable-etc-hosts-ipv6() {
+	if (false); then
+		cp -p /etc/hosts /etc/hosts.disableipv6
+		sed -i 's/^[[:space:]]*::/#::/' /etc/hosts
+	fi
+}
+function disable-sshd-config-ipv6() {
+	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
+	mysshdsrc=".$mysshddst"
+	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then sudo install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
+	sudo systemctl restart sshd.service
+}
+function disable-postfix-ipv6() {
+	mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc=".$mypostfixdst" -> pas de install mais un sed
+	if [ -f "$mypostfixdst" ]; then 
+		if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
+		if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
+	fi
+	sudo systemctl restart postfix
+}
+function disable-etc-ntp-ipv6() {
+	myntpdst="/etc/ntp.conf"
+	if [ -f "$myntpdst" ] && (grep -i "^restrict ::1" "$myntpdst"); then comment "restrict ::1" "$myntpdst"; fi
+}
+function disable-etc-chrony-ipv6() {
+	mychronydst="/etc/chrony.conf"
+	if [ -f "$mychronydst" ] && (grep -i "^OPTIONS=\"-4\"" "$mychronydst"); then echo OPTIONS=\"-4\" | sudo tee -a "$mychronydst"; fi
+}
+function disable-etc-netconfig-ipv6() {
+	mynetconfigdst="/etc/netconfig"
+	if [ -f "$mynetconfigdst" ]; then
+		if (grep -i "^udp6" "$mynetconfigdst"); then comment "udp6" "$mynetconfigdst"; fi
+		if (grep -i "^tcp6" "$mynetconfigdst"); then comment "tcp6" "$mynetconfigdst"; fi
 	fi
 }
 function blacklist-iptables-kernel-modules {
@@ -85,6 +143,12 @@ function mainDisableIptablesIp6 {
 	blacklist-iptables-kernel-modules
 	blacklist-ip6-kernel-modules
 	blacklist-ip6-NetworkManagement
+	disable-etc-hosts-ipv6
+	disable-sshd-config-ipv6
+	disable-postfix-ipv6
+	disable-etc-ntp-ipv6
+	disable-etc-chrony-ipv6
+	disable-etc-netconfig-ipv6
 	sudo apt install nftables
 	echo "  >>> Remise à zéro des règles chargées en mémoire avant basculement iptables vers nftables"
 	sudo iptables -F
@@ -119,8 +183,8 @@ function mainInstallStraxuiTargz {
 
 function main {
 	mainDisableIptablesIp6
-	if false; then		mainInstallStraxuiDeb
-	elif false; then	mainInstallStraxuiTargz
+	if (false); then		mainInstallStraxuiDeb
+	elif (false); then	mainInstallStraxuiTargz
 	fi
 }
 
