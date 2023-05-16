@@ -5,7 +5,7 @@ set -euxo pipefail
 #myCpuArch=$(uname -i) #amd64 x64 arm arm64
 
 sudo apt-get update && sudo apt-get upgrade
-pkgsToInstall="net-tools wget curl tar install zip"
+pkgsToInstall="net-tools wget curl tar zip" #install
 for pkgToInstall in ${pkgsToInstall}; do
 	sudo apt-get -y install $pkgToInstall 2&>1 #net-tools wget curl tar install zip
 done
