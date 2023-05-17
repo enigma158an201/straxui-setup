@@ -21,30 +21,31 @@ set -euxo pipefail
 
 # myifname=enp10s0 # enp4s0
 
-getSuCmd() {
-	if [ -x /usr/bin/sudo ]; then		suCmd="/usr/bin/sudo"
-	elif [ -x /usr/bin/doas ]; then	 	suCmd="/usr/bin/doas"
-	else								suCmd="su - -c "
-	fi
-	echo "$suCmd"
-}
-if ! sPfxSu="$(getSuCmd)"; then 		exit 02; fi
+#getSuCmd() {
+	#if [ -x /usr/bin/sudo ]; then		suCmd="/usr/bin/sudo"
+	#elif [ -x /usr/bin/doas ]; then	 	suCmd="/usr/bin/doas"
+	#else								suCmd="su - -c "
+	#fi
+	#echo "$suCmd"
+#}
+#if ! sPfxSu="$(getSuCmd)"; then 		exit 02; fi
 
-getSuQuotes() {
-	if [ -x /usr/bin/sudo ]; then		suQuotes=(false)
-	elif [ -x /usr/bin/doas ]; then	 	suQuotes=(false)
-	else								suQuotes=('"')
-	fi
-	echo "${suQuotes[@]}"
-}
-quotes="$(getSuQuotes)"
-suExecCommand() {
-	sCommand="$*"
-	if [ ! "$suQuotes" = "false" ]; then	"$sPfxSu" $suQuotes$sCommand$suQuotes
-	else									"$sPfxSu" $sCommand
-	fi
-}
-
+#getSuQuotes() {
+	#if [ -x /usr/bin/sudo ]; then		mySuQuotes=(false)
+	#elif [ -x /usr/bin/doas ]; then	 	mySuQuotes=(false)
+	#else								mySuQuotes=('"')
+	#fi
+	#echo "${mySuQuotes[@]}"
+#}
+#suQuotes="$(getSuQuotes)"
+#suExecCommand() {	
+	#sCommand="$*"
+	#if [ ! "$suQuotes" = "false" ]; then	"$sPfxSu" $suQuotes$sCommand$suQuotes
+	#else									"$sPfxSu" $sCommand
+	#fi
+#}
+source ./test-superuser-privileges.sh
+ 
 comment() {
 	local regex="${1:?}"
 	local file="${2:?}"
