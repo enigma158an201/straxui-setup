@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # https://github.com/stratisproject/StraxUI.git
-bash ./apt-pre-instal-pkg-ubuntu.sh
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
+source "${launchDir}/include/pre-install-pkgs.sh"
 
 function determinerOS() {
 	cat /etc/os-release # echo `lsb_release -a`

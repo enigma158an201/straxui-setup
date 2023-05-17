@@ -44,7 +44,9 @@ set -euxo pipefail
 	#else									"$sPfxSu" $sCommand
 	#fi
 #}
-source ./test-superuser-privileges.sh
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
+source "${launchDir}/include/test-superuser-privileges.sh"
  
 comment() {
 	local regex="${1:?}"
