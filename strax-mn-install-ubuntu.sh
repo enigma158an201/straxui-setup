@@ -4,14 +4,6 @@ set -euxo pipefail
 
 #myCpuArch=$(uname -i) #amd64 x64 arm arm64
 
-aptPreinstall() {
-	sudo apt-get update && sudo apt-get upgrade
-	pkgsToInstall="net-tools wget curl tar zip" #install
-	for pkgToInstall in ${pkgsToInstall}; do
-		sudo apt-get -y install $pkgToInstall 2>&1 #net-tools wget curl tar install zip
-	done
-}
-
 setupDotNet() {
 	# see https://learn.microsoft.com/fr-fr/dotnet/core/install/linux-ubuntu?source=recommendations for more recent instrcutions
 	tmpDotNetArchive=/tmp/dotnet.tar.gz
@@ -80,12 +72,91 @@ setupWalletUi() {
 	sudo unzip "$tmpWalletUiArchive" -d "$targetWalletUiInstall"
 	sudo python3 "$targetWalletUiInstall/StraxCLI-$nameFile/straxcli.py"
 }
+getFirstAddressIpRoute() {
+	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
+	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
+	else																				exit 1
+	fi
+	for myWord in $2; do
+		if [[ $myWord =~ $sTxt ]]; then 
+			echo "$myWord"
+			break
+		fi
+	done
+}
+getFirstAddressIpAddr() {
+	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
+	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
+	else																				exit 1
+	fi
+	for myWord in $2; do
+		if [[ $myWord =~ $sTxt+[0-9a-fA-F] ]]; then 
+			echo "$myWord"
+			break
+		fi
+	done
+}
+getNetworkAddress() {
+	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt='.'; bIp4="true"; bIp6="false"
+	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=':'; bIp4="false"; bIp6="true"
+	else																				exit 1
+	fi
+	myInputAddress=$2 #myInputAddress="$(echo $2 | tr "$sTxt" " " )"
+	#for myWord in $myInputAddress; do
+		#if [[ $myWord =~ $sTxt ]]; then 
+			#echo "$myWord"
+			#break
+		#fi
+	#done
+	if ($bIp4); then 
+		myOutputAddress="${myInputAddress%"$sTxt"*}${sTxt}0"
+	elif ($bIp6) && [ -x /usr/bin/ipv6calc ]; then
+		#myUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "$myInputAddress")"
+		#myOutputAddress="${myUncompressedInputAddress%"$sTxt"*}${sTxt}"
+		myOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "$myInputAddress")"
+	else
+		myOutputAddress="false"
+	fi
+	echo "$myOutputAddress"
+}
 
+getIpAddr4() {
+	if [ -x /usr/bin/awk ]; then
+		if [ -x /bin/ip ]; then				ip -4 route get 1.2.3.4 | awk '{print $7}'					# after src string
+		elif [ -x /bin/hostname ]; then		getFirstAddressIpRoute 4 "$(hostname -I)"							# hostname -I | awk '{ print $1 }'
+		fi
+	fi
+}
+getIpAddr6() {
+	if [ -x /usr/bin/awk ]; then
+		if [ -x /bin/ip ]; then				getFirstAddressIpAddr 6 "$(ip -6 -o addr | grep -v ': lo')" #ip -6 route get 2001:4860:4860::8888 | awk '{print $11}'	# after src string
+		elif [ -x /bin/hostname ]; then		getFirstAddressIpRoute 6 "$(hostname -I)" 							# hostname -I | awk '{ print $x }'
+		fi
+	fi
+}
+setupSecurityConsiderations() {
+	myIpAddr4=$(getIpAddr4)
+	myNetAddr4="$(getNetworkAddress 4 "$myIpAddr4")"
+	myIpAddr6=$(getIpAddr6)
+	myNetAddr6="$(getNetworkAddress 6 "$myIpAddr6")"	
+	if false; then 
+		sudo apt-get -y install ufw
+		sudo ufw enable
+		sudo ufw allow from "$myNetAddr4/24" to any port 22
+		if false; then sudo ufw allow from "$myNetAddr6/24" to any port 22; fi
+	fi
+}
+test() {
+	getNetworkAddress 4 "$(getIpAddr4)"
+	getNetworkAddress 6 "$(getIpAddr6)"
+}
+test
 main() {
-	aptPreinstall
+	bash ./apt-pre-instal-pkg-ubuntu.sh
 	setupDotNet
 	setupNode
 	setupWalletCli
 	#setupWalletUi
+	setupSecurityConsiderations
 }
 main
