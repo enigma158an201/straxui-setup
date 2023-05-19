@@ -75,7 +75,7 @@ blacklist-iptables-kernel-modules() {
 	myiptablesbcklsrc=".$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
 }
-mainDisableAndRemoveIptables {
+mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
 	echo "  >>> Désactivation de ufw si necessaire"
 	if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi
@@ -88,7 +88,7 @@ mainDisableAndRemoveIptables {
 	done
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
 }
-mainInstallAndSetupNftable {
+mainInstallAndSetupNftable() {
 	suExecCommand apt install nftables
 	echo "  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire"
 	suExecCommand nft flush ruleset
