@@ -110,12 +110,12 @@ mainInstallAndSetupNftable() {
 	fi
 }
 
-mainInstallStraxuiDeb {
+mainInstallStraxuiDeb() {
 	installStraxuiDeb="./update-or-install-strax-wallet-deb-bullseye.sh"
 	if [ -f "$installStraxuiDeb" ]; then bash "$installStraxuiDeb"; fi
 }
 
-mainInstallStraxuiTargz {
+mainInstallStraxuiTargz() {
 	installStraxuiTargz="./install-strax-wallet-gz.sh"
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
 }
