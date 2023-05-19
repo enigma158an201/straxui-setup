@@ -77,7 +77,9 @@ blacklist-iptables-kernel-modules {
 }
 mainDisableAndRemoveIptables {
 	blacklist-iptables-kernel-modules
-	echo "  >>> Remise à zéro des éventuemlles règles iptables chargées en mémoire"
+	echo "  >>> Désactivation de ufw si necessaire"
+	if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi
+	echo "  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire"
 	if [ -x /usr/sbin/iptables ]; then suExecCommand iptables -F; fi
 	if [ -x /usr/sbin/ip6tables ]; then suExecCommand ip6tables -F; fi
 	echo "  >>> Suppression de ip-tables"
