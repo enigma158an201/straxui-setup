@@ -7,6 +7,12 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
 
+grubUpdate() {
+	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
+	elif [ -x /usr/sbin/grub2-mkconfig ]; then suExecCommand grub2-mkconfig -o /boot/grub2/grub.cfg
+	elif [ -x /usr/sbin/grub-mkconfig ]; then suExecCommand grub-mkconfig -o /boot/grub/grub.cfg
+	fi
+}
 blacklist-ip6-kernel-modules() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	myip6bcklsrc=".$myip6bckldst"

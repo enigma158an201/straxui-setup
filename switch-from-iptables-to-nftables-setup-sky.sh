@@ -49,13 +49,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 
-function grubUpdate() {
-	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
-	elif [ -x /usr/sbin/grub2-mkconfig ]; then suExecCommand grub2-mkconfig -o /boot/grub2/grub.cfg
-	elif [ -x /usr/sbin/grub-mkconfig ]; then suExecCommand grub-mkconfig -o /boot/grub/grub.cfg
-	fi
-}
-function getNetworkManagement() {
+getNetworkManagement() {
 	mynetplandst="/etc/netplan/"
 	if [ -d "$mynetplandst" ]; then
 		for myfile in "$mynetplandst"*; do
@@ -64,7 +58,7 @@ function getNetworkManagement() {
 		done
 	fi
 }
-function restore-nft-conf () {
+restore-nft-conf () {
 	mynftconfdst=/etc/nftables.conf
 	mynftconfsrc=".$mynftconfdst"
 	isErrorFree=$(suExecCommand nft -c -f "$mynftconfsrc")
@@ -76,12 +70,12 @@ function restore-nft-conf () {
 		exit 1 # return 1
 	fi
 }
-function blacklist-iptables-kernel-modules {
+blacklist-iptables-kernel-modules {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
 	myiptablesbcklsrc=".$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
 }
-function mainDisableAndRemoveIptables {
+mainDisableAndRemoveIptables {
 	blacklist-iptables-kernel-modules
 	echo "  >>> Remise à zéro des éventuemlles règles iptables chargées en mémoire"
 	if [ -x /usr/sbin/iptables ]; then suExecCommand iptables -F; fi
@@ -90,7 +84,7 @@ function mainDisableAndRemoveIptables {
 	suExecCommand apt autoremove --purge iptables{,-persistent}
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
 }
-function mainInstallAndSetupNftable {
+mainInstallAndSetupNftable {
 	suExecCommand apt install nftables
 	echo "  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire"
 	suExecCommand nft flush ruleset
@@ -112,17 +106,17 @@ function mainInstallAndSetupNftable {
 	fi
 }
 
-function mainInstallStraxuiDeb {
+mainInstallStraxuiDeb {
 	installStraxuiDeb="./update-or-install-strax-wallet-deb-bullseye.sh"
 	if [ -f "$installStraxuiDeb" ]; then bash "$installStraxuiDeb"; fi
 }
 
-function mainInstallStraxuiTargz {
+mainInstallStraxuiTargz {
 	installStraxuiTargz="./install-strax-wallet-gz.sh"
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
 }
 
-function main {
+main {
 	mainDisableAndRemoveIptables
 	mainInstallAndSetupNftable
 	if (false); then	mainInstallStraxuiDeb
