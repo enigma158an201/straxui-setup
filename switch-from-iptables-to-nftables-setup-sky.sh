@@ -206,7 +206,7 @@ function mainDisableIptablesIp6 {
 	echo "  >>> Mise en route du service nftables"
 	restore-nft-conf
 	suExecCommand systemctl enable --now nftables
-	suExecCommand systemctl restart NetworkManager
+	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager
 
 	if [ -x /usr/sbin/iptables-nft ]; then suExecCommand update-alternatives --set iptables /usr/sbin/iptables-nft; fi
 	if [ -x /usr/sbin/ip6tables-nft ]; then suExecCommand update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi
