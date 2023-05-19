@@ -195,7 +195,7 @@ function mainDisableIptablesIp6 {
 	disable-etc-dhcpcdconf-ipv6
 	suExecCommand apt install nftables
 	echo "  >>> Remise à zéro des règles chargées en mémoire avant basculement iptables vers nftables"
-	suExecCommand iptables -F
+	if [ -x /usr/sbin/iptables ]; then suExecCommand iptables -F; fi
 	suExecCommand nft flush ruleset
 	suExecCommand nft list ruleset
 	suExecCommand systemctl restart nftables
