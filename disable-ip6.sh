@@ -58,7 +58,7 @@ disable-sshd-config-ipv6() {
 	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
 	mysshdsrc=".$mysshddst"
 	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then suExecCommand install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
-	suExecCommand systemctl restart sshd.service
+	suExecCommand systemctl reload sshd.service
 }
 disable-postfix-ipv6() {
 	if (which postfix); then
@@ -67,7 +67,7 @@ disable-postfix-ipv6() {
 			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
 			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
 		fi
-		suExecCommand systemctl restart postfix
+		suExecCommand systemctl reload postfix
 	fi
 }
 disable-etc-ntp-ipv6() {
