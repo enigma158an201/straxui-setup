@@ -2,6 +2,41 @@
 
 set -euo pipefail #; set -x
 
+blacklist-ip6-kernel-modules() {
+	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
+	myip6bcklsrc=".$myip6bckldst"
+	suExecCommand mkdir -p /etc/sysctl.d/
+	suExecCommand install -o root -g root -m 0744 -pv "$myip6bcklsrc" "$myip6bckldst"
+	#todo check if include /etc/systctl.d present -> not necessary
+	#suExecCommand update-initramfs -u
+	#todo check if already added
+	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
+	if [ "$bDisabledIpV6" = "false" ]; then
+		suExecCommand sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub
+		suExecCommand sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
+		grubUpdate
+	fi
+}
+function blacklist-ip6-NetworkManagement() {
+	#non persistant, but take effect immediately
+	if false; then
+		suExecCommand sysctl -w net.ipv6.conf.all.disable_ipv6=1
+		suExecCommand sysctl -w net.ipv6.conf.default.disable_ipv6=1
+		suExecCommand sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+		suExecCommand sysctl -p
+	fi
+
+	if [ -x /usr/bin/nmcli ] && (systemctl status NetworkManager); then
+		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
+		for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do # $(nmcli connection show | awk '{ print $1 }') 
+			suExecCommand nmcli connection modify "$ConnectionName" ipv6.method "disabled" || true # be careful with connection names including spaces
+		done
+	fi
+	if (systemctl status systemd-networkd); then
+		#sed -i '/[Network]/ s/"$/nLinkLocalAddressing=ipv4"/' /etc/systemd/networkd.conf; fi
+		if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
+	fi
+}
 disable-etc-hosts-ipv6() {
 	if (false); then
 		cp -p /etc/hosts /etc/hosts.disableipv6
