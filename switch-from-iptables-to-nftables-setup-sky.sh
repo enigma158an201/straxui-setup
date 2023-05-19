@@ -38,7 +38,7 @@ set -euxo pipefail
 	#echo "${mySuQuotes[@]}"
 #}
 #suQuotes="$(getSuQuotes)"
-#suExecCommand() {	
+#suExecCommand() {
 	#sCommand="$*"
 	#if [ ! "$suQuotes" = "false" ]; then	"$sPfxSu" $suQuotes$sCommand$suQuotes
 	#else									"$sPfxSu" $sCommand
@@ -111,12 +111,14 @@ function disable-sshd-config-ipv6() {
 	suExecCommand systemctl restart sshd.service
 }
 function disable-postfix-ipv6() {
-	mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc=".$mypostfixdst" -> pas de install mais un sed
-	if [ -f "$mypostfixdst" ]; then 
-		if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
-		if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
+	if (which postfix); then
+		mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc=".$mypostfixdst" -> pas de install mais un sed
+		if [ -f "$mypostfixdst" ]; then
+			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
+			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
+		fi
+		suExecCommand systemctl restart postfix
 	fi
-	suExecCommand systemctl restart postfix
 }
 function disable-etc-ntp-ipv6() {
 	myntpdst="/etc/ntp.conf"
