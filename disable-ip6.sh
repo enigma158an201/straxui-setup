@@ -2,6 +2,11 @@
 
 set -euo pipefail #; set -x
 
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
+source "${launchDir}/include/test-superuser-privileges.sh"
+#source "${launchDir}/include/file-edition.sh"
+
 blacklist-ip6-kernel-modules() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	myip6bcklsrc=".$myip6bckldst"
