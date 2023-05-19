@@ -49,30 +49,6 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 
-
-comment() {
-	local regex="${1:?}"
-	local file="${2:?}"
-	local comment_mark="${3:-#}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "s:^([ ]*)($regex):\\1$comment_mark\\2:" "$file"; fi
-}
-appendLineAtEnd() {
-	local newLine="${1:?}"
-	local file="${2:?}"
-	if [ -f "$file" ]; then echo -e "$newLine" | suExecCommand tee -a "$file"; fi
-}
-insertLineBefore() {
-	local regex="${1:?}"
-	local newLine="${2:?}"
-	local file="${3:?}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "/^([ ]*)($regex)/i $newLine" "$file"; fi		#sed -ri "s:^([ ]*)($regex):\\1$newLine\n\\2:" "$file"
-}
-insertLineAfter() {
-	local regex="${1:?}"
-	local newLine="${2:?}"
-	local file="${3:?}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "/^([ ]*)($regex)/a $newLine" "$file"; fi
-}
 function grubUpdate() {
 	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
 	elif [ -x /usr/sbin/grub2-mkconfig ]; then suExecCommand grub2-mkconfig -o /boot/grub2/grub.cfg
@@ -98,50 +74,6 @@ function restore-nft-conf () {
 	else
 		echo "$isErrorFree"
 		exit 1 # return 1
-	fi
-}
-function disable-etc-hosts-ipv6() {
-	if (false); then
-		cp -p /etc/hosts /etc/hosts.disableipv6
-		sed -i 's/^[[:space:]]*::/#::/' /etc/hosts
-	fi
-}
-function disable-sshd-config-ipv6() {
-	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
-	mysshdsrc=".$mysshddst"
-	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then suExecCommand install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
-	suExecCommand systemctl restart sshd.service
-}
-function disable-postfix-ipv6() {
-	if (which postfix); then
-		mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc=".$mypostfixdst" -> pas de install mais un sed
-		if [ -f "$mypostfixdst" ]; then
-			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
-			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
-		fi
-		suExecCommand systemctl restart postfix
-	fi
-}
-function disable-etc-ntp-ipv6() {
-	myntpdst="/etc/ntp.conf"
-	if [ -f "$myntpdst" ] && (grep -i "^restrict ::1" "$myntpdst"); then comment "restrict ::1" "$myntpdst"; fi
-}
-function disable-etc-chrony-ipv6() {
-	mychronydst="/etc/chrony.conf"
-	if [ -f "$mychronydst" ] && (grep -i "^OPTIONS=\"-4\"" "$mychronydst"); then appendLineAtEnd "OPTIONS=\"-4\"" "$mychronydst"; fi
-}
-function disable-etc-netconfig-ipv6() {
-	mynetconfigdst="/etc/netconfig"
-	if [ -f "$mynetconfigdst" ]; then
-		if (grep -i "^udp6" "$mynetconfigdst"); then comment "udp6" "$mynetconfigdst"; fi
-		if (grep -i "^tcp6" "$mynetconfigdst"); then comment "tcp6" "$mynetconfigdst"; fi
-	fi
-}
-function disable-etc-dhcpcdconf-ipv6() {
-	mydhcpcdconfdst="/etc/dhcpcd.conf"
-	if [ -f "$mydhcpcdconfdst" ]; then
-		if (grep -i "^noipv6rs" "$mydhcpcdconfdst"); then 	appendLineAtEnd "noipv6rs" "$mydhcpcdconfdst"; fi
-		if (grep -i "^noipv6" "$mydhcpcdconfdst"); then 	appendLineAtEnd "noipv6" "$mydhcpcdconfdst"; fi
 	fi
 }
 function blacklist-iptables-kernel-modules {
@@ -184,36 +116,35 @@ function blacklist-ip6-NetworkManagement() {
 		if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
 	fi
 }
-function mainDisableIptablesIp6 {
+function mainDisableAndRemoveIptables {
 	blacklist-iptables-kernel-modules
-	blacklist-ip6-kernel-modules
-	blacklist-ip6-NetworkManagement
-	disable-etc-hosts-ipv6
-	disable-sshd-config-ipv6
-	disable-postfix-ipv6
-	disable-etc-ntp-ipv6
-	disable-etc-chrony-ipv6
-	disable-etc-netconfig-ipv6
-	disable-etc-dhcpcdconf-ipv6
-	suExecCommand apt install nftables
-	echo "  >>> Remise à zéro des règles chargées en mémoire avant basculement iptables vers nftables"
+	echo "  >>> Remise à zéro des éventuemlles règles iptables chargées en mémoire"
 	if [ -x /usr/sbin/iptables ]; then suExecCommand iptables -F; fi
-	suExecCommand nft flush ruleset
-	suExecCommand nft list ruleset
-	suExecCommand systemctl restart nftables
-	suExecCommand nft list ruleset
+	if [ -x /usr/sbin/ip6tables ]; then suExecCommand ip6tables -F; fi
 	echo "  >>> Suppression de ip-tables"
 	suExecCommand apt autoremove --purge iptables{,-persistent}
-	suExecCommand apt install --reinstall nftables
-	echo "  >>> Mise en route du service nftables"
-	restore-nft-conf
-	suExecCommand systemctl enable --now nftables
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
-
-	if [ -x /usr/sbin/iptables-nft ]; then suExecCommand update-alternatives --set iptables /usr/sbin/iptables-nft; fi
-	if [ -x /usr/sbin/ip6tables-nft ]; then suExecCommand update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi
-	if [ -x /usr/sbin/arptables-nft ]; then suExecCommand update-alternatives --set arptables /usr/sbin/arptables-nft; fi
-	if [ -x /usr/sbin/ebtables-nft ]; then suExecCommand update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi
+}
+function mainInstallAndSetupNftable {
+	suExecCommand apt install nftables
+	echo "  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire"
+	suExecCommand nft flush ruleset
+	suExecCommand nft list ruleset
+	echo "  >>> Mise en route du service nftables"
+	restore-nft-conf && suExecCommand nft list ruleset
+	if true; then
+		suExecCommand systemctl enable --now nftables
+	else
+		suExecCommand systemctl restart nftables
+	fi
+	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
+	
+	if [ -x /usr/bin/update-alternatives ]; then
+		if [ -x /usr/sbin/iptables-nft ]; then suExecCommand update-alternatives --set iptables /usr/sbin/iptables-nft; fi
+		if [ -x /usr/sbin/ip6tables-nft ]; then suExecCommand update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi
+		if [ -x /usr/sbin/arptables-nft ]; then suExecCommand update-alternatives --set arptables /usr/sbin/arptables-nft; fi
+		if [ -x /usr/sbin/ebtables-nft ]; then suExecCommand update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi
+	fi
 }
 
 function mainInstallStraxuiDeb {
@@ -227,7 +158,8 @@ function mainInstallStraxuiTargz {
 }
 
 function main {
-	mainDisableIptablesIp6
+	mainDisableAndRemoveIptables
+	mainInstallAndSetupNftable
 	if (false); then	mainInstallStraxuiDeb
 	elif (false); then	mainInstallStraxuiTargz
 	fi
