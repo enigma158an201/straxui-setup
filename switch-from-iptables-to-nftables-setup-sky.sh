@@ -70,7 +70,7 @@ restore-nft-conf () {
 		exit 1 # return 1
 	fi
 }
-blacklist-iptables-kernel-modules {
+blacklist-iptables-kernel-modules() {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
 	myiptablesbcklsrc=".$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
