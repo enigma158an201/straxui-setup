@@ -81,7 +81,9 @@ mainDisableAndRemoveIptables {
 	if [ -x /usr/sbin/iptables ]; then suExecCommand iptables -F; fi
 	if [ -x /usr/sbin/ip6tables ]; then suExecCommand ip6tables -F; fi
 	echo "  >>> Suppression de ip-tables"
-	suExecCommand apt autoremove --purge iptables{,-persistent}
+	for fwPkg in iptables{-persistent,} {g,}ufw; do
+		suExecCommand apt autoremove --purge "$fwPkg" 2>&1
+	done
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
 }
 mainInstallAndSetupNftable {
