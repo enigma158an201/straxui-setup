@@ -47,7 +47,7 @@ set -euxo pipefail
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
- 
+
 comment() {
 	local regex="${1:?}"
 	local file="${2:?}"
@@ -154,7 +154,7 @@ function blacklist-ip6-kernel-modules {
 	#suExecCommand update-initramfs -u
 	#todo check if already added
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
-	if [ "$bDisabledIpV6" = "false" ]; then 
+	if [ "$bDisabledIpV6" = "false" ]; then
 		suExecCommand sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub
 		suExecCommand sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
 		grubUpdate
@@ -181,7 +181,6 @@ function blacklist-ip6-NetworkManagement() {
 	fi
 }
 function mainDisableIptablesIp6 {
-	restore-nft-conf
 	blacklist-iptables-kernel-modules
 	blacklist-ip6-kernel-modules
 	blacklist-ip6-NetworkManagement
@@ -203,7 +202,7 @@ function mainDisableIptablesIp6 {
 	suExecCommand apt autoremove --purge iptables{,-persistent}
 	suExecCommand apt install --reinstall nftables
 	echo "  >>> Mise en route du service nftables"
-	#restore-nft-conf
+	restore-nft-conf
 	suExecCommand systemctl enable --now nftables
 	suExecCommand systemctl restart NetworkManager
 
