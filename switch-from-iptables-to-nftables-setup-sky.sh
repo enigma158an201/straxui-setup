@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -euxo pipefail
+set -euo pipefail #; set -x
 
 # https://www.gaelanlloyd.com/blog/migrating-debian-buster-from-iptables-to-nftables/
 # https://wiki.archlinux.org/title/Nftables#List_tables
