@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # for ubuntu 20.04 mini iso: http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/mini.iso
-set -euxo pipefail
+set -euo pipefail #set -x
+
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi	
 
 #myCpuArch=$(uname -i) #amd64 x64 arm arm64
 
@@ -64,13 +67,7 @@ setupWalletCli() {
 }
 setupWalletUi() {
 	# see https://github.com/stratisproject/StraxUI/releases or https://github.com/stratisproject/StraxCLI/releases/tag/StraxCLI-1.0.0 for more recent instructions
-	tmpWalletUiArchive=/tmp/SUi.zip
-	targetWalletUiInstall=$HOME/StraxCLI/
-	urlWalletUi="https://github.com/stratisproject/StraxCLI/archive/refs/tags/StraxCLI-1.0.0.zip" 
-	nameFile=$(basename "$urlWalletUi" .zip)
-	sudo wget -O "$tmpWalletUiArchive" "$urlWalletUi"
-	sudo unzip "$tmpWalletUiArchive" -d "$targetWalletUiInstall"
-	sudo python3 "$targetWalletUiInstall/StraxCLI-$nameFile/straxcli.py"
+	source "${launchDir}/install-strax-wallet-gz.sh"
 }
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
