@@ -11,43 +11,43 @@ function determinerOS() {
 myOS=$(determinerOS)
 
 function determineSiUbuntu() {
-	echo "$myOS" | grep -i Ubuntu
+	echo "$myOS" | grep -i Ubuntu || echo "false"
 }
 function determineSiMint() {
-	echo "$myOS" | grep -i Mint
+	echo "$myOS" | grep -i Mint || echo "false"
 } # pas besoin de truc pour différencier si debian ou ubuntu based, si debian on trouve du buster debbie
 function determineSiUbuntuBionic() {
-	echo "$myOS" | grep -i bionic
+	echo "$myOS" | grep -i bionic || echo "false"
 }
 function determineSiUbuntuFocal() {
-	echo "$myOS" | grep -i focal
+	echo "$myOS" | grep -i focal || echo "false"
 }
 function determineSiUbuntuJammy() {
-	echo "$myOS" | grep -i jammy
+	echo "$myOS" | grep -i jammy || echo "false"
 }
 function determineSiDebian() {
-	echo "$myOS" | grep -i debian
+	echo "$myOS" | grep -i debian || echo "false"
 }
 function determineSiDebianBuster() {
-	echo "$myOS" | grep -i buster
+	echo "$myOS" | grep -i buster || echo "false"
 }
 function determineSiDebianBullsEye() {
-	echo "$myOS" | grep -i bullseye
+	echo "$myOS" | grep -i bullseye || echo "false"
 }
 function determineSiDebianBookworm() {
-	echo "$myOS" | grep -i bookworm
+	echo "$myOS" | grep -i bookworm || echo "false"
 }
 function determineSiDebianTesting() {
-	echo "$myOS" | grep -i testing
+	echo "$myOS" | grep -i testing || echo "false"
 }
 function determineSiDebianSid() {
-	echo "$myOS" | grep -i sid
+	echo "$myOS" | grep -i sid || echo "false"
 }
 function determineSiMintLMDE() {
-	echo "$myOS" | grep -i lmde
+	echo "$myOS" | grep -i lmde || echo "false"
 }
 function determineSiDeepin() {
-	echo "$myOS" | grep -i deepin
+	echo "$myOS" | grep -i deepin || echo "false"
 }
 
 isUbuntu=$(determineSiUbuntu)
