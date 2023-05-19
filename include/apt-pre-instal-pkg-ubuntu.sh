@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail #; set -x
 
 main() {
 	declare -a pkgsToInstall
-	pkgsToInstall=(net-tools wget curl tar zip ipv6calc git jq)
+	pkgsToInstall=(net-tools wget curl tar zip ipv6calc git jq xinit)
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
