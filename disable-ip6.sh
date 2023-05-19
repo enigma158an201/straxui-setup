@@ -92,6 +92,14 @@ disable-etc-dhcpcdconf-ipv6() {
 		if (grep -i "^noipv6" "$mydhcpcdconfdst"); then 	appendLineAtEnd "noipv6" "$mydhcpcdconfdst"; fi
 	fi
 }
+disable-ipv6-cron-task() {
+	scriptFilename="disable-ip6.sh"
+	mycronip6jobdst="/usr/local/bin/$scriptFilename"
+	mycronip6jobsrc="./$scriptFilename"
+	suExecCommand install -o root -g root -m 0744 -pv "$mycronip6jobsrc" "$mycronip6jobdst"
+	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
+	(crontab -l 2>/dev/null; echo "*/5 * * * * root $mycronip6jobdst") | crontab -
+}
 
 mainDisableIpv6() {
 	blacklist-ip6-kernel-modules
@@ -103,6 +111,7 @@ mainDisableIpv6() {
 	disable-etc-chrony-ipv6
 	disable-etc-netconfig-ipv6
 	disable-etc-dhcpcdconf-ipv6
+	disable-ipv6-cron-task
 }
 
 main() {

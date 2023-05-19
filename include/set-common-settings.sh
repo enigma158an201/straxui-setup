@@ -5,7 +5,7 @@ set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 
-set-sshd-config-settings() {
+sshd-config-settings() {
 	for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do
 		mysshddst="/etc/ssh/sshd_config.d/$sshdfile"
 		mysshdsrc=".$mysshddst"
@@ -32,10 +32,20 @@ disable-systemd-sleep() {
 disable-wifi-connections() {
 	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
 }
+disable-cups-services() {
+	if (systemctl status cups-browsed.service); then suExecCommand systemctl disable --now cups-browsed.service; fi
+    if (systemctl status cups.service); then suExecCommand systemctl disable --now cups.service; fi
+}
+cronjob-disable-ipv6() {
 
+    if (systemctl status cron.service); then suExecCommand systemctl enable --now cron.service; fi
+}
 main() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
-	set-sshd-config-settings
+	sshd-config-settings
+    disable-wifi-connections
+    disable-cups-services
 	disable-systemd-sleep
+    set-cronjob-
 }
