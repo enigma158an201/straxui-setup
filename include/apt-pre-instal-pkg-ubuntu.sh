@@ -10,20 +10,21 @@ getDpkgListInstalled() {
 }
 checkDpkgInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
-	dpkgInstalledList="$(getDpkgListInstalled)"			# | grep cron
-	pkgNamePrefix="$1"
+	#dpkgInstalledList="$(getDpkgListInstalled)"			# | grep cron
+	#pkgNamePrefix="$1"
 	#sPkgInstalled="${dpkgInstalledList[@]//$pkgNamePrefix/}"
 	
 	#array=(elem1/a elem1/b elem2/a elem2/b)
 	#prefix=elem1
-	sPkgInstalled=()
-	for element in "${dpkgInstalledList[@]}"; do
+	#sPkgInstalled=()
+	#for element in ${dpkgInstalledList[@]}; do
 		#[[ $element == $pkgNamePrefix/* ]] && sPkgInstalled+=("$element")
-		echo "$element ";read -rp " "
-		[[ $element == $pkgNamePrefix ]] && sPkgInstalled+=("$element")
-	done
-	if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
-	unset sPkgInstalled
+		#echo "$element ";read -rp " "
+		#[[ $element == $pkgNamePrefix ]] && sPkgInstalled+=("$element")
+	#done
+	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
+	#unset sPkgInstalled
+	dpkg-query --show $1
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
