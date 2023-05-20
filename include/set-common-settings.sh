@@ -31,13 +31,13 @@ disable-systemd-sleep() {
 }
 disable-wifi-connections() {
 	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
+    if (which nmcli 1>/dev/null); then suExecCommand nmcli radio wifi off; fi
 }
 disable-cups-services() {
 	if (systemctl status cups-browsed.service); then suExecCommand systemctl disable --now cups-browsed.service; fi
     if (systemctl status cups.service); then suExecCommand systemctl disable --now cups.service; fi
 }
 cronjob-disable-ipv6() {
-
     if (systemctl status cron.service); then suExecCommand systemctl enable --now cron.service; fi
 }
 main() {
@@ -47,5 +47,5 @@ main() {
     disable-wifi-connections
     disable-cups-services
 	disable-systemd-sleep
-    set-cronjob-
+    cronjob-disable-ipv6
 }
