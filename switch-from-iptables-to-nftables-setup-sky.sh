@@ -62,18 +62,19 @@ getNetworkManagement() {
 	unset mynetplandst
 }
 restore-nft-conf() {
-	suExecCommandNoPreserveEnv "mynftconfdst=/etc/nftables.conf; \
-	mynftconfsrc=\"${launchDir}\$mynftconfdst\"; \
+	mynftconfdst=/etc/nftables.conf
+	mynftconfsrc="${launchDir}$mynftconfdst"
+	suExecCommandNoPreserveEnv " \
 	#binNft=\$(which nft); \
-	isErrorFree=\"$($binNft -c -f \$mynftconfsrc && echo \"true\")\"; \
+	isErrorFree=\"$($binNft -c -f $mynftconfsrc && echo \"true\")\"; \
 	if [ \"\$isErrorFree\" = \"true\" ]; then \
 		echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
-		suExecCommand \"install -o root -g root -m 0744 -pv \$mynftconfsrc \$mynftconfdst\"; \
+		suExecCommand \"install -o root -g root -m 0744 -pv $mynftconfsrc $mynftconfdst\"; \
 	else \
 		echo \"\$isErrorFree\"; \
 		exit 1; \
-	fi;
-	unset mynftconf{dst,src}"
+	fi"
+	unset mynftconf{dst,src}
 }
 blacklist-iptables-kernel-modules() {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
