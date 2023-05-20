@@ -41,7 +41,6 @@ aptPreinstallPkg() {
 aptUnbloatPkg() {
 	declare -a pkgsToRemove
 	pkgsToRemove=(sane-utils bluez)
-	apt-get update && apt-get upgrade
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
 		if (checkDpkgInstalled "$pkgToInstall"); then
