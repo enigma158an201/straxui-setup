@@ -9,7 +9,8 @@ comment() {
 	local regex="${1:?}"
 	local file="${2:?}"
 	local comment_mark="${3:-#}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "s:^([ ]*)($regex):\\1$comment_mark\\2:" "$file"; fi
+	local sCommand="sed -ri \"s:^([ ]*)($regex):\\1$comment_mark\\2:\" $file"
+	if [ -f "$file" ]; then suExecCommand "$sCommand"; fi
 }
 uncomment() {
 	local regex="${1:?}"
