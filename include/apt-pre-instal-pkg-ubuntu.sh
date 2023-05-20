@@ -41,7 +41,7 @@ aptPreinstallPkg() {
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
 		echo "verification si paquet $pkgToInstall installé" #; read -rp " "
-		if [ $(checkDpkgInstalled "$pkgToInstall") = "false" ]; then
+		if [ "$(checkDpkgInstalled "$pkgToInstall")" = "false" ]; then
 			apt-get -y install "$pkgToInstall"
 		fi
 	done
@@ -51,17 +51,17 @@ aptUnbloatPkg() {
 	pkgsToRemove=(sane-utils bluez evolution-data-server-common libbluetooth3 plymouth system-config-printer-common samba-common)
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
-		if (checkDpkgInstalled "$pkgToInstall"); then
+		if [ "$(checkDpkgInstalled "$pkgToInstall")" = "true" ]; then
 			apt-get -y autoremove "$pkgsToRemove"
 		fi
 	done
 }
-main() {
+#main() {
 	#getDpkgListInstalled
 	#checkDpkgInstalled "zip"
 	#read -rp ""
 	#checkDpkgInstalled "znimporte"
-	aptPreinstallPkg
-	aptUnbloatPkg
-}
-main
+	#aptPreinstallPkg
+	#aptUnbloatPkg
+#}
+#main
