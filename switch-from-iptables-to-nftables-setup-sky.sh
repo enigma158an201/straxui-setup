@@ -83,11 +83,11 @@ blacklist-iptables-kernel-modules() {
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
 	echo "  >>> Désactivation de ufw si necessaire"
-	suExecCommand "if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi \
-	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire'
-	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi \
-	echo '  >>> Suppression de ip-tables'
-	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"\$fwPkg\" 2>&1; done \
+	suExecCommand "if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi; \
+	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire';
+	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi; \
+	echo '  >>> Suppression de ip-tables';
+	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"\$fwPkg\" 2>&1; done; \
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi"
 	unset fwPkg
 }
