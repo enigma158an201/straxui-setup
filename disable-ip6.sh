@@ -90,9 +90,10 @@ disable-ipv6-cron-task() {
 	scriptFilename="disable-ip6.sh"
 	mycronip6jobdst="/usr/local/bin/$scriptFilename"
 	mycronip6jobsrc="${launchDir}/$scriptFilename"
-	suExecCommand install -o root -g root -m 0755 -pv "$mycronip6jobsrc" "$mycronip6jobdst"
 	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
-	suExecCommand "(crontab -l 2>/dev/null; echo \"0 * * * * root $mycronip6jobdst\") | crontab -"
+
+	suExecCommand "install -o root -g root -m 0755 -pv \"$mycronip6jobsrc\" \"$mycronip6jobdst\"; \
+	(crontab -l 2>/dev/null; echo \"0 * * * * root $mycronip6jobdst\") | crontab -"
 }
 
 main_DisableIpv6() {
@@ -108,4 +109,4 @@ main_DisableIpv6() {
 	disable-ipv6-cron-task
 }
 
-suExecCommand main_DisableIpv6
+main_DisableIpv6
