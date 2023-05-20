@@ -19,15 +19,15 @@ disable-systemd-sleep() {
 	#AllowSuspendThenHibernate=yes	to	AllowSuspendThenHibernate=no
 	#AllowHybridSleep=yes			to	AllowHybridSleep=no
 	suExecCommand "source \"${launchDir}/include/file-edition.sh\";
-	sleepconfDir=/etc/systemd/sleep.conf; /
-	sleepLines=\"AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes\"; /
+	sleepconfDir=/etc/systemd/sleep.conf; 
+	sleepLines=\"AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes\"; 
 	for sleepLine in \${sleepLines}; do
-		lineWithoutVal=\"\${sleepLine/yes/}\"; /
-		lineWithoutVal=\"\${sleepLine/no/}\"; /
-		uncomment			\"\${lineWithoutVal}\"	\"\${sleepconfDir}\"; /
-		lineNo=\"\${lineWithoutVal}no\"; /
-		setParameterInFile \"\${sleepconfDir}\"	\"\${lineWithoutVal}\"		\"\${lineNo}\"; /
-	done; /
+		lineWithoutVal=\"\${sleepLine/yes/}\"; 
+		lineWithoutVal=\"\${sleepLine/no/}\"; 
+		uncomment			\"\${lineWithoutVal}\"	\"\${sleepconfDir}\"; 
+		lineNo=\"\${lineWithoutVal}no\"; 
+		setParameterInFile \"\${sleepconfDir}\"	\"\${lineWithoutVal}\"		\"\${lineNo}\"; 
+	done; 
 	systemctl daemon-reload"
 }
 disable-wifi-connections() {
