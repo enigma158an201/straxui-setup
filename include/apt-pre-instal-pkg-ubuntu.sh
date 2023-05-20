@@ -21,7 +21,7 @@ checkDpkgInstalled() {
 		#[[ $element == $pkgNamePrefix/* ]] && sPkgInstalled+=("$element")
 		[[ $element == $pkgNamePrefix ]] && sPkgInstalled+=("$element")
 	done
-	(echo "${sPkgInstalled}" && echo "true") || echo "false"
+	(echo "${sPkgInstalled[@]}" && echo "true") || echo "false"
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
