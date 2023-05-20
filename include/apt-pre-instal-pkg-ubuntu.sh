@@ -27,7 +27,8 @@ checkDpkgInstalled() {
 	#unset sPkgInstalled
 	pkgname="$1"
 	#(dpkg-query --show "$pkgname" && echo "true") || echo "false"
-	if [[ $(/usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname") =~ \$installed ]]; then echo "true"; else echo "false"; fi 
+	result="$(/usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname")"
+	if [[ $result =~ \$not-installed ]]; then echo "false"; else echo "true"; fi 
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
