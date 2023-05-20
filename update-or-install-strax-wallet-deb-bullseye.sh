@@ -9,7 +9,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/pre-install-pkgs.sh"
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
-
+source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 
 function determinerOS() {
 	cat /etc/os-release # echo `lsb_release -a`
