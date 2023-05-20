@@ -83,8 +83,8 @@ disable-etc-chrony-ipv6() {
 disable-etc-netconfig-ipv6() {
 	mynetconfigdst="/etc/netconfig"
 	if [ -f "$mynetconfigdst" ]; then
-		if (grep -i "^udp6" "$mynetconfigdst"); then								suExecCommand "source ${launchDir}/include/file-edition.sh; comment \"udp6\" $mynetconfigdst"; fi
-		if (grep -i "^tcp6" "$mynetconfigdst"); then								suExecCommand "source ${launchDir}/include/file-edition.sh; comment \"tcp6\" $mynetconfigdst"; fi
+		if (grep -i "^udp6" "$mynetconfigdst"); then								suExecCommand "source ${launchDir}/include/file-edition.sh; comment udp6 $mynetconfigdst"; fi
+		if (grep -i "^tcp6" "$mynetconfigdst"); then								suExecCommand "source ${launchDir}/include/file-edition.sh; comment tcp6 $mynetconfigdst"; fi
 	fi
 }
 disable-etc-dhcpcdconf-ipv6() {
