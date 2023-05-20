@@ -24,7 +24,8 @@ checkDpkgInstalled() {
 	#done
 	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
-	(dpkg-query --show $1) && echo "true"; echo "false"
+	pkgname="$1"
+	(dpkg-query --show $pkgname) && echo "true"; echo "false"
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
@@ -51,7 +52,7 @@ aptUnbloatPkg() {
 main() {
 	#getDpkgListInstalled
 	checkDpkgInstalled "zip"
-	read -rp ""
+	#read -rp ""
 	checkDpkgInstalled "znimporte"
 	#aptPreinstallPkg
 	#aptUnbloatPkg
