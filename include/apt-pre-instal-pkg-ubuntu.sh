@@ -40,7 +40,7 @@ aptPreinstallPkg() {
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
-		echo "verification si paquet $pkgToInstall installé" ; read -rp " "
+		echo "verification si paquet $pkgToInstall installé" #; read -rp " "
 		if [ $(checkDpkgInstalled "$pkgToInstall") = "false" ]; then
 			apt-get -y install "$pkgToInstall"
 		fi
