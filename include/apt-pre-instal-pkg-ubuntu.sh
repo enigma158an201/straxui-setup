@@ -37,7 +37,7 @@ aptPreinstallPkg() {
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
 		echo "verification si paquet $pkgToInstall installé" ; read -rp " "
-		if (! checkDpkgInstalled "$pkgToInstall"); then
+		if [ $(checkDpkgInstalled "$pkgToInstall") = "false" ]; then
 			apt-get -y install "$pkgToInstall"
 		fi
 	done
