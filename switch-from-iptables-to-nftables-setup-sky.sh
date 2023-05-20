@@ -49,6 +49,8 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 
+binNft=$(suExecCommand which nft)
+
 getNetworkManagement() {
 	mynetplandst="/etc/netplan/"
 	if [ -d "$mynetplandst" ]; then
@@ -62,7 +64,7 @@ getNetworkManagement() {
 restore-nft-conf () {
 	mynftconfdst=/etc/nftables.conf
 	mynftconfsrc=".$mynftconfdst"
-	isErrorFree=$(suExecCommand nft -c -f "$mynftconfsrc")
+	isErrorFree=$(suExecCommand $binNft -c -f "$mynftconfsrc")
 	if [ "$isErrorFree" = "" ]; then
 		echo "mise en place de la nouvelle version du fichier de configuration nftables"
 		suExecCommand install -o root -g root -m 0744 -pv "$mynftconfsrc" "$mynftconfdst"
@@ -95,10 +97,10 @@ mainDisableAndRemoveIptables() {
 mainInstallAndSetupNftable() {
 	suExecCommand apt install nftables
 	echo "  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire"
-	suExecCommand nft flush ruleset
-	suExecCommand nft list ruleset
+	suExecCommand $binNft flush ruleset
+	suExecCommand $binNft list ruleset
 	echo "  >>> Mise en route du service nftables"
-	restore-nft-conf && suExecCommand nft list ruleset
+	restore-nft-conf && suExecCommand $binNft list ruleset
 	if true; then
 		suExecCommand systemctl enable --now nftables
 	else
