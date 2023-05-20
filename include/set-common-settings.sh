@@ -8,7 +8,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//
 sshd-config-settings() {
 	for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do
 		mysshddst="/etc/ssh/sshd_config.d/$sshdfile"
-		mysshdsrc=".$mysshddst"
+		mysshdsrc="${launchDir}$mysshddst"
 		if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then suExecCommand install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
 	done
 	suExecCommand systemctl restart sshd.service
@@ -18,7 +18,13 @@ disable-systemd-sleep() {
 	#AllowHibernation=yes			to	AllowHibernation=no
 	#AllowSuspendThenHibernate=yes	to	AllowSuspendThenHibernate=no
 	#AllowHybridSleep=yes			to	AllowHybridSleep=no
-	suExecCommand "bash -c \"$launchDir/include/disable-systemd-sleep.sh\""
+	#suExecCommand "bash -c \"$launchDir/include/disable-systemd-sleep.sh\""
+	mysystemddst="/etc/systemd/sleep.conf"
+	mysystemdsrc="${launchDir}$mysystemddst"
+	if [ -d "$(dirname "$mysystemddst")" ] && [ -f "$mysystemdsrc" ]; then 
+		suExecCommand "install -o root -g root -m 0744 -pv \"$mysystemdsrc\" \"$mysystemddst\"; \
+		systemctl daemon-reload"
+	fi
 }
 disable-wifi-connections() {
 	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
