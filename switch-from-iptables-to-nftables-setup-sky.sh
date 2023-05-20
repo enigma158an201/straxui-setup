@@ -49,7 +49,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 
-binNft=$(suExecCommand which nft)
+binNft=$(su - -c 'which nft')
 
 getNetworkManagement() {
 	mynetplandst="/etc/netplan/"
