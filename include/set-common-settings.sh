@@ -27,16 +27,16 @@ disable-systemd-sleep() {
 	fi
 }
 disable-wifi-connections() {
-	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
+	if (systemctl status wpa_supplicant.service 1>/dev/null); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
     if (which nmcli 1>/dev/null); then suExecCommand nmcli radio wifi off; fi
 	if (which rfkill 1>/dev/null); then suExecCommand rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
-	if (systemctl status cups-browsed.service); then suExecCommand systemctl disable --now cups-browsed.service; fi
-    if (systemctl status cups.service); then suExecCommand systemctl disable --now cups.service; fi
+	if (systemctl status cups-browsed.service 1>/dev/null); then suExecCommand systemctl disable --now cups-browsed.service; fi
+    if (systemctl status cups.service 1>/dev/null); then suExecCommand systemctl disable --now cups.service; fi
 }
 cronjob-disable-ipv6() {
-    if (systemctl status cron.service); then suExecCommand systemctl enable --now cron.service; fi
+    if (systemctl status cron.service 1>/dev/null); then suExecCommand systemctl enable --now cron.service; fi
 }
 main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
