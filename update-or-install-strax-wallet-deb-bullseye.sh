@@ -88,7 +88,8 @@ installStrax() {
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
 			if [ ! "$isBuster" = "" ]; then
 				
-				suExecCommand "pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
+				suExecCommand "source \"${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh\"; \
+				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				for pkgsToInstall in \$pkgsToInstall; do \
 					if [ $(checkDpkgInstalled \"\$pkgToInstall\") = \"false\" ]; then
 						apt-get install -y \"\$pkgsToInstall\"
@@ -99,7 +100,8 @@ installStrax() {
 				if [ ! -f "$myfilenamedeb" ]; then wget -O "$myfilenamedeb" "$projectlatestcontentdeb"; fi
 				suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
 			elif [ "$isBuster" = "" ]; then
-				suExecCommand "pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
+				suExecCommand "source \"${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh\"; \
+				pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
 				for pkgsToInstall in \$pkgsToInstall; do \
 					if [ $(checkDpkgInstalled \"\$pkgToInstall\") = \"false\" ]; then
 						apt-get install -y \"\$pkgsToInstall\"
