@@ -87,7 +87,7 @@ mainDisableAndRemoveIptables() {
 	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire'
 	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi \
 	echo '  >>> Suppression de ip-tables'
-	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"$fwPkg\" 2>&1; done \
+	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"\$fwPkg\" 2>&1; done \
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi"
 	unset fwPkg
 }
