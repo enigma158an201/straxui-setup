@@ -4,6 +4,8 @@ set -euo pipefail #set -x
 
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi	
+source "${launchDir}/include/test-superuser-privileges.sh"
+#source "${launchDir}/include/file-edition.sh"
 
 #myCpuArch=$(uname -i) #amd64 x64 arm arm64
 
@@ -13,22 +15,22 @@ setupDotNet() {
 	targetDotNetInstall=/usr/share/dotnet/
 
 	if true; then
-		#sudo curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-x64.tar.gz"
+		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-x64.tar.gz"
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-x64.tar.gz"
 	#elif false; then
-		#sudo curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-i386.tar.gz"
+		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-i386.tar.gz"
 		#myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-i386.tar.gz"
 	elif false; then
-		#sudo curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm64.tar.gz"
+		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm64.tar.gz"
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm64.tar.gz"
 	elif false; then
-		#sudo curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
+		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
 	curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
-	sudo mkdir -p "$targetDotNetInstall"
-	sudo tar -zxf "$tmpDotNetArchive" -C "$targetDotNetInstall"
-	sudo ln -s "$targetDotNetInstall/dotnet" /usr/bin/dotnet
+	suExecCommand mkdir -p "$targetDotNetInstall"
+	suExecCommand tar -zxf "$tmpDotNetArchive" -C "$targetDotNetInstall"
+	suExecCommand ln -s "$targetDotNetInstall/dotnet" /usr/bin/dotnet
 }
 
 setupNode() {
@@ -38,21 +40,21 @@ setupNode() {
 	targetNodeInstall=$HOME/StraxNode/
 
 	if true; then
-		#sudo wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-x64.zip
+		#suExecCommand wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-x64.zip
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-x64.zip"
 	elif false; then
-		#sudo wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm64.zip
+		#suExecCommand wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm64.zip
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm64.zip"
 	elif false; then
-		#sudo wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip
+		#suExecCommand wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip"
 	fi
 	wget -O "$tmpNodeArchive" "$myDotNetArchUrl"
-	sudo unzip "$tmpNodeArchive" -d "$targetNodeInstall"
-	sudo screen dotnet "$targetNodeInstall/Stratis.StraxD.dll" run -mainnet
-	sudo screen -ls
+	suExecCommand unzip "$tmpNodeArchive" -d "$targetNodeInstall"
+	suExecCommand screen dotnet "$targetNodeInstall/Stratis.StraxD.dll" run -mainnet
+	suExecCommand screen -ls
 	# voir pour avoir la bonne valeur depuis la commande screen -ls et remplacer 2848
-	sudo screen -r 2848
+	suExecCommand screen -r 2848
 }
 
 setupWalletCli() {
@@ -61,9 +63,9 @@ setupWalletCli() {
 	targetWalletCliInstall=$HOME/StraxCLI/
 	urlWalletCli="https://github.com/stratisproject/StraxCLI/archive/refs/tags/StraxCLI-1.0.0.zip"
 	nameFile=$(basename "$urlWalletCli" .zip)
-	sudo wget -O "$tmpWalletCliArchive" "$urlWalletCli"
-	sudo unzip "$tmpWalletCliArchive" -d "$targetWalletCliInstall"
-	sudo python3 "$targetWalletCliInstall/StraxCLI-$nameFile/straxcli.py"
+	suExecCommand wget -O "$tmpWalletCliArchive" "$urlWalletCli"
+	suExecCommand unzip "$tmpWalletCliArchive" -d "$targetWalletCliInstall"
+	suExecCommand python3 "$targetWalletCliInstall/StraxCLI-$nameFile/straxcli.py"
 }
 setupWalletUi() {
 	# see https://github.com/stratisproject/StraxUI/releases or https://github.com/stratisproject/StraxCLI/releases/tag/StraxCLI-1.0.0 for more recent instructions
@@ -137,10 +139,10 @@ setupSecurityConsiderations() {
 	myIpAddr6=$(getIpAddr6)
 	myNetAddr6="$(getNetworkAddress 6 "$myIpAddr6")"	
 	if false; then 
-		sudo apt-get -y install ufw
-		sudo ufw enable
-		sudo ufw allow from "$myNetAddr4/24" to any port 22
-		if false; then sudo ufw allow from "$myNetAddr6/24" to any port 22; fi
+		suExecCommand apt-get -y install ufw
+		suExecCommand ufw enable
+		suExecCommand ufw allow from "$myNetAddr4/24" to any port 22
+		if false; then suExecCommand ufw allow from "$myNetAddr6/24" to any port 22; fi
 	fi
 }
 test() {
