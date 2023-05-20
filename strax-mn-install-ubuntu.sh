@@ -137,7 +137,7 @@ setupSecurityConsiderations() {
 	myIpAddr4=$(getIpAddr4)
 	myNetAddr4="$(getNetworkAddress 4 "$myIpAddr4")"
 	myIpAddr6=$(getIpAddr6)
-	myNetAddr6="$(getNetworkAddress 6 "$myIpAddr6")"	
+	myNetAddr6="$(getNetworkAddress 6 "$myIpAddr6")"
 	if false; then 
 		suExecCommand apt-get -y install ufw
 		suExecCommand ufw enable
