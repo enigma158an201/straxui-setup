@@ -67,7 +67,7 @@ checkDoasUser() {		#set +x
 getSuCmd() {			#set +x
 	if [ ! "$sudoPath" = "false" ] && { [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] ; }; then	suCmd="$sudoPath" #"/usr/bin/sudo"
 	elif [ ! "$doasPath" = "false" ] && [ -f /etc/doas.conf ] && [ ! "$bSudoGroup" = "false" ]; then				suCmd="$doasPath" #"/usr/bin/doas"
-	else																											suCmd="su - -p -c"; fi
+	else																											suCmd="su -p -c"; fi #"su - -p -c"
 	echo "$suCmd"
 }
 getSuQuotes() {
