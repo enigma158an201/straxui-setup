@@ -28,13 +28,15 @@ insertLineBefore() {
 	local regex="${1:?}"
 	local newLine="${2:?}"
 	local file="${3:?}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "/^([ ]*)($regex)/i $newLine" "$file"; fi		#sed -ri "s:^([ ]*)($regex):\\1$newLine\n\\2:" "$file"
+	local sCommand="sed -ri \"/^([ ]*)($regex)/i $newLine\" $file"
+	if [ -f "$file" ]; then suExecCommand "$sCommand"; fi		#sed -ri "s:^([ ]*)($regex):\\1$newLine\n\\2:" "$file"
 }
 insertLineAfter() {
 	local regex="${1:?}"
 	local newLine="${2:?}"
 	local file="${3:?}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "/^([ ]*)($regex)/a $newLine" "$file"; fi
+	local sCommand="sed -ri \"/^([ ]*)($regex)/a $newLine\" $file"
+	if [ -f "$file" ]; then suExecCommand ; fi
 }
 setParameterInFile() {
 	# 2 cas de figures: 1/ le parametre est present et il faut le remplacer 2/ le parametre n'est pas présent, il sera ajouté à la fin
