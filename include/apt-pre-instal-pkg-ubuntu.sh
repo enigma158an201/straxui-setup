@@ -3,7 +3,7 @@ set -euo pipefail #; set -x
 
 getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
-	dpkgGlobList="$(dpkg -l)"
+	dpkgGlobList="$(dpkg -l | tail -n +6)"
 	prefix="ii  "
 	dpkgInstalled="${dpkgGlobList[@]//$prefix/}"
 	echo "${dpkgInstalled}"
