@@ -27,7 +27,7 @@ setupDotNet() {
 		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
-	curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
+	/usr/bin/curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
 	suExecCommand mkdir -p "$targetDotNetInstall"
 	suExecCommand tar -zxf "$tmpDotNetArchive" -C "$targetDotNetInstall"
 	suExecCommand ln -s "$targetDotNetInstall/dotnet" /usr/bin/dotnet
