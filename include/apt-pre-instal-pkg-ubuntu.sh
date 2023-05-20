@@ -4,11 +4,17 @@ set -euo pipefail #; set -x
 getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	dpkgGlobList="$(dpkg -l)"
-	prefix="ii"
+	prefix="ii "
 	dpkgInstalled="${dpkgGlobList[@]//$prefix/}"
 	echo "${dpkgInstalled}"
 }
-
+checkDpkgInstalled() {
+	#dpkg -l | grep -E '(^|\s+)cron\b'
+	dpkgInstalledList="$(getDpkgListInstalled)"
+	prefix="$1"
+	sPkgInstalled="${dpkgGlobList[@]//$prefix/}"
+	echo "${sPkgInstalled}"
+}
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
 	pkgsToInstall=(net-tools wget curl tar zip ipv6calc git jq xinit cron)
@@ -32,7 +38,8 @@ aptUnbloatPkg() {
 	done
 }
 main() {
-	getDpkgListInstalled
+	#getDpkgListInstalled
+	checkDpkgInstalled "cron"
 	#aptPreinstallPkg
 	#aptUnbloatPkg
 }
