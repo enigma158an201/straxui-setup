@@ -12,7 +12,7 @@ checkDpkgInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	dpkgInstalledList="$(getDpkgListInstalled)"			# | grep cron
 	prefix="$1"
-	sPkgInstalled="${dpkgInstalledList[@]//$prefix/}"
+	sPkgInstalled="${dpkgInstalledList[@]//^$prefix/}"
 	echo "${sPkgInstalled}"
 }
 aptPreinstallPkg() {
