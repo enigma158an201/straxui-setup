@@ -29,16 +29,16 @@ setupDotNet() {
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
 	/usr/bin/curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
-	suExecCommand mkdir -p "$targetDotNetInstall"
-	suExecCommand tar -zxf "$tmpDotNetArchive" -C "$targetDotNetInstall"
-	suExecCommand ln -sfv "$targetDotNetInstall/dotnet" /usr/bin/dotnet
+	suExecCommand "mkdir -p \"$targetDotNetInstall\"; \
+	tar -zxf \"$tmpDotNetArchive\" -C \"$targetDotNetInstall\"; \
+	ln -sfv \"$targetDotNetInstall/dotnet\" /usr/bin/dotnet"
 }
 
 setupNode() {
 	# see https://github.com/stratisproject/StratisFullNode/releases for more recent instructions
 
-	tmpNodeArchive=/tmp/SNode.zip
-	targetNodeInstall=$HOME/StraxNode/
+	#tmpNodeArchive=/tmp/SNode.zip
+	#targetNodeInstall=$HOME/StraxNode/
 
 	if true; then
 		#suExecCommand wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-x64.zip
@@ -51,11 +51,13 @@ setupNode() {
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip"
 	fi
 	wget -O "$tmpNodeArchive" "$myDotNetArchUrl"
-	suExecCommand unzip "$tmpNodeArchive" -d "$targetNodeInstall"
-	suExecCommand screen dotnet "$targetNodeInstall/Stratis.StraxD.dll" run -mainnet
-	suExecCommand screen -ls
+	suExecCommand "tmpNodeArchive=/tmp/SNode.zip
+	targetNodeInstall=\$HOME/StraxNode/; \
+	unzip \"$tmpNodeArchive\" -d \"$targetNodeInstall\"; \
+	screen dotnet \"$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
+	screen -ls
 	# voir pour avoir la bonne valeur depuis la commande screen -ls et remplacer 2848
-	suExecCommand screen -r 2848
+	screen -r 2848"
 }
 
 setupWalletCli() {
