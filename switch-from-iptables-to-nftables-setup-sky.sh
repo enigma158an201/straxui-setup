@@ -45,7 +45,7 @@ set -euo pipefail #; set -x
 	#fi
 #}
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; launchDir="${launchDir/include/}"; fi
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 
