@@ -5,7 +5,7 @@ set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
-#source "${launchDir}/include/file-edition.sh"
+source "${launchDir}/include/file-edition.sh"
 
 grubUpdate() {
 	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
@@ -117,6 +117,6 @@ mainDisableIpv6() {
 }
 
 main() {
-    mainDisableIpv6
+	mainDisableIpv6
 }
 main
