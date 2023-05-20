@@ -23,12 +23,14 @@ blacklist-ip6-kernel-modules() {
 	#todo check if already added
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
 	if [ "$bDisabledIpV6" = "false" ]; then
-		suExecCommand sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub
-		suExecCommand sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
+		sCommand="sed -i '/GRUB_CMDLINE_LINUX/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
+		sCommandDefault="sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
+		suExecCommand "$sCommand" 			#sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub
+		suExecCommand "$sCommandDefault" 	#sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
 		grubUpdate
 	fi
 }
-function blacklist-ip6-NetworkManagement() {
+blacklist-ip6-NetworkManagement() {
 	#non persistant, but take effect immediately
 	if false; then
 		suExecCommand sysctl -w net.ipv6.conf.all.disable_ipv6=1
