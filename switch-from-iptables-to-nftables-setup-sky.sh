@@ -120,7 +120,7 @@ mainInstallStraxuiTargz() {
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
 }
 
-main {
+main() {
 	mainDisableAndRemoveIptables
 	mainInstallAndSetupNftable
 	if (false); then	mainInstallStraxuiDeb
