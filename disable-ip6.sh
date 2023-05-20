@@ -108,7 +108,4 @@ mainDisableIpv6() {
 	disable-ipv6-cron-task"
 }
 
-main() {
-	mainDisableIpv6
-}
-main
+mainDisableIpv6

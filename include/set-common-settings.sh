@@ -38,7 +38,7 @@ disable-cups-services() {
 cronjob-disable-ipv6() {
     if (systemctl status cron.service); then suExecCommand systemctl enable --now cron.service; fi
 }
-main() {
+main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
 	sshd-config-settings; \
@@ -47,4 +47,4 @@ main() {
 	disable-systemd-sleep; \
     cronjob-disable-ipv6
 }
-main
+main_common

@@ -126,7 +126,7 @@ mainInstallStraxuiTargz() {
 	unset installStraxuiTargz
 }
 
-main() {
+main_iptables_to_nftables() {
 	mainDisableAndRemoveIptables
 	mainInstallAndSetupNftable
 	read -rp "Install straxui wallet from deb file (1) or from tarball (2), other key to do nothing" -n 1 installStraxui
@@ -135,4 +135,4 @@ main() {
 	fi
 	unset installStraxui
 }
-main
+main_iptables_to_nftables

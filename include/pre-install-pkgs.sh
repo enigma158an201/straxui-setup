@@ -13,9 +13,9 @@ aptPreinstall() {
 	fi
 }
 
-main() {
+main_aptPreinstall() {
 	
 	suExecCommand "install -o root -g root -m 0755 -pv $launchDir/include/test-superuser-privileges.sh /usr/local/bin/su-alternatives-exec"
 	aptPreinstall
 }
-main
+main_aptPreinstall

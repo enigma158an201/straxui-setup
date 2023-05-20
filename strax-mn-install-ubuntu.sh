@@ -151,7 +151,7 @@ test() {
 	getNetworkAddress 6 "$(getIpAddr6)"
 }
 test
-main() {
+main_mn() {
 	suExecCommand "source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
 	setupDotNet
 	setupNode
@@ -159,4 +159,4 @@ main() {
 	#setupWalletUi
 	setupSecurityConsiderations
 }
-main
+main_mn

@@ -105,7 +105,7 @@ suExecCommandNoPreserveEnv() {
 	fi
 }
 
-main(){
+main_SU(){
 	sudoPath="$(which sudo || echo "false")"
 	doasPath="$(which doas || echo "false")"
 	bSudoGroup="$(checkUserSudoOrWheelGroup)"
@@ -119,4 +119,4 @@ main(){
 	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"
 	if [ -n "$cmdParameters" ]; then suExecCommand "${cmdParameters}"; fi
 }
-main
+main_SU

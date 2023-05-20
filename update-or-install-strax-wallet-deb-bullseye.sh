@@ -79,7 +79,7 @@ fi
 isDeepin=$(determineSiDeepin)
 isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 
-installStrax() {
+main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
 
@@ -122,7 +122,4 @@ installStrax() {
 	# fi
 }
 
-main() {
-	installStrax
-}
-main
+main_installStrax

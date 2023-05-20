@@ -4,7 +4,7 @@ set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"; launchDir="${launchDir//\/\//}"
 
-main() {
+main_disable_sleep() {
     source "${launchDir}/include/file-edition.sh"
 	sleepconfDir=/etc/systemd/sleep.conf
 	sleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
@@ -18,4 +18,4 @@ main() {
 	done
 	systemctl daemon-reload
 }
-main
+main_disable_sleep
