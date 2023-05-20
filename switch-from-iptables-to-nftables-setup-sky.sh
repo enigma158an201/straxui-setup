@@ -64,7 +64,7 @@ getNetworkManagement() {
 restore-nft-conf() {
 	suExecCommandNoPreserveEnv "mynftconfdst=/etc/nftables.conf; \
 	mynftconfsrc=\"\${launchDir}\$mynftconfdst\"; \
-	binNft=\$(which nft); \
+	local binNft=\$(which nft); \
 	isErrorFree=\"$(\$binNft -c -f \$mynftconfsrc && echo \"true\")\"; \
 	if [ \"\$isErrorFree\" = \"true\" ]; then \
 		echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
@@ -77,7 +77,7 @@ restore-nft-conf() {
 }
 blacklist-iptables-kernel-modules() {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
-	myiptablesbcklsrc=".$myiptablesbckldst"
+	myiptablesbcklsrc="${launchDir}$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
 	unset myiptablesbckl{dst,src}
 }
@@ -115,13 +115,13 @@ mainInstallAndSetupNftable() {
 }
 
 mainInstallStraxuiDeb() {
-	installStraxuiDeb="./update-or-install-strax-wallet-deb-bullseye.sh"
+	installStraxuiDeb="${launchDir}/update-or-install-strax-wallet-deb-bullseye.sh"
 	if [ -f "$installStraxuiDeb" ]; then bash "$installStraxuiDeb"; fi
 	unset installStraxuiDeb
 }
 
 mainInstallStraxuiTargz() {
-	installStraxuiTargz="./install-strax-wallet-gz.sh"
+	installStraxuiTargz="${launchDir}/install-strax-wallet-gz.sh"
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
 	unset installStraxuiTargz
 }
