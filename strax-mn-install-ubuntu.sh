@@ -6,6 +6,7 @@ launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi	
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
+source "${launchDir}/include/set-common-settings.sh"
 
 #myCpuArch=$(uname -i) #amd64 x64 arm arm64
 
