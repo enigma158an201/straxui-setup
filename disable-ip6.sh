@@ -6,7 +6,7 @@ launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
-source "${launchDir}/include/set-common-settings.sh"
+suExecCommand "bash -c \"${launchDir}/include/set-common-settings.sh\""
 
 grubUpdate() {
 	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
