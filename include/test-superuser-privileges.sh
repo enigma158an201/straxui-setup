@@ -70,6 +70,13 @@ getSuCmd() {			#set +x
 	else																											suCmd="su -p -c"; fi #"su - -p -c"
 	echo "$suCmd"
 }
+getSuCmdNoPreserveEnv() {			#set +x
+	if [ ! "$sudoPath" = "false" ] && { [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] ; }; then	suCmd="$sudoPath" #"/usr/bin/sudo"
+	elif [ ! "$doasPath" = "false" ] && [ -f /etc/doas.conf ] && [ ! "$bSudoGroup" = "false" ]; then				suCmd="$doasPath" #"/usr/bin/doas"
+	else																											suCmd="su - -c"; fi #"su - -p -c"
+	echo "$suCmd"
+}
+
 getSuQuotes() {
 	#if [ -x /usr/bin/sudo ]; then	 			mySuQuotes=(false)
 	#elif [ -x /usr/bin/doas ]; then	 		mySuQuotes=(false)
@@ -91,6 +98,12 @@ suExecCommand() {
 	else									$sPfxSu $sCommand #$sPfxSu $(echo $sCommand) 	#echo "$sCommand" | xargs bash -c $sPfxSu  #$sPfxSu "$(xargs "$sCommand")" 		#$sPfxSu "${sCommand}"
 	fi
 }
+suExecCommandNoPreserveEnv() {
+	sCommand="$*"
+	if [ ! "$suQuotes" = "false" ]; then	$sPfxSuNoEnv "${sCommand}"
+	else									$sPfxSuNoEnv $sCommand
+	fi
+}
 
 main(){
 	sudoPath="$(which sudo || echo "false")"
@@ -100,6 +113,7 @@ main(){
 	if [ ! "$doasPath" = "false" ]; then bDoasUser="$(checkDoasUser)"; else bDoasUser="false"; fi
 	suQuotes="$(getSuQuotes)"
 	if ! sPfxSu="$(getSuCmd) "; then 		exit 01; fi
+	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 		exit 01; fi
 	#tests
 	#[ -x /usr/bin/apt ] && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
 	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"

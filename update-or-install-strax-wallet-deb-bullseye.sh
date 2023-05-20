@@ -88,7 +88,7 @@ isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 			projectlatestcontentdeb=$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')
 			myfilenamedeb=$(basename "$projectlatestcontentdeb")
 			if [ ! -f "$myfilenamedeb" ]; then wget "$projectlatestcontentdeb"; fi
-			suExecCommand "dpkg -i $myfilenamedeb"
+			suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
 		elif [ "$isBuster" = "" ]; then
 			suExecCommand "apt-get install -y libappindicator3-0.1-cil{,-dev}"
 			projectlatestcontentgz=$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')
