@@ -50,3 +50,4 @@ main() {
 	disable-systemd-sleep
     cronjob-disable-ipv6
 }
+main
