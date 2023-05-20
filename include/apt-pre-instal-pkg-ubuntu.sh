@@ -5,14 +5,14 @@ getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	dpkgGlobList="$(dpkg -l | tail -n +6)"
 	prefix="ii  "
-	dpkgInstalled="${dpkgGlobList[@]//^$prefix/}"
+	dpkgInstalled="${dpkgGlobList[@]//$prefix/}"
 	echo "${dpkgInstalled}"
 }
 checkDpkgInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	dpkgInstalledList="$(getDpkgListInstalled)"			# | grep cron
-	prefix="$1"
-	sPkgInstalled="${dpkgInstalledList[@]//^$prefix/}"
+	pkgNamePrefix="$1"
+	sPkgInstalled="${dpkgInstalledList[@]//$pkgNamePrefix/}"
 	echo "${sPkgInstalled}"
 }
 aptPreinstallPkg() {
