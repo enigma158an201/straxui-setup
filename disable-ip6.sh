@@ -47,7 +47,7 @@ blacklist-ip6-NetworkManagement() {
 	fi
 	if (systemctl status systemd-networkd); then
 		#sed -i '/[Network]/ s/"$/nLinkLocalAddressing=ipv4"/' /etc/systemd/networkd.conf; fi
-		if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
+		if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then	suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
 	fi
 }
 disable-etc-hosts-ipv6() {
@@ -59,39 +59,39 @@ disable-etc-hosts-ipv6() {
 disable-sshd-config-ipv6() {
 	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
 	mysshdsrc="${launchDir}$mysshddst"
-	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then suExecCommand install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
+	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then 				suExecCommand "install -o root -g root -m 0744 -pv $mysshdsrc $mysshddst"; fi
 	suExecCommand systemctl reload sshd.service
 }
 disable-postfix-ipv6() {
 	if (which postfix); then
 		mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc="${launchDir}$mypostfixdst" -> pas de install mais un sed
 		if [ -f "$mypostfixdst" ]; then
-			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
-			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
+			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then 		suExecCommand "comment \"inet_interfaces = localhost\" $mypostfixdst"; fi
+			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then 	suExecCommand "insertLineAfter \"inet_interfaces = localhost\" \"inet_interfaces = 127.0.0.1\" $mypostfixdst"; fi
 		fi
 		suExecCommand systemctl reload postfix
 	fi
 }
 disable-etc-ntp-ipv6() {
 	myntpdst="/etc/ntp.conf"
-	if [ -f "$myntpdst" ] && (grep -i "^restrict ::1" "$myntpdst"); then comment "restrict ::1" "$myntpdst"; fi
+	if [ -f "$myntpdst" ] && (grep -i "^restrict ::1" "$myntpdst"); then 			suExecCommand "comment \"restrict ::1\" $myntpdst"; fi
 }
 disable-etc-chrony-ipv6() {
 	mychronydst="/etc/chrony.conf"
-	if [ -f "$mychronydst" ] && (grep -i "^OPTIONS=\"-4\"" "$mychronydst"); then appendLineAtEnd "OPTIONS=\"-4\"" "$mychronydst"; fi
+	if [ -f "$mychronydst" ] && (grep -i "^OPTIONS=\"-4\"" "$mychronydst"); then 	suExecCommand "appendLineAtEnd \"OPTIONS=\"-4\"\" $mychronydst"; fi
 }
 disable-etc-netconfig-ipv6() {
 	mynetconfigdst="/etc/netconfig"
 	if [ -f "$mynetconfigdst" ]; then
-		if (grep -i "^udp6" "$mynetconfigdst"); then comment "udp6" "$mynetconfigdst"; fi
-		if (grep -i "^tcp6" "$mynetconfigdst"); then comment "tcp6" "$mynetconfigdst"; fi
+		if (grep -i "^udp6" "$mynetconfigdst"); then								suExecCommand "comment \"udp6\" $mynetconfigdst"; fi
+		if (grep -i "^tcp6" "$mynetconfigdst"); then								suExecCommand "comment \"tcp6\" $mynetconfigdst"; fi
 	fi
 }
 disable-etc-dhcpcdconf-ipv6() {
 	mydhcpcdconfdst="/etc/dhcpcd.conf"
 	if [ -f "$mydhcpcdconfdst" ]; then
-		if (grep -i "^noipv6rs" "$mydhcpcdconfdst"); then 	appendLineAtEnd "noipv6rs" "$mydhcpcdconfdst"; fi
-		if (grep -i "^noipv6" "$mydhcpcdconfdst"); then 	appendLineAtEnd "noipv6" "$mydhcpcdconfdst"; fi
+		if (grep -i "^noipv6rs" "$mydhcpcdconfdst"); then 							suExecCommand "appendLineAtEnd \"noipv6rs\" $mydhcpcdconfdst"; fi
+		if (grep -i "^noipv6" "$mydhcpcdconfdst"); then 							suExecCommand "appendLineAtEnd \"noipv6\" $mydhcpcdconfdst"; fi
 	fi
 }
 disable-ipv6-cron-task() {
