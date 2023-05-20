@@ -26,10 +26,13 @@ checkDpkgInstalled() {
 	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
 	pkgname="$1"
-	noPackageFoundString="no packages found matching"
-	#(dpkg-query --show "$pkgname" && echo "true") || echo "false"
-	result="$(LANG=C /usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname")"
-	if [[ $result =~ \$not-installed ]] || [[ $result =~ $noPackageFoundString ]]; then echo "false"; else echo "true"; fi 
+	#noPackageFoundString="no packages found matching"
+	#result="$(dpkg-query --show "$pkgname" && echo "true") || echo "false")"
+	#result="$(LANG=C /usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname")"
+	#if [[ $result =~ \$not-installed ]] || [[ $result =~ $noPackageFoundString ]]; then echo "false"; else echo "true"; fi 
+	installedString="[installed]"
+	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$)"
+	if [[ $result =~ $installedString ]]; then echo "false"; else echo "true"; fi 
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
