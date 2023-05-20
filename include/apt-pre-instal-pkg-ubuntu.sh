@@ -51,10 +51,10 @@ aptUnbloatPkg() {
 }
 main() {
 	#getDpkgListInstalled
-	checkDpkgInstalled "zip"
+	#checkDpkgInstalled "zip"
 	#read -rp ""
-	checkDpkgInstalled "znimporte"
-	#aptPreinstallPkg
-	#aptUnbloatPkg
+	#checkDpkgInstalled "znimporte"
+	aptPreinstallPkg
+	aptUnbloatPkg
 }
 main
