@@ -39,8 +39,8 @@ aptUnbloatPkg() {
 }
 main() {
 	#getDpkgListInstalled
-	checkDpkgInstalled "cron"
-	checkDpkgInstalled "nimporte"
+	checkDpkgInstalled "zip"
+	checkDpkgInstalled "znimporte"
 	#aptPreinstallPkg
 	#aptUnbloatPkg
 }
