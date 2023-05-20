@@ -66,7 +66,7 @@ restore-nft-conf () {
 	mynftconfsrc=\"\${launchDir}\$mynftconfdst\"\; \
 	binNft=$(su - -c 'which nft')\; \
 	isErrorFree=\"$(\$binNft -c -f \$mynftconfsrc)\"\; \
-	if [ \"\$isErrorFree\" = \"\" ]; then
+	if [ \"\$isErrorFree\" = \"\" ]; then \
 		echo \"mise en place de la nouvelle version du fichier de configuration nftables\"\; \
 		suExecCommand install -o root -g root -m 0744 -pv "\$mynftconfsrc\" \"\$mynftconfdst\"\; \
 	else \
