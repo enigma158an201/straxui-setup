@@ -52,7 +52,7 @@ setupNode() {
 	fi
 	tmpNodeArchive=/tmp/SNode.zip
 	if [ ! -f "$tmpNodeArchive" ]; then wget -O "$tmpNodeArchive" "$myDotNetArchUrl"; fi
-	suExecCommand "targetNodeInstall=\$HOME/StraxNode/; \
+	suExecCommandNoPreserveEnv "targetNodeInstall=\$HOME/StraxNode/; \
 	unzip \"$tmpNodeArchive\" -d \"\$targetNodeInstall\"; \
 	screen dotnet \"\$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
 	screen -ls
