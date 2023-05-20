@@ -95,17 +95,17 @@ disable-ipv6-cron-task() {
 	suExecCommand "(crontab -l 2>/dev/null; echo \"0 * * * * root $mycronip6jobdst\") | crontab -"
 }
 
-mainDisableIpv6() {
-	suExecCommand "blacklist-ip6-kernel-modules; 
-	blacklist-ip6-NetworkManagement; 
-	disable-etc-hosts-ipv6; 
-	disable-sshd-config-ipv6; 
-	disable-postfix-ipv6; 
-	disable-etc-ntp-ipv6; 
-	disable-etc-chrony-ipv6; 
-	disable-etc-netconfig-ipv6; 
-	disable-etc-dhcpcdconf-ipv6; 
-	disable-ipv6-cron-task"
+main_DisableIpv6() {
+	blacklist-ip6-kernel-modules
+	blacklist-ip6-NetworkManagement
+	disable-etc-hosts-ipv6
+	disable-sshd-config-ipv6 
+	disable-postfix-ipv6
+	disable-etc-ntp-ipv6
+	disable-etc-chrony-ipv6
+	disable-etc-netconfig-ipv6
+	disable-etc-dhcpcdconf-ipv6
+	disable-ipv6-cron-task
 }
 
-mainDisableIpv6
+suExecCommand main_DisableIpv6
