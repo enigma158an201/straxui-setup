@@ -57,6 +57,7 @@ getNetworkManagement() {
 			echo -e "${myNetworkRenderer##* }\n" #echo "${A##* }"
 		done
 	fi
+	unset mynetplandst
 }
 restore-nft-conf () {
 	mynftconfdst=/etc/nftables.conf
@@ -69,11 +70,13 @@ restore-nft-conf () {
 		echo "$isErrorFree"
 		exit 1 # return 1
 	fi
+	unset mynftconf{dst,src}
 }
 blacklist-iptables-kernel-modules() {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
 	myiptablesbcklsrc=".$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
+	unset myiptablesbckl{dst,src}
 }
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
@@ -87,6 +90,7 @@ mainDisableAndRemoveIptables() {
 		suExecCommand apt autoremove --purge "$fwPkg" 2>&1
 	done
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
+	unset fwPkg
 }
 mainInstallAndSetupNftable() {
 	suExecCommand apt install nftables
@@ -113,19 +117,22 @@ mainInstallAndSetupNftable() {
 mainInstallStraxuiDeb() {
 	installStraxuiDeb="./update-or-install-strax-wallet-deb-bullseye.sh"
 	if [ -f "$installStraxuiDeb" ]; then bash "$installStraxuiDeb"; fi
+	unset installStraxuiDeb
 }
 
 mainInstallStraxuiTargz() {
 	installStraxuiTargz="./install-strax-wallet-gz.sh"
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
+	unset installStraxuiTargz
 }
 
 main() {
 	mainDisableAndRemoveIptables
 	mainInstallAndSetupNftable
-	if (false); then	mainInstallStraxuiDeb
-	elif (false); then	mainInstallStraxuiTargz
+	read -rp "Install straxui wallet from deb file (1) or from tarball (2), other key to do nothing" -n 1 installStraxui
+	if [ "$installStraxui" = "1" ]; then	mainInstallStraxuiDeb
+	elif [ "$installStraxui" = "2" ]; then	mainInstallStraxuiTargz
 	fi
+	unset installStraxui
 }
-
 main
