@@ -15,7 +15,7 @@ grubUpdate() {
 }
 blacklist-ip6-kernel-modules() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
-	myip6bcklsrc=".$myip6bckldst"
+	myip6bcklsrc="${launchDir}$myip6bckldst"
 	suExecCommand mkdir -p /etc/sysctl.d/
 	suExecCommand install -o root -g root -m 0744 -pv "$myip6bcklsrc" "$myip6bckldst"
 	#todo check if include /etc/systctl.d present -> not necessary
@@ -56,13 +56,13 @@ disable-etc-hosts-ipv6() {
 }
 disable-sshd-config-ipv6() {
 	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
-	mysshdsrc=".$mysshddst"
+	mysshdsrc="${launchDir}$mysshddst"
 	if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then suExecCommand install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"; fi
 	suExecCommand systemctl reload sshd.service
 }
 disable-postfix-ipv6() {
 	if (which postfix); then
-		mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc=".$mypostfixdst" -> pas de install mais un sed
+		mypostfixdst="/etc/postfix/main.cf" # mypostfixsrc="${launchDir}$mypostfixdst" -> pas de install mais un sed
 		if [ -f "$mypostfixdst" ]; then
 			if (grep -i "^inet_interfaces = localhost" "$mypostfixdst"); then comment "inet_interfaces = localhost" "$mypostfixdst"; fi
 			if (! grep -i "^inet_interfaces = 127.0.0.1" "$mypostfixdst"); then insertLineAfter "inet_interfaces = localhost" "inet_interfaces = 127.0.0.1" "$mypostfixdst"; fi
