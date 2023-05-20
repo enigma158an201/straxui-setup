@@ -56,7 +56,7 @@ aptUnbloatPkg() {
 		fi
 	done
 }
-#main() {
+#main_preInstall() {
 	#getDpkgListInstalled
 	#checkDpkgInstalled "zip"
 	#read -rp ""
@@ -64,4 +64,4 @@ aptUnbloatPkg() {
 	#aptPreinstallPkg
 	#aptUnbloatPkg
 #}
-#main
+#main_preInstall
