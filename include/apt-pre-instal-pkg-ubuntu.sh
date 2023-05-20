@@ -18,7 +18,8 @@ checkDpkgInstalled() {
 	#prefix=elem1
 	sPkgInstalled=()
 	for element in "${dpkgInstalledList[@]}"; do
-		[[ $element == $pkgNamePrefix/* ]] && sPkgInstalled+=("$element")
+		#[[ $element == $pkgNamePrefix/* ]] && sPkgInstalled+=("$element")
+		[[ $element == $pkgNamePrefix ]] && sPkgInstalled+=("$element")
 	done
 	(echo "${sPkgInstalled}" && echo "true") || echo "false"
 }
