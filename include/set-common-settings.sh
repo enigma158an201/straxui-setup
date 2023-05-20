@@ -32,6 +32,7 @@ disable-systemd-sleep() {
 disable-wifi-connections() {
 	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
     if (which nmcli 1>/dev/null); then suExecCommand nmcli radio wifi off; fi
+	if (which rfkill 1>/dev/null); then suExecCommand rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	if (systemctl status cups-browsed.service); then suExecCommand systemctl disable --now cups-browsed.service; fi
