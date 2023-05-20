@@ -3,7 +3,7 @@
 set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; launchDir="{launchDir/include\//}"; fi
 
 sshd-config-settings() {
 	for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do
