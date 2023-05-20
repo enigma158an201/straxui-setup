@@ -16,8 +16,7 @@ grubUpdate() {
 blacklist-ip6-kernel-modules() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	myip6bcklsrc="${launchDir}$myip6bckldst"
-	suExecCommand mkdir -p /etc/sysctl.d/
-	suExecCommand install -o root -g root -m 0744 -pv "$myip6bcklsrc" "$myip6bckldst"
+	suExecCommand "mkdir -p /etc/sysctl.d/; install -o root -g root -m 0744 -pv \"$myip6bcklsrc\" \"$myip6bckldst\""
 	#todo check if include /etc/systctl.d present -> not necessary
 	#suExecCommand update-initramfs -u
 	#todo check if already added
@@ -25,8 +24,7 @@ blacklist-ip6-kernel-modules() {
 	if [ "$bDisabledIpV6" = "false" ]; then
 		sCommand="sed -i '/GRUB_CMDLINE_LINUX/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
 		sCommandDefault="sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
-		suExecCommand "$sCommand" 			#sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub
-		suExecCommand "$sCommandDefault" 	#sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
+		suExecCommand "$sCommand; $sCommandDefault" 			#sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub then #sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
 		grubUpdate
 	fi
 }
