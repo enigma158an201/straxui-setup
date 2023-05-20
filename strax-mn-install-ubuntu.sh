@@ -53,8 +53,8 @@ setupNode() {
 	tmpNodeArchive=/tmp/SNode.zip
 	if [ ! -f "$tmpNodeArchive" ]; then wget -O "$tmpNodeArchive" "$myDotNetArchUrl"; fi
 	suExecCommand "targetNodeInstall=\$HOME/StraxNode/; \
-	unzip \"$tmpNodeArchive\" -d \"$targetNodeInstall\"; \
-	screen dotnet \"$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
+	unzip \"$tmpNodeArchive\" -d \"\$targetNodeInstall\"; \
+	screen dotnet \"\$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
 	screen -ls
 	# voir pour avoir la bonne valeur depuis la commande screen -ls et remplacer 2848
 	screen -r 2848"
