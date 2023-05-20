@@ -18,16 +18,16 @@ disable-systemd-sleep() {
 	#AllowHibernation=yes			to	AllowHibernation=no
 	#AllowSuspendThenHibernate=yes	to	AllowSuspendThenHibernate=no
 	#AllowHybridSleep=yes			to	AllowHybridSleep=no
-	sleepconfDir="/etc/systemd/sleep.conf"
-	sleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
-	for sleepLine in ${sleepLines}; do
-		lineWithoutVal="${sleepLine/yes/}"
-		lineWithoutVal="${sleepLine/no/}"
-		uncomment			"${lineWithoutVal}"	"$sleepconfDir"
-		lineNo="${lineWithoutVal}no"
-		setParameterInFile "${sleepconfDir}"	"${lineWithoutVal}"		"${lineNo}"
-	done
-	suExecCommand systemctl daemon-reload
+	suExecCommand "sleepconfDir=/etc/systemd/sleep.conf; /
+	sleepLines=\"AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes\"; /
+	for sleepLine in \${sleepLines}; do
+		lineWithoutVal=\"\${sleepLine/yes/}\"; /
+		lineWithoutVal=\"\${sleepLine/no/}\"; /
+		uncomment			\"\${lineWithoutVal}\"	\"\${sleepconfDir}\"; /
+		lineNo=\"\${lineWithoutVal}no\"; /
+		setParameterInFile \"\${sleepconfDir}\"	\"\${lineWithoutVal}\"		\"\${lineNo}\"; /
+	done; /
+	systemctl daemon-reload"
 }
 disable-wifi-connections() {
 	if (systemctl status wpa_supplicant.service); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
