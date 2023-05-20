@@ -55,8 +55,8 @@ setParameterInFile() {
 		else													ispresent="true"
 		fi
 		if [ "$ispresent" = "true" ]; then						cmdarg="s$separateursed.*$findText.*$separateursed$setnewparam$separateursed""g";	
-																suExecCommand sed -Ei_old "$cmdarg" "$inputfile" # 'g' "$inputfile" # | tee "$inputfile" -
-		else													echo "$setnewparam" | $sPfxSu tee -a "$inputfile" -
+																suExecCommand "sed -Ei_old \"$cmdarg\" \"$inputfile\"" # 'g' "$inputfile" # | tee "$inputfile" -
+		else													suExecCommand "echo \"$setnewparam\" | tee -a \"$inputfile\" -" #echo "$setnewparam" | $sPfxSu tee -a "$inputfile" -
 		fi
 	fi
 }
