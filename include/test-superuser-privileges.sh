@@ -119,5 +119,4 @@ main(){
 	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"
 	if [ -n "$cmdParameters" ]; then suExecCommand "${cmdParameters}"; fi
 }
-
 main

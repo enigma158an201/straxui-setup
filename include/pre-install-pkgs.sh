@@ -6,7 +6,7 @@ launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi
 
 aptPreinstall() {
-	if [ -x /usr/bin/apt-get ]; then	suExecCommand "bash ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+	if [ -x /usr/bin/apt-get ]; then	suExecCommand "source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
 	else 								exit 1
 	fi
 }
