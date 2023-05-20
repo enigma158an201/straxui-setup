@@ -24,7 +24,7 @@ checkDpkgInstalled() {
 	#done
 	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
-	dpkg-query --show $1
+	(dpkg-query --show $1) && echo "true"; echo "false"
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
