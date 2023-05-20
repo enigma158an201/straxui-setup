@@ -39,8 +39,8 @@ cronjob-disable-ipv6() {
     if (systemctl status cron.service); then suExecCommand systemctl enable --now cron.service; fi
 }
 main() {
-	source "${launchDir}/include/test-superuser-privileges.sh"; \
-	source "${launchDir}/include/file-edition.sh"; \
+	source "${launchDir}/include/test-superuser-privileges.sh"
+	source "${launchDir}/include/file-edition.sh"
 	sshd-config-settings; \
     disable-wifi-connections; \
     disable-cups-services; \
