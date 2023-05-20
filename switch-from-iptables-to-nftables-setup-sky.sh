@@ -63,8 +63,8 @@ getNetworkManagement() {
 }
 restore-nft-conf() {
 	suExecCommandNoPreserveEnv "mynftconfdst=/etc/nftables.conf; \
-	mynftconfsrc=\"\${launchDir}\$mynftconfdst\"; \
-	local binNft=\$(which nft); \
+	mynftconfsrc=\"${launchDir}\$mynftconfdst\"; \
+	#binNft=\$(which nft); \
 	isErrorFree=\"$($binNft -c -f \$mynftconfsrc && echo \"true\")\"; \
 	if [ \"\$isErrorFree\" = \"true\" ]; then \
 		echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
