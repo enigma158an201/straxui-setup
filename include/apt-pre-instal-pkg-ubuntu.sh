@@ -5,7 +5,7 @@ getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	dpkgGlobList="$(dpkg -l | tail -n +6)"
 	prefix="ii  "
-	dpkgInstalled="${dpkgGlobList[@]//$prefix/}"
+	dpkgInstalled="${dpkgGlobList[@]//^$prefix/}"
 	echo "${dpkgInstalled}"
 }
 checkDpkgInstalled() {
@@ -40,6 +40,7 @@ aptUnbloatPkg() {
 main() {
 	#getDpkgListInstalled
 	checkDpkgInstalled "zip"
+	read -rp ""
 	checkDpkgInstalled "znimporte"
 	#aptPreinstallPkg
 	#aptUnbloatPkg
