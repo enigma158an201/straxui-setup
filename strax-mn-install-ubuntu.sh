@@ -151,7 +151,7 @@ test() {
 }
 test
 main() {
-	bash ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh
+	suExecCommand bash ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh
 	setupDotNet
 	setupNode
 	setupWalletCli
