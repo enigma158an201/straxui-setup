@@ -16,7 +16,8 @@ uncomment() {
 	local regex="${1:?}"
 	local file="${2:?}"
 	local comment_mark="${3:-#}"
-	if [ -f "$file" ]; then suExecCommand sed -ri "s:^([ ]*)[$comment_mark]+[ ]?([ ]*$regex):\\1\\2:" "$file"; fi
+	local sCommand="sed -ri \"s:^([ ]*)[$comment_mark]+[ ]?([ ]*$regex):\\1\\2:\" $file"
+	if [ -f "$file" ]; then suExecCommand "$sCommand"; fi
 }
 appendLineAtEnd() {
 	local newLine="${1:?}"
