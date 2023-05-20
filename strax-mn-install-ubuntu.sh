@@ -151,7 +151,7 @@ test() {
 }
 test
 main() {
-	suExecCommand bash ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh
+	suExecCommand "source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
 	setupDotNet
 	setupNode
 	setupWalletCli
