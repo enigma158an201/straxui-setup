@@ -83,17 +83,19 @@ blacklist-iptables-kernel-modules() {
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
 	echo "  >>> Désactivation de ufw si necessaire"
-	if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi
-	echo "  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire"
-	suExecCommand "if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi"
-	echo "  >>> Suppression de ip-tables"
-	suExecCommand "for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge "$fwPkg" 2>&1; done"
-	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
+	suExecCommand "if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi \
+	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire'
+	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi \
+	echo '  >>> Suppression de ip-tables'
+	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"$fwPkg\" 2>&1; done \
+	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi"
 	unset fwPkg
 }
 mainInstallAndSetupNftable() {
-	echo "  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire"
-	suExecCommand "apt install nftables; $binNft flush ruleset; $binNft list ruleset"
+
+	suExecCommand "apt install nftables; \
+	echo '  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire' \
+	$binNft flush ruleset; $binNft list ruleset"
 	echo "  >>> Mise en route du service nftables"
 	restore-nft-conf #&& suExecCommand $binNft list ruleset
 	if true; then
@@ -104,10 +106,10 @@ mainInstallAndSetupNftable() {
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
 	
 	if [ -x /usr/bin/update-alternatives ]; then
-		if [ -x /usr/sbin/iptables-nft ]; then suExecCommand update-alternatives --set iptables /usr/sbin/iptables-nft; fi
-		if [ -x /usr/sbin/ip6tables-nft ]; then suExecCommand update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi
-		if [ -x /usr/sbin/arptables-nft ]; then suExecCommand update-alternatives --set arptables /usr/sbin/arptables-nft; fi
-		if [ -x /usr/sbin/ebtables-nft ]; then suExecCommand update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi
+		suExecCommand "if [ -x /usr/sbin/iptables-nft ]; then update-alternatives --set iptables /usr/sbin/iptables-nft; fi \
+		if [ -x /usr/sbin/ip6tables-nft ]; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi \
+		if [ -x /usr/sbin/arptables-nft ]; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi \
+		if [ -x /usr/sbin/ebtables-nft ]; then update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi"
 	fi
 }
 
