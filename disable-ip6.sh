@@ -8,12 +8,6 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 source "${launchDir}/include/file-edition.sh"
 suExecCommand "bash -c \"${launchDir}/include/set-common-settings.sh\""
 
-grubUpdate() {
-	if [ -x /usr/sbin/update-grub ]; then suExecCommand update-grub
-	elif [ -x /usr/sbin/grub2-mkconfig ]; then suExecCommand grub2-mkconfig -o /boot/grub2/grub.cfg
-	elif [ -x /usr/sbin/grub-mkconfig ]; then suExecCommand grub-mkconfig -o /boot/grub/grub.cfg
-	fi
-}
 blacklist-ip6-kernel-modules() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	myip6bcklsrc="${launchDir}$myip6bckldst"
@@ -23,13 +17,9 @@ blacklist-ip6-kernel-modules() {
 	#todo check if already added
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
 	if [ "$bDisabledIpV6" = "false" ]; then
-		
 		#echo -e "$sCommand \n $sCommandDefault"; read -rp " "
-		suExecCommand "sCommand=\"sed -i '/GRUB_CMDLINE_LINUX/ s/\\\"$/ ipv6.disable=1\\\"/' /etc/default/grub\"; \
-		sCommandDefault=\"sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/\\\"$/ ipv6.disable=1\\\"/' /etc/default/grub\"; \
-		echo -e \"\$sCommand \n \$sCommandDefault\" \
-		\$sCommand; \$sCommandDefault" 			#sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub then #sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
-		grubUpdate
+		#suExecCommand ""
+		bash -c ""
 	fi
 }
 blacklist-ip6-NetworkManagement() {
