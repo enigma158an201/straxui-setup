@@ -30,7 +30,7 @@ setupDotNet() {
 	/usr/bin/curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
 	suExecCommand mkdir -p "$targetDotNetInstall"
 	suExecCommand tar -zxf "$tmpDotNetArchive" -C "$targetDotNetInstall"
-	suExecCommand ln -s "$targetDotNetInstall/dotnet" /usr/bin/dotnet
+	suExecCommand ln -sfv "$targetDotNetInstall/dotnet" /usr/bin/dotnet
 }
 
 setupNode() {
