@@ -63,7 +63,7 @@ getNetworkManagement() {
 }
 restore-nft-conf () {
 	mynftconfdst=/etc/nftables.conf
-	mynftconfsrc=".$mynftconfdst"
+	mynftconfsrc="${launchDir}$mynftconfdst"
 	isErrorFree=$(suExecCommand $binNft -c -f "$mynftconfsrc")
 	if [ "$isErrorFree" = "" ]; then
 		echo "mise en place de la nouvelle version du fichier de configuration nftables"
