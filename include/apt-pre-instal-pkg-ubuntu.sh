@@ -10,7 +10,7 @@ getDpkgListInstalled() {
 }
 checkDpkgInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
-	dpkgInstalledList="$(getDpkgListInstalled | grep cron )"
+	dpkgInstalledList="$(getDpkgListInstalled)"			# | grep cron
 	prefix="$1"
 	sPkgInstalled="${dpkgInstalledList[@]//$prefix/}"
 	echo "${sPkgInstalled}"
