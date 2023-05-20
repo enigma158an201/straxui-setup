@@ -50,9 +50,9 @@ setupNode() {
 		#suExecCommand wget -O SNode.zip https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip"
 	fi
+	tmpNodeArchive=/tmp/SNode.zip
 	wget -O "$tmpNodeArchive" "$myDotNetArchUrl"
-	suExecCommand "tmpNodeArchive=/tmp/SNode.zip
-	targetNodeInstall=\$HOME/StraxNode/; \
+	suExecCommand "targetNodeInstall=\$HOME/StraxNode/; \
 	unzip \"$tmpNodeArchive\" -d \"$targetNodeInstall\"; \
 	screen dotnet \"$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
 	screen -ls
