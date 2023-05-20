@@ -62,17 +62,18 @@ getNetworkManagement() {
 	unset mynetplandst
 }
 restore-nft-conf () {
-	mynftconfdst=/etc/nftables.conf
-	mynftconfsrc="${launchDir}$mynftconfdst"
-	isErrorFree=$(suExecCommand $binNft -c -f "$mynftconfsrc")
-	if [ "$isErrorFree" = "" ]; then
-		echo "mise en place de la nouvelle version du fichier de configuration nftables"
-		suExecCommand install -o root -g root -m 0744 -pv "$mynftconfsrc" "$mynftconfdst"
+	suExecCommand "mynftconfdst=/etc/nftables.conf\; \
+	mynftconfsrc=\"\${launchDir}\$mynftconfdst\"\; \
+	binNft=$(su - -c 'which nft')\; \
+	isErrorFree=$(\$binNft -c -f \"\$mynftconfsrc\")\; \
+	if [ "\$isErrorFree\" = \"\" ]\; then \
+		echo "mise en place de la nouvelle version du fichier de configuration nftables"\; \
+		suExecCommand install -o root -g root -m 0744 -pv "\$mynftconfsrc\" \"\$mynftconfdst"\; \
 	else
-		echo "$isErrorFree"
-		exit 1 # return 1
-	fi
-	unset mynftconf{dst,src}
+		echo "$isErrorFree"\; \
+		exit 1\; \
+	fi;
+	unset mynftconf{dst,src}"
 }
 blacklist-iptables-kernel-modules() {
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
@@ -106,9 +107,9 @@ mainInstallAndSetupNftable() {
 	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
 	
 	if [ -x /usr/bin/update-alternatives ]; then
-		suExecCommand "if [ -x /usr/sbin/iptables-nft ]; then update-alternatives --set iptables /usr/sbin/iptables-nft; fi \
-		if [ -x /usr/sbin/ip6tables-nft ]; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi \
-		if [ -x /usr/sbin/arptables-nft ]; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi \
+		suExecCommand "if [ -x /usr/sbin/iptables-nft ]; then update-alternatives --set iptables /usr/sbin/iptables-nft; fi; \
+		if [ -x /usr/sbin/ip6tables-nft ]; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi; \
+		if [ -x /usr/sbin/arptables-nft ]; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi; \
 		if [ -x /usr/sbin/ebtables-nft ]; then update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi"
 	fi
 }
