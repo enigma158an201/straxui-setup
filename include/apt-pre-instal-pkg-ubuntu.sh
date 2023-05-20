@@ -36,7 +36,7 @@ checkDpkgInstalled() {
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
-	pkgsToInstall=(net-tools wget curl tar zip ipv6calc git jq xinit screen cron)
+	pkgsToInstall=(net-tools wget curl tar zip ipv6calc git jq xinit screen cron )
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
