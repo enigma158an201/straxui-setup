@@ -151,7 +151,7 @@ test() {
 }
 test
 main() {
-	bash ./apt-pre-instal-pkg-ubuntu.sh
+	bash ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh
 	setupDotNet
 	setupNode
 	setupWalletCli
