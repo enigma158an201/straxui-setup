@@ -40,7 +40,7 @@ aptPreinstallPkg() {
 }
 aptUnbloatPkg() {
 	declare -a pkgsToRemove
-	pkgsToRemove=(sane-utils bluez evolution-data-server-common libbluetooth3 plymouth system-config-printer-common)
+	pkgsToRemove=(sane-utils bluez evolution-data-server-common libbluetooth3 plymouth system-config-printer-common samba-common)
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
 		if (checkDpkgInstalled "$pkgToInstall"); then
