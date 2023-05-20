@@ -18,7 +18,8 @@ disable-systemd-sleep() {
 	#AllowHibernation=yes			to	AllowHibernation=no
 	#AllowSuspendThenHibernate=yes	to	AllowSuspendThenHibernate=no
 	#AllowHybridSleep=yes			to	AllowHybridSleep=no
-	suExecCommand "sleepconfDir=/etc/systemd/sleep.conf; /
+	suExecCommand "source "${launchDir}/include/file-edition.sh"; /
+	sleepconfDir=/etc/systemd/sleep.conf; /
 	sleepLines=\"AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes\"; /
 	for sleepLine in \${sleepLines}; do
 		lineWithoutVal=\"\${sleepLine/yes/}\"; /
