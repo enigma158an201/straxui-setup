@@ -28,7 +28,7 @@ setupDotNet() {
 		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 		myDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
-	/usr/bin/curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"
+	if [ ! -f "$tmpDotNetArchive" ]; then /usr/bin/curl -SL -o "$tmpDotNetArchive" "$myDotNetArchUrl"; fi
 	suExecCommand "mkdir -p \"$targetDotNetInstall\"; \
 	tar -zxf \"$tmpDotNetArchive\" -C \"$targetDotNetInstall\"; \
 	ln -sfv \"$targetDotNetInstall/dotnet\" /usr/bin/dotnet"
@@ -51,7 +51,7 @@ setupNode() {
 		myDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip"
 	fi
 	tmpNodeArchive=/tmp/SNode.zip
-	wget -O "$tmpNodeArchive" "$myDotNetArchUrl"
+	if [ ! -f "$tmpNodeArchive" ]; then wget -O "$tmpNodeArchive" "$myDotNetArchUrl"; fi
 	suExecCommand "targetNodeInstall=\$HOME/StraxNode/; \
 	unzip \"$tmpNodeArchive\" -d \"$targetNodeInstall\"; \
 	screen dotnet \"$targetNodeInstall/Stratis.StraxD.dll\" run -mainnet
