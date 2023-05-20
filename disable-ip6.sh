@@ -25,7 +25,7 @@ blacklist-ip6-kernel-modules() {
 	if [ "$bDisabledIpV6" = "false" ]; then
 		sCommand="sed -i '/GRUB_CMDLINE_LINUX/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
 		sCommandDefault="sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/\"$/ ipv6.disable=1\"/' /etc/default/grub"
-		echo -e "$sCommand \n $sCommandDefault"; read -rp " "
+		#echo -e "$sCommand \n $sCommandDefault"; read -rp " "
 		suExecCommand "$sCommand; $sCommandDefault" 			#sed -i '/GRUB_CMDLINE_LINUX/ s/"$/ ipv6.disable=1"/' /etc/default/grub then #sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/ s/"$/ ipv6.disable=1"/' /etc/default/grub
 		grubUpdate
 	fi
@@ -33,10 +33,10 @@ blacklist-ip6-kernel-modules() {
 blacklist-ip6-NetworkManagement() {
 	#non persistant, but take effect immediately
 	if false; then
-		suExecCommand sysctl -w net.ipv6.conf.all.disable_ipv6=1
-		suExecCommand sysctl -w net.ipv6.conf.default.disable_ipv6=1
-		suExecCommand sysctl -w net.ipv6.conf.lo.disable_ipv6=1
-		suExecCommand sysctl -p
+		suExecCommand "sysctl -w net.ipv6.conf.all.disable_ipv6=1; \
+		sysctl -w net.ipv6.conf.default.disable_ipv6=1; \
+		sysctl -w net.ipv6.conf.lo.disable_ipv6=1; \
+		sysctl -p"
 	fi
 
 	if [ -x /usr/bin/nmcli ] && (systemctl status NetworkManager); then
