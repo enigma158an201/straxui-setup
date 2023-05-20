@@ -33,7 +33,7 @@ aptPreinstallPkg() {
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
-		if true; then
+		if (! checkDpkgInstalled "$pkgToInstall"); then
 			apt-get -y install "$pkgToInstall"
 		fi
 	done
@@ -44,7 +44,7 @@ aptUnbloatPkg() {
 	apt-get update && apt-get upgrade
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
-		if true; then
+		if (checkDpkgInstalled "$pkgToInstall"); then
 			apt-get -y autoremove "$pkgsToRemove"
 		fi
 	done
