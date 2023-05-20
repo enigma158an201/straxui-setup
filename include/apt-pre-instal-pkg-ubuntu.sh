@@ -19,6 +19,7 @@ checkDpkgInstalled() {
 	sPkgInstalled=()
 	for element in "${dpkgInstalledList[@]}"; do
 		#[[ $element == $pkgNamePrefix/* ]] && sPkgInstalled+=("$element")
+		echo "$element ";read -rp " "
 		[[ $element == $pkgNamePrefix ]] && sPkgInstalled+=("$element")
 	done
 	if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
