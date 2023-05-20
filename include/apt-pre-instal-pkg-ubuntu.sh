@@ -3,10 +3,11 @@ set -euo pipefail #; set -x
 
 getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
+	#declare -a dpkgInstalled
 	dpkgGlobList="$(dpkg -l | tail -n +6)"
 	prefix="ii  "
-	dpkgInstalled="${dpkgGlobList[@]//$prefix/}"
-	echo "${dpkgInstalled}"
+	dpkgInstalled="${dpkgGlobList[*]//$prefix/}"
+	echo "${dpkgInstalled[*]}"
 }
 checkDpkgInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
@@ -25,7 +26,7 @@ checkDpkgInstalled() {
 	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
 	pkgname="$1"
-	(dpkg-query --show $pkgname && echo "true") || echo "false"
+	(dpkg-query --show "$pkgname" && echo "true") || echo "false"
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
