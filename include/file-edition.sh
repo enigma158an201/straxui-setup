@@ -2,7 +2,7 @@
 
 set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; launchDir="{launchDir/include\//}"; fi
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; launchDir="${launchDir/include/}"; fi
 source "${launchDir}/include/test-superuser-privileges.sh"
 
 comment() {
