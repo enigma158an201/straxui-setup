@@ -40,6 +40,7 @@ aptUnbloatPkg() {
 main() {
 	#getDpkgListInstalled
 	checkDpkgInstalled "cron"
+	checkDpkgInstalled "nimporte"
 	#aptPreinstallPkg
 	#aptUnbloatPkg
 }
