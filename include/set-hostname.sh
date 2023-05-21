@@ -8,8 +8,8 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 main_set_hostname() {
     #source ${launchDir}/include/test-superuser-privileges.sh
-    hostnameFile=/tmp/hostname
-    hostsFile=/tmp/hosts
+    hostnameFile=/etc/hostname
+    hostsFile=/etc/hosts
     sHardwareModel=$(dmidecode -s system-product-name)
     sOsIdLine=$(grep -i '^ID=' /etc/os-release)
     sOsId=${sOsIdLine//ID=/}
