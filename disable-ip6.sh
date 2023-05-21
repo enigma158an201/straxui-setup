@@ -14,7 +14,7 @@ blacklist-ip6-kernel-modules() {
 	myip6bcklsrc="${launchDir}$myip6bckldst"
 	if [ ! -f "$myip6bckldst" ]; then
 		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
-		suExecCommand "mkdir -p /etc/sysctl.d/; install -o root -g root -m 0744 -pv \"$myip6bcklsrc\" \"$myip6bckldst\""
+		suExecCommand "mkdir -p /etc/sysctl.d/; install -o root -g root -m 0744 -pv $myip6bcklsrc $myip6bckldst"
 	fi
 	#todo check if include /etc/systctl.d present -> not necessary
 	#suExecCommand update-initramfs -u
@@ -42,7 +42,7 @@ blacklist-ip6-NetworkManagement() {
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
 		suExecCommand "for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
-			nmcli connection modify \"\$ConnectionName\" ipv6.method \"disabled\" || true ; 
+			nmcli connection modify \"\$ConnectionName\" ipv6.method disabled || true ; 
 		done"
 	fi
 	#if (systemctl status systemd-networkd); then
@@ -99,8 +99,8 @@ disable-etc-netconfig-ipv6() {
 disable-etc-dhcpcdconf-ipv6() {
 	mydhcpcdconfdst=/etc/dhcpcd.conf;
 	if [ -f "$mydhcpcdconfdst" ]; then
-		suExecCommand "echo -e \"\t>>> proceed set disable ipv6 to netconfig file\";
-		source ${launchDir}/include/file-edition.sh;
+		echo -e "\t>>> proceed set disable ipv6 to netconfig file";
+		suExecCommand "source ${launchDir}/include/file-edition.sh;
 		if (grep -i ^noipv6rs ${mydhcpcdconfdst}); then 							appendLineAtEnd \"noipv6rs\" ${mydhcpcdconfdst}; fi;
 		if (grep -i ^noipv6 ${mydhcpcdconfdst}); then 								appendLineAtEnd \"noipv6\" ${mydhcpcdconfdst}; fi"
 	fi
@@ -111,14 +111,14 @@ disable-ipv6-cron-task() {
 	mycronip6jobsrc="${launchDir}/$scriptFilename"
 	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
 
-	suExecCommand "install -o root -g root -m 0755 -pv \"$mycronip6jobsrc\" \"$mycronip6jobdst\"; \
+	suExecCommand "install -o root -g root -m 0755 -pv $mycronip6jobsrc $mycronip6jobdst; \
 	(crontab -l 2>/dev/null; echo \"0 * * * * root $mycronip6jobdst\") | crontab -"
 }
 
 main_DisableIpv6() {
-	#blacklist-ip6-kernel-modules
-	#blacklist-ip6-NetworkManagement
-	#disable-etc-hosts-ipv6
+	blacklist-ip6-kernel-modules
+	blacklist-ip6-NetworkManagement
+	disable-etc-hosts-ipv6
 	disable-sshd-config-ipv6 
 	disable-postfix-ipv6
 	disable-etc-ntp-ipv6
