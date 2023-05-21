@@ -6,7 +6,7 @@ set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/pre-install-pkgs.sh"
+#source "${launchDir}/include/pre-install-pkgs.sh"
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
 #source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
@@ -93,28 +93,46 @@ main_installStrax() {
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
 			echo -e "/t>>> check and/or install straxui deps"
 			if [ ! "$isBuster" = "" ]; then
-				suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
-				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
-				for pkgsToInstall in \$pkgsToInstall; do \
-					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
-					if [ \"\$isInstalled\" = \"false\" ]; then \
-						/usr/bin/apt-get install -y \$pkgsToInstall; \
-					fi; \
-				done\""
+				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				#pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
+				#for pkgsToInstall in \$pkgsToInstall; do \
+				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
+				#	if [ \"\$isInstalled\" = \"false\" ]; then \
+				#		/usr/bin/apt-get install -y \$pkgsToInstall; \
+				#	fi; \
+				#done\""
+				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2)
+				for pkgsToInstall in $pkgsToInstall; do
+					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					if [ "$isInstalled" = "false" ]; then
+						suExecCommandNoPreserveEnv /usr/bin/apt-get install -y "$pkgsToInstall"
+					fi
+				done
+				
 				projectlatestcontentdeb="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')"
 				myfilenamedeb="${dlDir}$(basename "$projectlatestcontentdeb")"
 				if [ ! -f "$myfilenamedeb" ]; then wget -O "$myfilenamedeb" "$projectlatestcontentdeb"; fi
 				echo -e "/t>>> check and/or install straxui .deb package"
 				suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
 			elif [ "$isBuster" = "" ]; then
-				suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
-				pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
-				for pkgsToInstall in \$pkgsToInstall; do \
-					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
-					if [ \"\$isInstalled\" = \"false\" ]; then \
-						/usr/bin/apt-get install -y \$pkgsToInstall; \
-					fi; \
-				done\""
+				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				#pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
+				#for pkgsToInstall in \$pkgsToInstall; do \
+				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
+				#	if [ \"\$isInstalled\" = \"false\" ]; then \
+				#		/usr/bin/apt-get install -y \$pkgsToInstall; \
+				#	fi; \
+				#done\""
+				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+				pkgsToInstall=(libappindicator3-0.1-cil{,-dev})
+				for pkgsToInstall in $pkgsToInstall; do
+					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					if [ "$isInstalled" = "false" ]; then
+						suExecCommandNoPreserveEnv /usr/bin/apt-get install -y "$pkgsToInstall"
+					fi
+				done
+
 				projectlatestcontentgz="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')"
 				myfilenamegz="${dlDir}$(basename "$projectlatestcontentgz")"
 				if [ ! -f "$myfilenamegz" ]; then wget -O "$myfilenamegz" "$projectlatestcontentgz"; fi			
