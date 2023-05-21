@@ -2,6 +2,16 @@
 
 mySshPort="41122"
 
+getNetworkManagement() {
+	mynetplandst="/etc/netplan/"
+	if [ -d "$mynetplandst" ]; then
+		for myfile in "$mynetplandst"*; do
+			myNetworkRenderer="$(grep -i 'renderer' "$myfile")"
+			echo -e "${myNetworkRenderer##* }\n" #echo "${A##* }"
+		done
+	fi
+	unset mynetplandst
+}
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
 	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
