@@ -12,6 +12,12 @@ getNetworkManagement() {
 	fi
 	unset mynetplandst
 }
+checkEnabledIpv6() {
+	ip6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
+	if [ $ip6Disabled -eq 0 ]; then			echo "true"
+	if [ $ip6Disabled -eq 1 ]; then			echo "false"
+	fi
+}
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
 	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
@@ -81,7 +87,7 @@ getWanIpAddr4() {
 getGlobalIpAddr6() {
 	#with telnet: 	$ telnet -6 ipv6.telnetmyip.com 
 	#Even With ssh:	$ ssh -6 sshmyip.com
-	ip6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
+	ip6Disabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
 	if [ $ip6Disabled -eq 0 ]; then
 		if [ $ip6Disabled -eq 0 ]; then		dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
 		elif (which awk 1>/dev/null); then 	curl -6 https://ifconfig.co
