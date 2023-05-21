@@ -94,7 +94,7 @@ getSuQuotes() {
 # shellcheck disable=SC2086
 suExecCommand() {
 	sCommand="$*"
-	if [ ! "$suQuotes" = "false" ]; then	bash -i -c "$sPfxSu \"${sCommand}\""
+	if [ ! "$suQuotes" = "false" ]; then	$sPfxSu "${sCommand}"
 	else									$sPfxSu $sCommand #$sPfxSu $(echo $sCommand) 	#echo "$sCommand" | xargs bash -c $sPfxSu  #$sPfxSu "$(xargs "$sCommand")" 		#$sPfxSu "${sCommand}"
 	fi
 }
