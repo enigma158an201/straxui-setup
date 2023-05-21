@@ -85,7 +85,7 @@ main_installStrax() {
 		echo -e "/t>>> ajust hostname before ssh configuration"
 		suExecCommandNoPreserveEnv "bash -c \"${launchDir}/include/set-hostname.sh; exit\""
 		echo -e "/t>>> create ssh keys pair"
-		bash -i -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh"
+		bash -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh"
 
 		if [ ! "$isDebianLike" = "" ]; then
 			dlDir="/tmp/"
