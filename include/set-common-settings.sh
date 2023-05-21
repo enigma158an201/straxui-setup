@@ -39,6 +39,9 @@ disable-cups-services() {
 cronjob-disable-ipv6() {
     if (systemctl status cron.service 1>/dev/null); then suExecCommand systemctl enable --now cron.service; fi
 }
+set-newhostname() {
+	suExecCommand "bash -c ${launchDir}/include/set-hostname.sh" 
+}
 main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
@@ -48,5 +51,6 @@ main_common() {
     disable-cups-services
 	disable-systemd-sleep
     cronjob-disable-ipv6
+	set-newhostname
 }
 main_common

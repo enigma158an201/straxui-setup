@@ -82,6 +82,8 @@ isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
+		suExecCommand "bash \"${launchDir}/include/set-hostname.sh\""
+		bash "${launchDir}/include/set-ssh-nonroot-user.sh"
 
 		if [ ! "$isDebianLike" = "" ]; then
 			dlDir="/tmp/"
