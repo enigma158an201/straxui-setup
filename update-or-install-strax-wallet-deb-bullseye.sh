@@ -106,7 +106,7 @@ main_installStrax() {
 				for pkgsToInstall in $pkgsToInstall; do
 					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
 					if [ "$isInstalled" = "false" ]; then
-						suExecCommand "/usr/bin/apt-get install -y $pkgsToInstall"
+						suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
 					fi
 				done
 				
@@ -129,7 +129,7 @@ main_installStrax() {
 				for pkgsToInstall in $pkgsToInstall; do
 					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
 					if [ "$isInstalled" = "false" ]; then
-						suExecCommand "/usr/bin/apt-get install -y $pkgsToInstall"
+						suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
 					fi
 				done
 
