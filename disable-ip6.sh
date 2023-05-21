@@ -23,7 +23,7 @@ blacklist-ip6-kernel-modules() {
 		#echo -e "$sCommand \n $sCommandDefault"; read -rp " "
 		#suExecCommand ""
 		echo -e "\t>>> proceed add disable ipv6 to grub kernel parameters"
-		suExecCommand "bash -c \"${launchDir}/include/set-grub-kernel-parameter.sh\""
+		suExecCommand "bash -x -c \"${launchDir}/include/set-grub-kernel-parameter.sh\""
 	fi
 }
 blacklist-ip6-NetworkManagement() {
