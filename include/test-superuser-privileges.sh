@@ -94,7 +94,7 @@ getSuQuotes() {
 # shellcheck disable=SC2086
 suExecCommand() {
 	sCommand="$*"
-	if [ ! "$suQuotes" = "false" ]; then	$sPfxSu "${sCommand}"
+	if [ ! "$suQuotes" = "false" ]; then	bash -i -c "$sPfxSu ${sCommand}"
 	else									$sPfxSu $sCommand #$sPfxSu $(echo $sCommand) 	#echo "$sCommand" | xargs bash -c $sPfxSu  #$sPfxSu "$(xargs "$sCommand")" 		#$sPfxSu "${sCommand}"
 	fi
 }
@@ -112,7 +112,7 @@ main_SU(){
 	bSudoersUser="$(checkSudoers)"
 	if [ ! "$doasPath" = "false" ]; then bDoasUser="$(checkDoasUser)"; else bDoasUser="false"; fi
 	suQuotes="$(getSuQuotes)"
-	if ! sPfxSu="$(getSuCmd) "; then 		exit 01; fi
+	if ! sPfxSu="$(getSuCmd) "; then 						exit 01; fi
 	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 		exit 01; fi
 	#tests
 	#[ -x /usr/bin/apt ] && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
