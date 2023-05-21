@@ -10,7 +10,7 @@ sshd-config-settings() {
 	suExecCommand "for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do \
 		mysshddst=\"/etc/ssh/sshd_config.d/\$sshdfile\"; \
 		mysshdsrc=\"${launchDir}\$mysshddst\"; \
-		if [ -d \"$(dirname \"\$mysshddst\")\" ] && [ -f \"\$mysshdsrc\" ]; then install -o root -g root -m 0744 -pv \"\$mysshdsrc\" \"\$mysshddst\"; fi \
+		if [ -d \"$(dirname \"\$mysshddst\")\" ] && [ -f \"\$mysshdsrc\" ]; then install -o root -g root -m 0744 -pv \"\$mysshdsrc\" \"\$mysshddst\"; fi; \
 	done; \
 	systemctl restart sshd.service"
 }
