@@ -104,7 +104,7 @@ main_installStrax() {
 				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2)
 				for pkgsToInstall in $pkgsToInstall; do
-					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
 						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
 						suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
@@ -128,7 +128,7 @@ main_installStrax() {
 				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libappindicator3-0.1-cil{,-dev})
 				for pkgsToInstall in $pkgsToInstall; do
-					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
 						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
 						suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
