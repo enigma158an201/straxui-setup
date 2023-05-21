@@ -82,15 +82,17 @@ isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
+		echo -e "/t>>> ajust hostname before ssh configuration"
 		suExecCommandNoPreserveEnv "bash -c \"${launchDir}/include/set-hostname.sh\""
+		echo -e "/t>>> create ssh keys pair"
 		bash -i -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh"
 
 		if [ ! "$isDebianLike" = "" ]; then
 			dlDir="/tmp/"
 			#sudo apt-get install -y git jq curl
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
+			echo -e "/t>>> check and/or install straxui deps"
 			if [ ! "$isBuster" = "" ]; then
-				
 				suExecCommand "source \"${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh\"; \
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				for pkgsToInstall in \$pkgsToInstall; do \
@@ -101,6 +103,7 @@ main_installStrax() {
 				projectlatestcontentdeb="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')"
 				myfilenamedeb="${dlDir}$(basename "$projectlatestcontentdeb")"
 				if [ ! -f "$myfilenamedeb" ]; then wget -O "$myfilenamedeb" "$projectlatestcontentdeb"; fi
+				echo -e "/t>>> check and/or install straxui .deb package"
 				suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
 			elif [ "$isBuster" = "" ]; then
 				suExecCommand "source \"${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh\"; \
@@ -113,7 +116,7 @@ main_installStrax() {
 				projectlatestcontentgz="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')"
 				myfilenamegz="${dlDir}$(basename "$projectlatestcontentgz")"
 				if [ ! -f "$myfilenamegz" ]; then wget -O "$myfilenamegz" "$projectlatestcontentgz"; fi			
-				
+				echo -e "/t>>> extract and install straxui .gz archive"
 				suExecCommand "folderinsidetar=$(tar --exclude=\"*/*\" -tf \"\$myfilenamegz\"); straxuidestfolder=/opt/straxui/; mkdir -p \$straxuidestfolder; \ 
 				tar --strip-components=1 -C \"\$straxuidestfolder" -xvzf "\$myfilenamegz\" \"\$folderinsidetar" # /opt/straxui
 			fi
