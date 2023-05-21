@@ -4,34 +4,7 @@ set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-#source for getting ip addresses
-source "${launchDir}/include/get-network-settings.sh"
-
-set-ssh-user-keys() {
-	if [ ! "$EUID" = "0" ]; then
-		read -rp "Générer une nouvelle paire de clés ssh (type ed25519)? o/N"  -n 1 genNewKeyPair
-		if [ ! "${genNewKeyPair^^}" = "N" ] && [ ! "$genNewKeyPair" = "" ]; then
-			myPrvIP4="$(getNetworkAddress 4 "$(getIpAddr4)")"
-			myPubIP4="$(getWanIpAddr4)"
-			myShhDir="$HOME/.ssh/"
-			myPubAutKeysFile=""$myShhDir/authorized_keys""
-			(mkdir -p "$myShhDir" && cd "$myShhDir" || exit 1) || exit 1
-			outPrvKeyFileName="${myShhDir}${HOSTNAME}_${USER}_$(date +%Y%m%d%H%M%S)"
-			ssh-keygen -p -t ed25519 -f "$outPrvKeyFileName" -C "myGithubKey" # here -p is for change passphrase
-			outPubKeyFileName="${outPrvKeyFileName}.pub"
-			#ssh-copy-id -p "$SSH_PORT" -i "$myShhDir/$outKeyFileName.pub" "$USER@localhost" # for remote key install
-			if [ ! -f "$myPubAutKeysFile" ]; then touch "$myPubAutKeysFile"; fi
-			outPubKeyFileContent="$(cat "$outPubKeyFileName")"
-			if (! grep "$outPubKeyFileContent" "$myPubAutKeysFile"); then echo -e "\n$outPubKeyFileContent" | tee -a "$myPubAutKeysFile"; fi
-			echo -e "  >>> penser si usage d'alias, à: \n\t>> 1/ copier la clé privée sur le client de connexion \n\t>> 2/ optionnel ajouter cette config \n \
-Host $HOSTNAME
-HostName $myPrvIP4
-Port $mySshPort
-User $USER
-IdentityFile ~/.ssh/ponchonbox.lan-server.key"
-		fi
-	fi
-}
+source "${launchDir}/include/test-superuser-privileges.sh"
 
 sshd-config-settings() {
 	suExecCommand "for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do \
