@@ -99,7 +99,7 @@ disable-etc-netconfig-ipv6() {
 disable-etc-dhcpcdconf-ipv6() {
 	mydhcpcdconfdst=/etc/dhcpcd.conf;
 	if [ -f "$mydhcpcdconfdst" ]; then
-		echo -e "\t>>> proceed set disable ipv6 to netconfig file";
+		echo -e "\t>>> proceed set disable ipv6 to netconfig file"
 		suExecCommand "source ${launchDir}/include/file-edition.sh;
 		if (grep -i ^noipv6rs ${mydhcpcdconfdst}); then 							appendLineAtEnd \"noipv6rs\" ${mydhcpcdconfdst}; fi;
 		if (grep -i ^noipv6 ${mydhcpcdconfdst}); then 								appendLineAtEnd \"noipv6\" ${mydhcpcdconfdst}; fi"
@@ -110,7 +110,7 @@ disable-ipv6-cron-task() {
 	mycronip6jobdst="/usr/local/bin/$scriptFilename"
 	mycronip6jobsrc="${launchDir}/$scriptFilename"
 	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
-
+	echo -e "\t>>> proceed set install crontab job"
 	suExecCommand "install -o root -g root -m 0755 -pv $mycronip6jobsrc $mycronip6jobdst; \
 	(crontab -l 2>/dev/null; echo \"0 * * * * root $mycronip6jobdst\") | crontab -"
 }

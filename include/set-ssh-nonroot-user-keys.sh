@@ -43,5 +43,5 @@ IdentityFile ~/.ssh/ponchonbox.lan-server.key
 }
 
 main_set_ssh_keys() {
-    set-ssh-nonroot-user-keys
+ 	set-ssh-nonroot-user-keys
 }

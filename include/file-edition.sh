@@ -61,7 +61,7 @@ setParameterInFile() {
 	fi
 }
 addCronJob() {
-    if true; then
-        echo "" > /etc/cron.hourly/
-    fi
+ 	if true; then
+ 	 	echo "" > /etc/cron.hourly/
+ 	fi
 }

@@ -52,14 +52,15 @@ source "${launchDir}/include/file-edition.sh"
 binNft=$(suExecCommandNoPreserveEnv "which nft")
 
 restore-nft-conf() {
+	echo -e "\t>>> mise en place de la nouvelle version du fichier de configuration nftables"
 	mynftconfdst=/etc/nftables.conf
 	mynftconfsrc="${launchDir}$mynftconfdst"
 	suExecCommandNoPreserveEnv " \
 	#binNft=\$(which nft); \
 	isErrorFree=\"$($binNft -c -f "$mynftconfsrc" && echo \"true\")\"; \
 	if [ \"\$isErrorFree\" = \"true\" ]; then \
-		echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
-		suExecCommand \"install -o root -g root -m 0744 -pv $mynftconfsrc $mynftconfdst\"; \
+		#echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
+		install -o root -g root -m 0744 -pv $mynftconfsrc $mynftconfdst; \
 	else \
 		echo \"\$isErrorFree\"; \
 		exit 1; \
@@ -67,6 +68,7 @@ restore-nft-conf() {
 	unset mynftconf{dst,src}
 }
 blacklist-iptables-kernel-modules() {
+	echo -e "\t>>> désactivation totale des modules de iptables"
 	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
 	myiptablesbcklsrc="${launchDir}$myiptablesbckldst"
 	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
@@ -74,30 +76,31 @@ blacklist-iptables-kernel-modules() {
 }
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
-	echo "  >>> Désactivation de ufw si necessaire"
+	echo -e "\t>>> Désactivation de ufw si necessaire"
 	suExecCommand "if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi; \
 	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire';
 	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi; \
 	echo '  >>> Suppression de ip-tables';
 	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"\$fwPkg\" 2>&1; done; \
-	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi"
+	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
 	unset fwPkg
 }
 mainInstallAndSetupNftable() {
-
+	echo -e "\t>>> Installation du firewall nftables"
 	suExecCommand "apt install nftables; \
 	echo '  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire' \
 	$binNft flush ruleset; $binNft list ruleset"
-	echo "  >>> Mise en route du service nftables"
+	echo -e "\t>>> Mise en route du service nftables"
 	restore-nft-conf #&& suExecCommand $binNft list ruleset
-	if true; then
-		suExecCommand systemctl enable --now nftables
+	suExecCommand "if true; then
+		systemctl enable --now nftables
 	else
-		suExecCommand systemctl restart nftables
+		 systemctl restart nftables
 	fi
-	if (systemctl status NetworkManager); then suExecCommand systemctl restart NetworkManager; fi
+	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
 	
 	if [ -x /usr/bin/update-alternatives ]; then
+		echo -e "\t>>> installation des alternatives nftables"
 		suExecCommand "if [ -x /usr/sbin/iptables-nft ]; then update-alternatives --set iptables /usr/sbin/iptables-nft; fi; \
 		if [ -x /usr/sbin/ip6tables-nft ]; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi; \
 		if [ -x /usr/sbin/arptables-nft ]; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi; \

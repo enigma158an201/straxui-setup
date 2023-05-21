@@ -5,7 +5,7 @@ launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"; launchDir="${launchDir//\/\//}"
 
 main_disable_sleep() {
-    source "${launchDir}/include/file-edition.sh"
+ 	source "${launchDir}/include/file-edition.sh"
 	sleepconfDir=/etc/systemd/sleep.conf
 	sleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
 	for sleepLine in ${sleepLines}; do

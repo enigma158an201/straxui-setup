@@ -8,7 +8,7 @@ declare bSudoersUser
 declare bDoasUser
 
 checkUserSudoOrWheelGroup() {
-    #set +x #myUser=$USER
+ 	#set +x #myUser=$USER
 	myUserGroups="$(groups "$USER")" 		# la commande id pourrait etre une alternative
 	myUserGroups="${myUserGroups##*: }"		#myUserGroups="${`groups $USER`##*: }"
 	bSudoGroup="false"
@@ -36,9 +36,9 @@ checkSudoers() {
 	#if false; then
 		#`timeout -k 2 2 bash -c "sudo /bin/chmod --help" >&/dev/null 2>&1` >/dev/null 2>&1
 		#if [ $? -eq 0 ];then
-		#   has_sudo_access="YES"
+		# has_sudo_access="YES"
 		#else
-		#   has_sudo_access="NO"
+		# has_sudo_access="NO"
 		#fi
 
 		#echo "Does user `id -Gn` has sudo access?: $has_sudo_access"
