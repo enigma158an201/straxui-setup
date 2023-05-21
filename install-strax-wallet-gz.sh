@@ -2,8 +2,8 @@
 
 # variables
 #straxDlUrl="https://github.com/stratisproject/StraxUI/releases/download/1.4.1.0/STRAX.Wallet-v1.4.1-linux-x64.tar.gz"
-if [ $HOSTTYPE = "x86_64" ]; then   straxDlUrl="https://github.com/stratisproject/StraxUI/releases/download/1.5.1.0/STRAX.Wallet-v1.5.1-linux-x64.tar.gz"
-#elif [ $HOSTTYPE = "" ]; then       straxDlUrl="https://github.com/stratisproject/StraxUI/releases/download/1.5.1.0/STRAX.Wallet-v1.5.1-linux-x64.tar.gz"
+if [ "$HOSTTYPE" = "x86_64" ]; then   straxDlUrl="https://github.com/stratisproject/StraxUI/releases/download/1.5.1.0/STRAX.Wallet-v1.5.1-linux-x64.tar.gz"
+#elif [ "$HOSTTYPE" = "" ]; then       straxDlUrl="https://github.com/stratisproject/StraxUI/releases/download/1.5.1.0/STRAX.Wallet-v1.5.1-linux-x64.tar.gz"
 else  echo "pas de fichier prêt à l'emploi pour $HOSTTYPE, voir pour une compilation des binaires depuis le code source https://github.com/stratisproject/StraxUI/archive/refs/tags/1.5.1.0.tar.gz"; exit 1
 fi
 
