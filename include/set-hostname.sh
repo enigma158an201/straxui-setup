@@ -10,7 +10,7 @@ main_set_hostname() {
     #source ${launchDir}/include/test-superuser-privileges.sh
     hostnameFile=/etc/hostname
     hostsFile=/etc/hosts
-    sHardwareModel=$(dmidecode -s system-product-name)
+    sHardwareModel=$(/usr/sbin/dmidecode -s system-product-name)
     sOsIdLine=$(grep -i '^ID=' /etc/os-release)
     sOsId=${sOsIdLine//ID=/}
     sOldHostname=$(cat $hostnameFile)
