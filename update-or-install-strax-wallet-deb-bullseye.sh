@@ -121,7 +121,7 @@ main_installStrax() {
 				dpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }' || echo "false")"
 				if [ ! "$debVersion" = "$dpkgVersion"  ]; then 
 					#suExecCommandNoPreserveEnv "LANG=C DEBIAN_FRONTEND=noninteractive dpkg -i $myfilenamedeb 2>&1 || echo \"false\""
-					suExecCommand "bash -c \"${launchDir}/include/dpkg-install-cmd.sh $myfilenamedeb\""
+					suExecCommandNoPreserveEnv "bash -c \"${launchDir}/include/dpkg-install-cmd.sh $myfilenamedeb\""
 				fi
 			elif [ "$isBuster" = "" ]; then
 				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
