@@ -117,6 +117,6 @@ main_SU(){
 	#tests
 	#[ -x /usr/bin/apt ] && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
 	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"
-	if [ -n "$cmdParameters" ]; then suExecCommand "${cmdParameters}"; fi
+	if [ -n "$cmdParameters" ]; then suExecCommand "${cmdParameters}" || suExecCommandNoPreserveEnv "${cmdParameters}"; fi
 }
 main_SU
