@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mySshPort="41122"
+export mySshPort="41122"
 
 getNetworkManagement() {
 	mynetplandst="/etc/netplan/"
@@ -14,8 +14,8 @@ getNetworkManagement() {
 }
 checkEnabledIpv6() {
 	ip6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
-	if [ $ip6Disabled -eq 0 ]; then			echo "true"
-	if [ $ip6Disabled -eq 1 ]; then			echo "false"
+	if [ "$ip6Disabled" -eq "0" ]; then			echo "true"
+	elif [ "$ip6Disabled" -eq "1" ]; then			echo "false"
 	fi
 }
 getFirstAddressIpRoute() {
@@ -81,15 +81,15 @@ getIpAddr6() {
 	fi
 }
 getWanIpAddr4() {
-    #host myip.opendns.com resolver1.opendns.com
-    dig +short myip.opendns.com @resolver1.opendns.com
+	#host myip.opendns.com resolver1.opendns.com
+	dig -4 +short myip.opendns.com @resolver1.opendns.com
 }
 getGlobalIpAddr6() {
 	#with telnet: 	$ telnet -6 ipv6.telnetmyip.com 
 	#Even With ssh:	$ ssh -6 sshmyip.com
-	ip6Disabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
-	if [ $ip6Disabled -eq 0 ]; then
-		if [ $ip6Disabled -eq 0 ]; then		dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
+	ip6Enabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
+	if ($ip6Enabled); then
+		if (true); then						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
 		elif (which awk 1>/dev/null); then 	curl -6 https://ifconfig.co
 		fi			
 	else									echo "false"
@@ -98,11 +98,17 @@ getGlobalIpAddr6() {
 test() {
 	#getNetworkAddress 4 "$(getIpAddr4)"
 	#getNetworkAddress 6 "$(getIpAddr6)"
-    myPrvIP4="$(getIpAddr4)"
-    myPrvNetworkIP4="$(getNetworkAddress 4 "$myPrvIP4")"
+	myPrvIP4="$(getIpAddr4)"
+	myPrvNetworkIP4="$(getNetworkAddress 4 "$myPrvIP4")"
 	myPubIP4="$(getWanIpAddr4)"
-    myPrvIP6="$(getIpAddr6)"
+	myPrvIP6="$(getIpAddr6)"
 	myPrvNetworkIP6="$(getNetworkAddress 6 "$myPrvIP6")"
 	myPubIP6="$(getGlobalIpAddr6)"
+	if [ ! "$myPrvIP4" = "false" ]; then		echo -e "$myPrvIP4"; fi
+	if [ ! "$myPrvNetworkIP4" = "false" ]; then echo -e "$myPrvNetworkIP4"; fi
+	if [ ! "$myPubIP4" = "false" ]; then 		echo -e "$myPubIP4"; fi
+	if [ ! "$myPrvIP6" = "false" ]; then 		echo -e "$myPrvIP6"; fi
+	if [ ! "$myPrvNetworkIP6" = "false" ]; then echo -e "$myPrvNetworkIP6"; fi
+	if [ ! "$myPubIP6" = "false" ]; then 		echo -e "$myPubIP6"; fi
 }
 test
