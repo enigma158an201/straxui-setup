@@ -18,6 +18,8 @@ checkEnabledIpv6() {
 	elif [ "$ip6Disabled" -eq "1" ]; then			echo "false"
 	fi
 }
+export ip6Enabled="$(checkEnabledIpv6)"
+
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
 	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
@@ -56,7 +58,7 @@ getNetworkAddress() {
 	#done
 	if ($bIp4); then 
 		myOutputAddress="${myInputAddress%"$sTxt"*}${sTxt}0"
-	elif ($bIp6) && (which ipv6calc 1>/dev/null); then
+	elif ($bIp6) && ($ip6Enabled) && (which ipv6calc 1>/dev/null); then
 		#myUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "$myInputAddress")"
 		#myOutputAddress="${myUncompressedInputAddress%"$sTxt"*}${sTxt}"
 		myOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "$myInputAddress" || echo "false")"
@@ -87,7 +89,7 @@ getWanIpAddr4() {
 getGlobalIpAddr6() {
 	#with telnet: 	$ telnet -6 ipv6.telnetmyip.com 
 	#Even With ssh:	$ ssh -6 sshmyip.com
-	ip6Enabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
+	#ip6Enabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
 	if ($ip6Enabled); then
 		if (true); then						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
 		elif (which awk 1>/dev/null); then 	curl -6 https://ifconfig.co
