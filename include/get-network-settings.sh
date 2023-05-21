@@ -78,7 +78,17 @@ getWanIpAddr4() {
     #host myip.opendns.com resolver1.opendns.com
     dig +short myip.opendns.com @resolver1.opendns.com
 }
-
+getGlobalIpAddr6() {
+	#with telnet: 	$ telnet -6 ipv6.telnetmyip.com 
+	#Even With ssh:	$ ssh -6 sshmyip.com
+	ip6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
+	if [ $ip6Disabled -eq 0 ]; then
+		if [ $ip6Disabled -eq 0 ]; then		dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
+		elif (which awk 1>/dev/null); then 	curl -6 https://ifconfig.co
+		fi			
+	else									echo "false"
+	fi
+}
 test() {
 	#getNetworkAddress 4 "$(getIpAddr4)"
 	#getNetworkAddress 6 "$(getIpAddr6)"
@@ -87,6 +97,6 @@ test() {
 	myPubIP4="$(getWanIpAddr4)"
     myPrvIP6="$(getIpAddr6)"
 	myPrvNetworkIP6="$(getNetworkAddress 6 "$myPrvIP6")"
-	myPubIP6="$(getWanIpAddr6)"
+	myPubIP6="$(getGlobalIpAddr6)"
 }
 test
