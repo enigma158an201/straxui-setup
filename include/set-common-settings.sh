@@ -26,7 +26,7 @@ disable-systemd-sleep() {
 		systemctl daemon-reload"
 	fi
 }
-disable-wifi-connections() {
+disable-wireless-connections() {
 	if (systemctl status wpa_supplicant.service 1>/dev/null); then suExecCommand systemctl disable --now wpa_supplicant.service; fi
     if (which nmcli 1>/dev/null); then suExecCommand nmcli radio wifi off; fi
 	if (which rfkill 1>/dev/null); then suExecCommand rfkill block wlan bluetooth; fi
@@ -42,7 +42,8 @@ main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
 	sshd-config-settings; \
-    disable-wifi-connections; \
+	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
+	if [ ! "${disableWireless^^}" = "N" ] && [ ! "$disableWireless" = "" ]; then disable-wireless-connections; fi \
     disable-cups-services; \
 	disable-systemd-sleep; \
     cronjob-disable-ipv6
