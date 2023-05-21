@@ -119,7 +119,7 @@ main_installStrax() {
 				debVersion="${debVersion##* }"
 				dpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }' || echo "false")"
 				if [ ! "$debVersion" = "$dpkgVersion"  ]; then 
-					suExecCommandNoPreserveEnv "bash -i -v -c DEBIAN_FRONTEND=noninteractive dpkg -i $myfilenamedeb 2>&1 || echo \"false\""
+					suExecCommandNoPreserveEnv "bash -i -v -c LANG=C DEBIAN_FRONTEND=noninteractive dpkg -i $myfilenamedeb 2>&1 || echo \"false\""
 				fi
 			elif [ "$isBuster" = "" ]; then
 				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
@@ -136,7 +136,7 @@ main_installStrax() {
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
 						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
-						suExecCommand "bash -i -v -c DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
+						suExecCommand "bash -i -v -c LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
 					fi
 				done
 
