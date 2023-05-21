@@ -136,7 +136,7 @@ main_installStrax() {
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
 						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
-						suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
+						suExecCommand "bash -i -v DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
 					fi
 				done
 
