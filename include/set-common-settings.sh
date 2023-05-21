@@ -7,14 +7,12 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//
 #source for getting ip addresses
 source "${launchDir}/include/get-network-settings.sh"
 
-mySshPort="41122"
-
 set-ssh-user-keys() {
 	if [ ! "$EUID" = "0" ]; then
 		read -rp "Générer une nouvelle paire de clés ssh (type ed25519)? o/N"  -n 1 genNewKeyPair
 		if [ ! "${genNewKeyPair^^}" = "N" ] && [ ! "$genNewKeyPair" = "" ]; then
 			myPrvIP4="$(getNetworkAddress 4 "$(getIpAddr4)")"
-			myPubIP4=""			
+			myPubIP4="$(getWanIpAddr4)"
 			myShhDir="$HOME/.ssh/"
 			myPubAutKeysFile=""$myShhDir/authorized_keys""
 			(mkdir -p "$myShhDir" && cd "$myShhDir" || exit 1) || exit 1

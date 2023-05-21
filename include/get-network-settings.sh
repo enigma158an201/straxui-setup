@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+mySshPort="41122"
+
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
 	elif [ "$1" = "6" ] || [ "$1" = "-6" ] || [ "$1" = "v6" ] || [ "$1" = "-v6" ]; then sTxt=":"
@@ -62,8 +64,19 @@ getIpAddr6() {
 		fi
 	fi
 }
+getWanIpAddr4() {
+    #host myip.opendns.com resolver1.opendns.com
+    dig +short myip.opendns.com @resolver1.opendns.com
+}
+
 test() {
-	getNetworkAddress 4 "$(getIpAddr4)"
-	getNetworkAddress 6 "$(getIpAddr6)"
+	#getNetworkAddress 4 "$(getIpAddr4)"
+	#getNetworkAddress 6 "$(getIpAddr6)"
+    myPrvIP4="$(getIpAddr4)"
+    myPrvNetworkIP4="$(getNetworkAddress 4 "$myPrvIP4")"
+	myPubIP4="$(getWanIpAddr4)"
+    myPrvIP6="$(getIpAddr6)"
+	myPrvNetworkIP6="$(getNetworkAddress 6 "$myPrvIP6")"
+	myPubIP6="$(getWanIpAddr6)"
 }
 test
