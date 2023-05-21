@@ -98,7 +98,7 @@ main_installStrax() {
 				for pkgsToInstall in \$pkgsToInstall; do \
 					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\");
 					if [ \"\$isInstalled\" = \"false\" ]; then
-						apt-get install -y \$pkgsToInstall
+						apt-get install -y \$pkgsToInstall;
 					fi
 				done\""
 				projectlatestcontentdeb="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')"
@@ -112,7 +112,7 @@ main_installStrax() {
 				for pkgsToInstall in \$pkgsToInstall; do \
 					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\");
 					if [ \"\$isInstalled\" = \"false\" ]; then
-						apt-get install -y \"\$pkgsToInstall\"
+						apt-get install -y \$pkgsToInstall;
 					fi
 				done\""
 				projectlatestcontentgz="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')"
