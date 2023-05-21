@@ -50,10 +50,10 @@ getNetworkAddress() {
 	#done
 	if ($bIp4); then 
 		myOutputAddress="${myInputAddress%"$sTxt"*}${sTxt}0"
-	elif ($bIp6) && [ -x /usr/bin/ipv6calc ]; then
+	elif ($bIp6) && (which ipv6calc 1>/dev/null); then
 		#myUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "$myInputAddress")"
 		#myOutputAddress="${myUncompressedInputAddress%"$sTxt"*}${sTxt}"
-		myOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "$myInputAddress")"
+		myOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "$myInputAddress" || echo "false")"
 	else
 		myOutputAddress="false"
 	fi
