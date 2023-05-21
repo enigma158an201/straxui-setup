@@ -19,7 +19,7 @@ blacklist-ip6-kernel-modules() {
 	if [ "$bDisabledIpV6" = "false" ]; then
 		#echo -e "$sCommand \n $sCommandDefault"; read -rp " "
 		#suExecCommand ""
-		bash -c ""
+		suExecCommand "bash -c \"${launchDir}/include/set-grub-kernel-parameter.sh\""
 	fi
 }
 blacklist-ip6-NetworkManagement() {
