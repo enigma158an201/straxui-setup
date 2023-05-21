@@ -31,7 +31,7 @@ checkDpkgInstalled() {
 	#result="$(LANG=C /usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname")"
 	#if [[ $result =~ \$not-installed ]] || [[ $result =~ $noPackageFoundString ]]; then echo "false"; else echo "true"; fi 
 	installedString="[installed]"
-	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$)"
+	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$ | grep -E "$pkgname|$installedString")"
 	if [[ $result =~ $installedString ]]; then echo "false"; else echo "true"; fi 
 }
 aptPreinstallPkg() {
