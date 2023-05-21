@@ -119,7 +119,7 @@ main_DisableIpv6() {
 	blacklist-ip6-kernel-modules
 	blacklist-ip6-NetworkManagement
 	disable-etc-hosts-ipv6
-	disable-sshd-config-ipv6 
+	disable-sshd-config-ipv6
 	disable-postfix-ipv6
 	disable-etc-ntp-ipv6
 	disable-etc-chrony-ipv6
