@@ -93,7 +93,7 @@ main_installStrax() {
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
 			echo -e "/t>>> check and/or install straxui deps"
 			if [ ! "$isBuster" = "" ]; then
-				suExecCommand "bash -c -i \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				suExecCommandNoPreserveEnv "bash -c -i \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				for pkgsToInstall in \$pkgsToInstall; do \
 					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
@@ -107,7 +107,7 @@ main_installStrax() {
 				echo -e "/t>>> check and/or install straxui .deb package"
 				suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
 			elif [ "$isBuster" = "" ]; then
-				suExecCommand "bash -c -i \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				suExecCommandNoPreserveEnv "bash -c -i \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
 				for pkgsToInstall in \$pkgsToInstall; do \
 					isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
