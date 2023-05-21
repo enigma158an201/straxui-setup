@@ -51,16 +51,6 @@ source "${launchDir}/include/file-edition.sh"
 
 binNft=$(suExecCommandNoPreserveEnv "which nft")
 
-getNetworkManagement() {
-	mynetplandst="/etc/netplan/"
-	if [ -d "$mynetplandst" ]; then
-		for myfile in "$mynetplandst"*; do
-			myNetworkRenderer="$(grep -i 'renderer' "$myfile")"
-			echo -e "${myNetworkRenderer##* }\n" #echo "${A##* }"
-		done
-	fi
-	unset mynetplandst
-}
 restore-nft-conf() {
 	mynftconfdst=/etc/nftables.conf
 	mynftconfsrc="${launchDir}$mynftconfdst"
