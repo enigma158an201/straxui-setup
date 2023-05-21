@@ -19,7 +19,8 @@ blacklist-ip6-kernel-modules() {
 	#todo check if include /etc/systctl.d present -> not necessary
 	#suExecCommand update-initramfs -u
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
-	if [ "$bDisabledIpV6" = "false" ]; then
+	bDisabledDefaultIpV6="$(grep ^GRUB_CMDLINE_LINUX /etc/default/grub | grep ipv6.disable || echo "false")"
+	if [ "$bDisabledIpV6" = "false" ] || [ "$bDisabledDefaultIpV6" = "false" ]; then
 		#echo -e "$sCommand \n $sCommandDefault"; read -rp " "
 		#suExecCommand ""
 		echo -e "\t>>> proceed add disable ipv6 to grub kernel parameters"
