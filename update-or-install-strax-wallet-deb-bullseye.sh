@@ -95,19 +95,20 @@ main_installStrax() {
 			if [ ! "$isBuster" = "" ]; then
 				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				#pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
-				#for pkgsToInstall in \$pkgsToInstall; do \
+				#for pkgToInstall in \$pkgsToInstall; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
 				#	if [ \"\$isInstalled\" = \"false\" ]; then \
-				#		/usr/bin/apt-get install -y \$pkgsToInstall; \
+				#		/usr/bin/apt-get install -y \$pkgToInstall; \
 				#	fi; \
 				#done\""
 				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2)
-				for pkgToInstall in ${pkgsToInstall[*]}; do
+				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
-						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
-						suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
+						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgToInstall\""
+						#suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgToInstall"
+						suExecCommand "bash -c \"${launchDir}/include/apt-install-cmd.sh $pkgToInstall\""
 					fi
 				done
 				
@@ -115,11 +116,12 @@ main_installStrax() {
 				myfilenamedeb="${dlDir}$(basename "$projectlatestcontentdeb")"
 				if [ ! -f "$myfilenamedeb" ]; then wget -O "$myfilenamedeb" "$projectlatestcontentdeb"; fi
 				echo -e "/t>>> check and/or install straxui .deb package"
-				debVersion=$(dpkg-deb -I $myfilenamedeb | grep -Ei "^ Version:")
+				debVersion=$(dpkg-deb -I "$myfilenamedeb" | grep -Ei "^ Version:")
 				debVersion="${debVersion##* }"
 				dpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }' || echo "false")"
 				if [ ! "$debVersion" = "$dpkgVersion"  ]; then 
-					suExecCommandNoPreserveEnv "LANG=C DEBIAN_FRONTEND=noninteractive dpkg -i $myfilenamedeb 2>&1 || echo \"false\""
+					#suExecCommandNoPreserveEnv "LANG=C DEBIAN_FRONTEND=noninteractive dpkg -i $myfilenamedeb 2>&1 || echo \"false\""
+					suExecCommand "bash -c \"${launchDir}/include/dpkg-install-cmd.sh $myfilenamedeb\""
 				fi
 			elif [ "$isBuster" = "" ]; then
 				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
@@ -127,16 +129,17 @@ main_installStrax() {
 				#for pkgToInstall in \$pkgsToInstall; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
 				#	if [ \"\$isInstalled\" = \"false\" ]; then \
-				#		/usr/bin/apt-get install -y \$pkgsToInstall; \
+				#		/usr/bin/apt-get install -y \$pkgToInstall; \
 				#	fi; \
 				#done\""
 				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libappindicator3-0.1-cil{,-dev})
-				for pkgToInstall in ${pkgsToInstall[*]}; do
+				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
-						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgsToInstall\""
-						suExecCommand "bash -i -v -c LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgsToInstall"
+						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgToInstall\""
+						#suExecCommand "bash -i -v -c LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgToInstall"
+						suExecCommand "bash -c \"${launchDir}/include/apt-install-cmd.sh $pkgToInstall\""
 					fi
 				done
 
@@ -153,5 +156,4 @@ main_installStrax() {
 		fi
 	# fi
 }
-
-bash -i -c main_installStrax
+main_installStrax
