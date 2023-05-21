@@ -115,7 +115,12 @@ main_installStrax() {
 				myfilenamedeb="${dlDir}$(basename "$projectlatestcontentdeb")"
 				if [ ! -f "$myfilenamedeb" ]; then wget -O "$myfilenamedeb" "$projectlatestcontentdeb"; fi
 				echo -e "/t>>> check and/or install straxui .deb package"
-				suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb"
+				debVersion=$(dpkg-deb -I $myfilenamedeb | grep -Ei "^ Version:")
+				debVersion="${debVersion##:*}"
+				dpkgVersion="$(dpkg-query -l straxui | tail -n+6 | awk '{ print $3 }')"
+				if [ ! "$debVersion" = "$dpkgVersion"  ]; then 
+					suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb || echo \"false\""
+				fi
 			elif [ "$isBuster" = "" ]; then
 				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				#pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
