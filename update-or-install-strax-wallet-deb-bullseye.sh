@@ -96,7 +96,7 @@ main_installStrax() {
 				suExecCommand "bash -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				for pkgsToInstall in \$pkgsToInstall; do \
-					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\");
 					if [ \"\$isInstalled\" = \"false\" ]; then
 						apt-get install -y \$pkgsToInstall
 					fi
@@ -110,7 +110,7 @@ main_installStrax() {
 				suExecCommand "bash -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
 				for pkgsToInstall in \$pkgsToInstall; do \
-					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\")
+					isInstalled=$(checkDpkgInstalled \"\$pkgToInstall\");
 					if [ \"\$isInstalled\" = \"false\" ]; then
 						apt-get install -y \"\$pkgsToInstall\"
 					fi
