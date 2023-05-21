@@ -32,7 +32,7 @@ checkDpkgInstalled() {
 	#if [[ $result =~ \$not-installed ]] || [[ $result =~ $noPackageFoundString ]]; then echo "false"; else echo "true"; fi 
 	installedString="[installed]"
 	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$ | grep -E "$pkgname|$installedString")"
-	if [[ $result =~ $installedString ]]; then echo "false"; else echo "true"; fi 
+	if [[ $result =~ $installedString ]]; then echo "true"; else echo "false"; fi 
 }
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
