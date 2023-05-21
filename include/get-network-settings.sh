@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-export mySshPort="41122"
+mySshPort="41122"
+export mySshPort
 
 getNetworkManagement() {
 	mynetplandst="/etc/netplan/"
@@ -18,7 +19,8 @@ checkEnabledIpv6() {
 	elif [ "$ip6Disabled" -eq "1" ]; then			echo "false"
 	fi
 }
-export ip6Enabled="$(checkEnabledIpv6)"
+ip6Enabled="$(checkEnabledIpv6)"
+export ip6Enabled
 
 getFirstAddressIpRoute() {
 	if [ "$1" = "4" ] || [ "$1" = "-4" ] || [ "$1" = "v4" ] || [ "$1" = "-v4" ]; then	sTxt="."
