@@ -93,7 +93,7 @@ main_installStrax() {
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
 			echo -e "/t>>> check and/or install straxui deps"
 			if [ ! "$isBuster" = "" ]; then
-				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				#suExecCommandNoPreserveEnv "bash -v -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				#pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				#for pkgToInstall in \$pkgsToInstall; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
@@ -106,7 +106,7 @@ main_installStrax() {
 				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
-						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgToInstall\""
+						#suExecCommand "bash -c \"/usr/bin/apt-get install -y $pkgToInstall\""
 						#suExecCommand "DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgToInstall"
 						suExecCommand "bash -c \"${launchDir}/include/apt-install-cmd.sh $pkgToInstall\""
 					fi
@@ -124,7 +124,7 @@ main_installStrax() {
 					suExecCommandNoPreserveEnv "bash -c \"${launchDir}/include/dpkg-install-cmd.sh $myfilenamedeb\""
 				fi
 			elif [ "$isBuster" = "" ]; then
-				#suExecCommandNoPreserveEnv "bash -v -i -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
+				#suExecCommandNoPreserveEnv "bash -v -c \"source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				#pkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
 				#for pkgToInstall in \$pkgsToInstall; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\$pkgToInstall\"); \
@@ -137,8 +137,8 @@ main_installStrax() {
 				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
 					if [ "$isInstalled" = "false" ]; then
-						#suExecCommand "bash -i -c \"/usr/bin/apt-get install -y $pkgToInstall\""
-						#suExecCommand "bash -i -v -c LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgToInstall"
+						#suExecCommand "bash -c \"/usr/bin/apt-get install -y $pkgToInstall\""
+						#suExecCommand "bash -v -c LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/apt-get install -y $pkgToInstall"
 						suExecCommand "bash -c \"${launchDir}/include/apt-install-cmd.sh $pkgToInstall\""
 					fi
 				done
