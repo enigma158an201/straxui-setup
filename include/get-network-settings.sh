@@ -57,7 +57,7 @@ getNetworkAddress() {
 		#fi
 	#done
 	if ($bIp4); then 
-		myOutputAddress="${myInputAddress%"$sTxt"*}${sTxt}0"
+		myOutputAddress="$(ipcalc -b "$myInputAddress" | grep -i network: | awk '{ print $2 }')" # myOutputAddress="${myInputAddress%"$sTxt"*}${sTxt}0"
 	elif ($bIp6) && ($ip6Enabled) && (which ipv6calc 1>/dev/null); then
 		#myUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "$myInputAddress")"
 		#myOutputAddress="${myUncompressedInputAddress%"$sTxt"*}${sTxt}"
