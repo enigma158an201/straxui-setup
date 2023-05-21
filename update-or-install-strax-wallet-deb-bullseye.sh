@@ -117,7 +117,7 @@ main_installStrax() {
 				echo -e "/t>>> check and/or install straxui .deb package"
 				debVersion=$(dpkg-deb -I $myfilenamedeb | grep -Ei "^ Version:")
 				debVersion="${debVersion##* }"
-				dpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }')"
+				dpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }' || echo "false")"
 				if [ ! "$debVersion" = "$dpkgVersion"  ]; then 
 					suExecCommandNoPreserveEnv "dpkg -i $myfilenamedeb || echo \"false\""
 				fi
