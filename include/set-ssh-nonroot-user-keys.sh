@@ -7,7 +7,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//
 #source for getting ip addresses
 source "${launchDir}/include/get-network-settings.sh"
 mySshDir="$HOME/.ssh/"
-myPubAutKeysFile="$mySshDir/authorized_keys"
+myPubAutKeysFile="${mySshDir}authorized_keys"
 
 set_ssh_nonroot_user_keys() {
 	if [ ! "$EUID" = "0" ]; then		
@@ -38,21 +38,26 @@ set_ssh_nonroot_user_keys() {
 			read -rp "change passphrase $keysAlreadySet ? o/N"  -n 1 genNewKeyPass
 			if [ ! "${genNewKeyPass^^}" = "N" ] && [ ! "$genNewKeyPass" = "" ]; then
 				bNewPass="true"
-				mySshPrvKeyPath="$keysAlreadySet"
-				mySshPrvKeyName="$(basename "$mySshPrvKeyPath")"
-				ssh-keygen -p -t ed25519 -f "$mySshPrvKeyPath" -C "$mySshPrvKeyName" # here -p is for change passphrase (doesn't work if file doesn't exist)
+				for keyAlreadySet in $keysAlreadySet; do
+					mySshPrvKeyPath="$keyAlreadySet"
+					mySshPrvKeyName="$(basename "$mySshPrvKeyPath")"
+					ssh-keygen -p -t ed25519 -f "$mySshPrvKeyPath" -C "$mySshPrvKeyName" # here -p is for change passphrase (doesn't work if file doesn't exist)
+				done
 			else
 				bNewPass="false"
 			fi
 			if [ "$bNewKey" = "false" ] && [ "$bNewPass" = "false" ]; then	mySshPrvKeyPath="$keysAlreadySet"; fi
 			echo -e ""
 		fi
-		mySshPrvKeyName="$(basename "$mySshPrvKeyPath")"
-		mySshPubKeyFileName="${mySshPrvKeyPath}.pub"
-		#ssh-copy-id -p "$SSH_PORT" -i "$mySshDir/$outKeyFileName.pub" "$USER@localhost" # for remote key install
-		if [ ! -f "$myPubAutKeysFile" ]; then touch "$myPubAutKeysFile"; fi
-		mySshPubKeyFileContent="$(cat "$mySshPubKeyFileName")" # 1>/dev/null)" #		echo "$mySshPubKeyFileContent"
-		if (! grep "$mySshPubKeyFileContent" "$myPubAutKeysFile"); then echo -e "\n$mySshPubKeyFileContent" | tee -a "$myPubAutKeysFile"; fi
+		keysAlreadySet=$(LANG=C find "$mySshDir" -iwholename "*${HOSTNAME}_${USER}_*" | grep -v ".pub$" || echo "false")
+		for keyAlreadySet in $keysAlreadySet; do
+			mySshPrvKeyName="$(basename "$keyAlreadySet")"	# mySshPrvKeyPath
+			mySshPubKeyFilePath="${keyAlreadySet}.pub"		# mySshPrvKeyPath
+			#ssh-copy-id -p "$SSH_PORT" -i "$mySshDir/$outKeyFileName.pub" "$USER@localhost" # for remote key install
+			if [ ! -f "$myPubAutKeysFile" ]; then touch "$myPubAutKeysFile"; fi
+			mySshPubKeyFileContent="$(cat "$mySshPubKeyFilePath")" # 1>/dev/null)" #		echo "$mySshPubKeyFileContent"
+			if (! grep "$mySshPubKeyFileContent" "$myPubAutKeysFile"); then echo -e "\n$mySshPubKeyFileContent" | tee -a "$myPubAutKeysFile"; fi
+		done
 		echo -e "  >>> penser si usage d'alias, à:
 		\t >> 1/ copier la clé privée uniquement ~/.ssh/$mySshPrvKeyName sur le client de connexion distant
 		\t >> 2/ changer les permissions de la clé privée ~/.ssh/$mySshPrvKeyName sur le client de connexion distant
