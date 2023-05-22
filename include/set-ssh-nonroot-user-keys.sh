@@ -51,8 +51,7 @@ set_ssh_nonroot_user_keys() {
 		mySshPubKeyFileName="${mySshPrvKeyPath}.pub"
 		#ssh-copy-id -p "$SSH_PORT" -i "$mySshDir/$outKeyFileName.pub" "$USER@localhost" # for remote key install
 		if [ ! -f "$myPubAutKeysFile" ]; then touch "$myPubAutKeysFile"; fi
-		mySshPubKeyFileContent="$(cat "$mySshPubKeyFileName" 1>/dev/null)"
-		echo "$mySshPubKeyFileContent"
+		mySshPubKeyFileContent="$(cat "$mySshPubKeyFileName")" # 1>/dev/null)" #		echo "$mySshPubKeyFileContent"
 		if (! grep "$mySshPubKeyFileContent" "$myPubAutKeysFile"); then echo -e "\n$mySshPubKeyFileContent" | tee -a "$myPubAutKeysFile"; fi
 		echo -e "  >>> penser si usage d'alias, à:
 		\t >> 1/ copier la clé privée uniquement ~/.ssh/$mySshPrvKeyName sur le client de connexion distant
