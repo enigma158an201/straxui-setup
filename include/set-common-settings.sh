@@ -8,7 +8,7 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 sshd-config-settings() {
 	echo -e "\t>>> application des fichiers config sshd"
-	suExecCommand "for sshdfile in prohibit-root.conf pubkey-only.conf sshd-port.conf; do \
+	suExecCommand "for sshdfile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do \
 		mysshddst=\"/etc/ssh/sshd_config.d/\$sshdfile\"; \
 		mysshdsrc=\"${launchDir}\$mysshddst\"; \
 		if [ -d \"$(dirname \"\$mysshddst\")\" ] && [ -f \"\$mysshdsrc\" ]; then install -o root -g root -m 0744 -pv \"\$mysshdsrc\" \"\$mysshddst\"; fi; \
