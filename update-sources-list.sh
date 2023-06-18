@@ -35,7 +35,9 @@ installNewSourcesList() {
 	elif [ "${sCurrentDistCodename}" = "bookworm" ]; then		mysourceslistsrc="${launchDir}etc/apt/bookworm-sources.list"
 	fi
 	mysourceslistbak="${mysourceslistdst}.${sCurrentDistCodename}-gg.save"
-	diff "${mysourceslistsrc}" "${mysourceslistdst}"
+	if [ -f "${mysourceslistdst}" ]; then 
+		diff "${mysourceslistsrc}" "${mysourceslistdst}"	
+	fi
 	echo -e "\t>>> Avant d'installer la nouvelle version, s'assurer d'avoir bien appliqué les dernieres mises à jour avec \`apt update && apt upgrade\`"
 	read -rp " Confirmer la nouvelle version? (o/N)" -n 1 confirmOverwriteRepo
 	if [ "${confirmOverwriteRepo^^}" = "O" ]; then
