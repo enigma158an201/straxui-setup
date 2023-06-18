@@ -8,8 +8,6 @@ launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 
-
-
 getInstalledDebianDistCodeName() {
 	myetcosrelease=/etc/os-release
 	if [ -f "${myetcosrelease}" ]; then
@@ -50,7 +48,7 @@ installNewSourcesList() {
 		if true; then 
 			echo -e "\t>>> nouvelle version de ${mysourceslistdst} installee avec succès \
 			\n\t>>> pour installer les nouveaux paquets, lancer en root (avec sudo ou su - ET sans les crochets) :\
-			\n \t [sudo] apt update && [sudo] apt dist-upgrade "
+			\n \t # [sudo] apt update && [sudo] apt dist-upgrade "
 		fi
 	else
 		echo -e "\t>>> abandon de l'installation de la version suivante pour ${mysourceslistsrc}"
