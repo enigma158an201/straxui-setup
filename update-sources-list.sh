@@ -30,9 +30,9 @@ sCurrentDistCodename="$(getInstalledDebianDistCodeName)"
 
 installNewSourcesList() {
 	mysourceslistdst="/etc/apt/sources.list"
-	if [ "${sCurrentDistCodename}" = "buster" ]; then			mysourceslistsrc="${launchDir}etc/apt/bullseye-sources.list"
-	elif [ "${sCurrentDistCodename}" = "bullseye" ]; then		mysourceslistsrc="${launchDir}etc/apt/bookworm-sources.list"
-	elif [ "${sCurrentDistCodename}" = "bookworm" ]; then		mysourceslistsrc="${launchDir}etc/apt/bookworm-sources.list"
+	if [ "${sCurrentDistCodename}" = "buster" ]; then			mysourceslistsrc="${launchDir}/etc/apt/bullseye-sources.list"
+	elif [ "${sCurrentDistCodename}" = "bullseye" ]; then		mysourceslistsrc="${launchDir}/etc/apt/bookworm-sources.list"
+	elif [ "${sCurrentDistCodename}" = "bookworm" ]; then		mysourceslistsrc="${launchDir}/etc/apt/bookworm-sources.list"
 	fi
 	mysourceslistbak="${mysourceslistdst}.${sCurrentDistCodename}-gg.save"
 	if [ -f "${mysourceslistdst}" ]; then 
