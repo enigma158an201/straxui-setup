@@ -14,10 +14,10 @@ getInstalledDebianDistCodeName() {
 	myetcosrelease=/etc/os-release
 	if [ -f "${myetcosrelease}" ]; then
 		sOsId="$(grep -i ^ID= "${myetcosrelease}")"
-		sOsId="${sOsId##=*}"
+		sOsId="${sOsId##*=}"
 		if [ "$sOsId" = "debian" ]; then 
 			sOsRelease="$(grep -i ^VERSION_CODENAME= "${myetcosrelease}")"
-			sOsRelease="${sOsRelease##=*}"
+			sOsRelease="${sOsRelease##*=}"
 			echo "${sOsRelease}"
 		else
 			exit 2
