@@ -57,7 +57,9 @@ installNewSourcesList() {
 			\n \t # [sudo] apt update && [sudo] apt dist-upgrade "
 		fi
 	elif [ "${bDiffApt}" = "false" ]; then
-		echo -e "\t>>> pas de modification pour ${mysourceslistsrc}"
+		echo -e "\t>>> pas de modification pour ${mysourceslistsrc} \
+		\n\t>>> pour installer les nouveaux paquets, lancer en root (avec sudo ou su - ET sans les crochets) :\
+		\n\t # [sudo] apt update && [sudo] apt dist-upgrade "
 	else
 		echo -e "\t>>> abandon de l'installation de la version suivante pour ${mysourceslistsrc}"
 		exit 1
