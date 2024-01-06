@@ -13,6 +13,7 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 aptSourcesListFile=/etc/apt/sources.list
 aptSourcesListSubfolder=${aptSourcesListFile}.d
+tiersRepos="$(find ${aptSourcesListSubfolder} -iholename '*.list')"
 
 getDebianVersion() {
     myDebMainVersion="$(cat /etc/debian_version)"
@@ -20,49 +21,52 @@ getDebianVersion() {
 }
 
 upgradeJessieToStretch() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${aptSourcesListFile}
-        tiersRepos="$(find ${aptSourcesListSubfolder} -iname '*.list')"
-        if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${tiersRepos}; fi
-        #suExecCommandNoPreserveEnv sed -i 's#/debian-security stretch/updates# stretch-security#g' ${aptSourcesListFile}
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${aptSourcesListFile}        
+    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${tiersRepos}; fi
+    #suExecCommandNoPreserveEnv sed -i 's#/debian-security stretch/updates# stretch-security#g' ${aptSourcesListFile}
+#fi
 }
 
 upgradeStretchToBuster() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/stretch/buster/g' ${aptSourcesListFile}{,.d/*.list}
-        #suExecCommandNoPreserveEnv sed -i 's#/debian-security buster/updates# buster-security#g' ${aptSourcesListFile} 
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv sed -i 's/stretch/buster/g' ${aptSourcesListFile} #{,.d/*.list}
+    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/stretch/buster/g' ${tiersRepos}; fi
+    #suExecCommandNoPreserveEnv sed -i 's#/debian-security buster/updates# buster-security#g' ${aptSourcesListFile} 
+#fi
 }
 
 upgradeBusterToBullseye() {
-    #if command -v sudo 1>/dev/null 2>&1; then
+#if command -v sudo 1>/dev/null 2>&1; then
         # suExecCommandNoPreserveEnv sed -i 's/buster/bullseye/g' ${aptSourcesListFile}
         # suExecCommandNoPreserveEnv sed -i 's/buster/bullseye/g' ${aptSourcesListFile}.d/*.list
-        suExecCommandNoPreserveEnv sed -i 's/buster/bullseye/g' ${aptSourcesListFile}{,.d/*.list}
-        suExecCommandNoPreserveEnv sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}
-    #fi
+    suExecCommandNoPreserveEnv sed -i 's/buster/bullseye/g' ${aptSourcesListFile} #{,.d/*.list}
+    suExecCommandNoPreserveEnv sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}
+        if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/buster/bullseye/g' ${tiersRepos}; fi
+#fi
 }
 
 upgradeBullseyeToBookworm() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/bullseye/bookworm/g' ${aptSourcesListFile}
-        suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv sed -i 's/bullseye/bookworm/g' ${aptSourcesListFile}
+    suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
+        if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/bullseye/bookworm/g' ${tiersRepos}; fi
+#fi
 }
 
 upgradeBookwormToTrixie() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/bookworm/trixie/g' ${aptSourcesListFile}
-        #suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv sed -i 's/bookworm/trixie/g' ${aptSourcesListFile}
+    #suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
+    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/bookworm/trixie/g' ${tiersRepos}; fi
+#fi
 }
 
 upgradeToSid() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/bookworm/sid/g' ${aptSourcesListFile}
-        #suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv sed -i 's/bookworm/sid/g' ${aptSourcesListFile}
+    #suExecCommandNoPreserveEnv sed -i 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
+#fi
 }
 
 upgradeSourcesList() {
@@ -76,8 +80,9 @@ upgradeSourcesList() {
             upgradeBusterToBullseye
         elif [ "$debInstalledVersion" = "11" ]; then
             upgradeBullseyeToBookworm
-        # elif [ "$debInstalledVersion" = "12" ]; then
-            # exit 1 #upgradeBookwormToTrixie
+        elif [ "$debInstalledVersion" = "12" ]; then
+            echo "trixie not stable at moment of this script version"
+            exit 1 #upgradeBookwormToTrixie
         else
             echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"
         fi
@@ -88,9 +93,9 @@ upgradeSourcesList() {
 }
 
 upgradeDebianDist() {
-    #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv apt-get update && suExecCommandNoPreserveEnv apt-get upgrade && suExecCommandNoPreserveEnv apt-get full-upgrade && suExecCommandNoPreserveEnv apt-get dist-upgrade 
-    #fi
+#if command -v sudo 1>/dev/null 2>&1; then
+    suExecCommandNoPreserveEnv apt-get update && suExecCommandNoPreserveEnv apt-get upgrade && suExecCommandNoPreserveEnv apt-get full-upgrade && suExecCommandNoPreserveEnv apt-get dist-upgrade 
+#fi
 }
 
 main() {
