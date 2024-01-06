@@ -37,7 +37,7 @@ blacklist-ip6-NetworkManagement() {
 		sysctl -p"
 	fi
 
-	if [ -x /usr/bin/nmcli ] && (systemctl status NetworkManager); then
+	if (command -v nmcli 1>/dev/null 2>&1) && (systemctl status NetworkManager); then
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces

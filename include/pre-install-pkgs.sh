@@ -8,9 +8,9 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 
 aptPreinstall() {
-	if [ -x /usr/bin/apt-get ]; then	echo -e "/t>>> add deps packages for the script to run correctly"
-										suExecCommand "source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
-	else 								exit 1
+	if command -v apt-get 1>/dev/null 2>&1; then	echo -e "/t>>> add deps packages for the script to run correctly"
+													suExecCommand "source ${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
+	else 											exit 1
 	fi
 }
 
