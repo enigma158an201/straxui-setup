@@ -2,7 +2,7 @@
 
 set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"; launchDir="${launchDir//\/\//}"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"; launchDir="${launchDir//\/\//}"
 
 main_disable_sleep() {
  	source "${launchDir}/include/file-edition.sh"

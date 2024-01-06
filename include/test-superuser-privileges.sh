@@ -60,8 +60,10 @@ checkSudoers() {
 checkDoasUser() {		#set +x
 	is_user_doas="$(LANG=C timeout -v 1 doas true 2>&1)" #echo "test doas valid user" 
 	keyWord="doas: Operation not permitted"
-	if [[ ! $is_user_doas =~ $keyWord ]]; then	bDoasUser="true"
-	else 										bDoasUser="false"; fi
+	if [[ ! $is_user_doas =~ $keyWord ]]; then
+		bDoasUser="true"
+	else
+		bDoasUser="false"; fi
 	echo "$bDoasUser"
 }
 getSuCmd() {			#set +x

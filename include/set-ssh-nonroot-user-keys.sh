@@ -3,7 +3,7 @@
 set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 #source for getting ip addresses
 source "${launchDir}/include/get-network-settings.sh"
 mySshDir="$HOME/.ssh/"
