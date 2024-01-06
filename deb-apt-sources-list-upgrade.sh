@@ -8,7 +8,7 @@
 # deb http://deb.debian.org/debian bullseye-updates main
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "$launchDir" = "." ] || [ "$launchDir" = "include" ] || [ "$launchDir" = "" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 
 aptSourcesListFile=/etc/apt/sources.list
