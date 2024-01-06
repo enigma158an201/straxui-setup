@@ -116,8 +116,9 @@ upgradeSourcesList() {
 
 upgradeDebianDist() {
 #if command -v sudo 1>/dev/null 2>&1; then
-    suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
-#fi
+    if env | grep XDG_SESSION_TYPE=tty; then #check tty env
+        suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
+    fi
 }
 
 main() {
