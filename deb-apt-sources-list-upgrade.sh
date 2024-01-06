@@ -35,7 +35,11 @@ upgradeJessieToStretch() {
 upgradeStretchToBuster() {
 #if command -v sudo 1>/dev/null 2>&1; then
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${aptSourcesListFile}" #{,.d/*.list}
-    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${tiersRepos}"; fi
+    if [ -n "${tiersRepos}" ]; then 
+        for sRepo in ${tiersRepos}; do
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${tiersRepos}"
+        done
+    fi
     #suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security buster/updates# buster-security#g' ${aptSourcesListFile} 
 #fi
 }
@@ -48,7 +52,7 @@ upgradeBusterToBullseye() {
     suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}"
     if [ -n "${tiersRepos}" ]; then
         for sRepo in ${tiersRepos}; do
-            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${tiersRepos}"
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${sRepo}"
         done
     fi
 #fi
@@ -58,7 +62,11 @@ upgradeBullseyeToBookworm() {
 #if command -v sudo 1>/dev/null 2>&1; then
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bullseye/bookworm/g' ${aptSourcesListFile}"
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}"
-    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bullseye/bookworm/g' ${tiersRepos}"; fi
+    if [ -n "${tiersRepos}" ]; then
+        for sRepo in ${tiersRepos}; do
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bullseye/bookworm/g' ${tiersRepos}"
+        done    
+    fi
 #fi
 }
 
@@ -66,7 +74,11 @@ upgradeBookwormToTrixie() {
 #if command -v sudo 1>/dev/null 2>&1; then
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bookworm/trixie/g' ${aptSourcesListFile}"
     #suExecCommandNoPreserveEnv bash -c "sed -i.old 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}"
-    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bookworm/trixie/g' ${tiersRepos}"; fi
+    if [ -n "${tiersRepos}" ]; then
+        for sRepo in ${tiersRepos}; do
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bookworm/trixie/g' ${tiersRepos}"
+        done
+    fi
 #fi
 }
 
