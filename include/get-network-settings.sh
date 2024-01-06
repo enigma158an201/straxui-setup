@@ -16,7 +16,7 @@ getNetworkManagement() {
 checkEnabledIpv6() {
 	ip6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
 	if [ "$ip6Disabled" -eq "0" ]; then			echo "true"
-	elif [ "$ip6Disabled" -eq "1" ]; then			echo "false"
+	elif [ "$ip6Disabled" -eq "1" ]; then		echo "false"
 	fi
 }
 ip6Enabled="$(checkEnabledIpv6)"

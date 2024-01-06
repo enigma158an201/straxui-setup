@@ -33,8 +33,8 @@ disable-wireless-connections() {
 	echo -e "\t>>> désactivation des connexions wireless"
 	suExecCommand " \
 	if (systemctl status wpa_supplicant.service 1>/dev/null); then	systemctl disable --now wpa_supplicant.service; fi; \
- 	if (which nmcli 1>/dev/null); then 								nmcli radio wifi off; fi; \
-	if (which rfkill 1>/dev/null); then								rfkill block wlan bluetooth; fi"
+ 	if (command -v nmcli 1>/dev/null 2>&1); then 								nmcli radio wifi off; fi; \
+	if (command -v rfkill 1>/dev/null 2>&1); then								rfkill block wlan bluetooth; fi"
 }
 disable-cups-services() {
 	echo -e "\t>>> désactivation cups (impression)"

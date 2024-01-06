@@ -65,7 +65,7 @@ disable-sshd-config-ipv6() {
 }
 disable-postfix-ipv6() {
 	# mypostfixsrc="${launchDir}$mypostfixdst" -> pas de install mais un sed
-	if (which postfix); then
+	if command -v postfix 1>/dev/null 2>&1; then
 		echo -e "\t>>> proceed set disable ipv6 to postfix mail" 
 		suExecCommand "bash -c \"mypostfixdst=/etc/postfix/main.cf;
 		if [ -f \$mypostfixdst ]; then
