@@ -56,10 +56,10 @@ updateHosts() {
 		echo " > le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${hostsFile}"
 		if [ -w "${hostsFile}" ]; then
 			echo "-w"
-			#sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${hostsFile}"
+			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${hostsFile}"
 		elif [ -r "${hostsFile}" ]; then
-			# suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
 			echo "-r"
+			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
 		else
 			return 1
 		fi
