@@ -13,7 +13,7 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 aptSourcesListFile=/etc/apt/sources.list
 aptSourcesListSubfolder=${aptSourcesListFile}.d
-tiersRepos="$(find ${aptSourcesListSubfolder} -iholename '*.list')"
+tiersRepos="$(find ${aptSourcesListSubfolder} -iwholename '*.list')"
 
 getDebianVersion() {
     myDebMainVersion="$(cat /etc/debian_version)"
