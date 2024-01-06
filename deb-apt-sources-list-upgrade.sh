@@ -116,7 +116,7 @@ upgradeSourcesList() {
 
 upgradeDebianDist() {
 #if command -v sudo 1>/dev/null 2>&1; then
-	suExecCommandNoPreserveEnv apt-get update && suExecCommandNoPreserveEnv apt-get upgrade && suExecCommandNoPreserveEnv apt-get full-upgrade && suExecCommandNoPreserveEnv apt-get dist-upgrade 
+    suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
 #fi
 }
 
