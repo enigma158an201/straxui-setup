@@ -25,7 +25,7 @@ upgradeJessieToStretch() {
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${aptSourcesListFile}"
     if [ -n "${tiersRepos}" ]; then 
         for sRepo in ${tiersRepos}; do
-            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${tiersRepos}"
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${sRepos}"
         done
     fi
     #suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security stretch/updates# stretch-security#g' ${aptSourcesListFile}
@@ -37,7 +37,7 @@ upgradeStretchToBuster() {
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${aptSourcesListFile}" #{,.d/*.list}
     if [ -n "${tiersRepos}" ]; then 
         for sRepo in ${tiersRepos}; do
-            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${tiersRepos}"
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/stretch/buster/g' ${sRepos}"
         done
     fi
     #suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security buster/updates# buster-security#g' ${aptSourcesListFile} 
@@ -64,7 +64,7 @@ upgradeBullseyeToBookworm() {
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}"
     if [ -n "${tiersRepos}" ]; then
         for sRepo in ${tiersRepos}; do
-            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bullseye/bookworm/g' ${tiersRepos}"
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bullseye/bookworm/g' ${sRepos}"
         done    
     fi
 #fi
@@ -76,7 +76,7 @@ upgradeBookwormToTrixie() {
     #suExecCommandNoPreserveEnv bash -c "sed -i.old 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}"
     if [ -n "${tiersRepos}" ]; then
         for sRepo in ${tiersRepos}; do
-            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bookworm/trixie/g' ${tiersRepos}"
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/bookworm/trixie/g' ${sRepos}"
         done
     fi
 #fi
