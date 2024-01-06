@@ -118,8 +118,8 @@ suExecCommandNoPreserveEnv() {
 }
 
 main_SU(){
-	sudoPath="$(which sudo || echo "false")"
-	doasPath="$(which doas || echo "false")"
+	sudoPath="$(command -v sudo || echo "false")"
+	doasPath="$(command -v doas || echo "false")"
 	bSudoGroup="$(checkUserSudoOrWheelGroup)"
 	bSudoersUser="$(checkSudoers)"
 	if [ ! "$doasPath" = "false" ]; then bDoasUser="$(checkDoasUser)"; else bDoasUser="false"; fi
