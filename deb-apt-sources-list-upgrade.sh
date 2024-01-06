@@ -16,12 +16,14 @@ aptSourcesListSubfolder=${aptSourcesListFile}.d
 
 getDebianVersion() {
     myDebMainVersion="$(cat /etc/debian_version)"
-    echo ${myDebMainVersion%%.*}
+    echo "${myDebMainVersion%%.*}"
 }
 
 upgradeJessieToStretch() {
     #if command -v sudo 1>/dev/null 2>&1; then
-        suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${aptSourcesListFile}{,.d/*.list}
+        suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${aptSourcesListFile}
+        tiersRepos="$(find ${aptSourcesListSubfolder} -iname '*.list')"
+        if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv sed -i 's/jessie/stretch/g' ${tiersRepos}; fi
         #suExecCommandNoPreserveEnv sed -i 's#/debian-security stretch/updates# stretch-security#g' ${aptSourcesListFile}
     #fi
 }
