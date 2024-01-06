@@ -49,7 +49,9 @@ upgradeBusterToBullseye() {
 	#suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}
 	#suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}.d/*.list
 	suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile} #{,.d/*.list}
-	suExecCommandNoPreserveEnv sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}
+	if grep bullseye/updates ${aptSourcesListFile}; then 
+        suExecCommandNoPreserveEnv sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}
+    fi
 	if [ -n "${tiersRepos}" ]; then
 		for sRepo in ${tiersRepos}; do
 			suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${sRepo}
