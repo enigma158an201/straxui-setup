@@ -23,7 +23,11 @@ getDebianVersion() {
 upgradeJessieToStretch() {
 #if command -v sudo 1>/dev/null 2>&1; then
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${aptSourcesListFile}"
-    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${tiersRepos}"; fi
+    if [ -n "${tiersRepos}" ]; then 
+        for sRepo in ${tiersRepos}; do
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/jessie/stretch/g' ${tiersRepos}"
+        done
+    fi
     #suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security stretch/updates# stretch-security#g' ${aptSourcesListFile}
 #fi
 }
@@ -42,7 +46,11 @@ upgradeBusterToBullseye() {
     #suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}.d/*.list
     suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}" #{,.d/*.list}
     suExecCommandNoPreserveEnv bash -c "sed -i 's#/debian-security bullseye/updates# bullseye-security#g' ${aptSourcesListFile}"
-    if [ -n "${tiersRepos}" ]; then suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${tiersRepos}"; fi
+    if [ -n "${tiersRepos}" ]; then
+        for sRepo in ${tiersRepos}; do
+            suExecCommandNoPreserveEnv bash -c "sed -i.old 's/buster/bullseye/g' ${tiersRepos}"
+        done
+    fi
 #fi
 }
 
