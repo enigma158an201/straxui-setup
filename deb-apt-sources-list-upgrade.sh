@@ -121,7 +121,10 @@ upgradeDebianDist() {
 }
 
 main() {
+    #1st run recommended to update old distro 
+    upgradeDebianDist
 	upgradeSourcesList
+    #2nd run to version upgrading
 	upgradeDebianDist
 }
 main
