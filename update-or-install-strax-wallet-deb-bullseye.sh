@@ -10,7 +10,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "inclu
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
 #source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
-source "${launchDir}/include/set-common-settings.sh"
+suExecCommandNoPreserveEnv "${launchDir}/include/set-common-settings.sh" #source "${launchDir}/include/set-common-settings.sh"
 
 function determinerOS() {
 	cat /etc/os-release # echo `lsb_release -a`
