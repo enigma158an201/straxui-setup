@@ -119,7 +119,7 @@ upgradeDebianDist() {
     if ! env | grep XDG_SESSION_TYPE=tty; then #check tty env
 		echo -e "\t>>> La mise à jour depuis un environnement graphique est deconseillée,"
 		echo -e "\t    il est préférable de basculer sous le tty pour éviter le verrouillage de la session graphique,"
-		acho -e "\t    ou a minima de desactiver tout écran de veille"
+		echo -e "\t    ou a minima de desactiver tout écran de veille"
 		read -rp "continuer (y/N)" -n 1 sConfirmUpgrade
 	else
 		sConfirmUpgrade="y"
