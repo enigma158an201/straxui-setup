@@ -102,7 +102,7 @@ getGlobalIpAddr6() {
 test() {
 	#getNetworkAddress 4 "$(getIpAddr4)"
 	#getNetworkAddress 6 "$(getIpAddr6)"
-	apt-get update && apt-get install dig ipcalc ipv6calc
+	#apt-get update && apt-get install dig ipcalc ipv6calc
 	myPrvIP4="$(getIpAddr4)"
 	myPrvNetworkIP4="$(getNetworkAddress 4 "$myPrvIP4")"
 	myPubIP4="$(getWanIpAddr4)"

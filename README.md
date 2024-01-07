@@ -8,9 +8,9 @@ rappels:
 - le symbole # sert à mettre en évidence l'invite utilisateur AVEC droits super utilisateur
 
 ## Etape 0: install git
-rappel: si pas déjà fait, installer git
+rappel: si pas déjà fait, installer git ipcalc et dnsutils (dig)
 ```
-	# apt install git
+	# apt update && apt-get install apt install git ipcalc ipv6calc dnsutils 
 ```
 
 ## Etape 1: récupération du dépôt

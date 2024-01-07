@@ -10,7 +10,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "inclu
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
 #source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
-suExecCommandNoPreserveEnv "${launchDir}/include/set-common-settings.sh" #source "${launchDir}/include/set-common-settings.sh"
+#source "${launchDir}/include/set-common-settings.sh"
 
 function determinerOS() {
 	cat /etc/os-release # echo `lsb_release -a`
@@ -83,9 +83,9 @@ main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
 		echo -e "/t>>> ajust hostname before ssh configuration"
-		suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
+		suExecCommandNoPreserveEnv "${launchDir}/include/set-common-settings.sh" # suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
 		echo -e "/t>>> create ssh keys pair"
-		bash -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
+		suExecCommandNoPreserveEnv "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
 
 		if [ ! "$isDebianLike" = "" ]; then
 			dlDir="/tmp/"
