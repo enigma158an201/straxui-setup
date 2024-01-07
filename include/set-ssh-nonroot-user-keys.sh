@@ -34,7 +34,7 @@ set_ssh_nonroot_user_keys() {
 			else
 				bNewKey="false"
 			fi
-			echo -e ""
+			echo -e "\t"
 			read -rp "change passphrase $keysAlreadySet ? o/N"  -n 1 genNewKeyPass
 			if [ ! "${genNewKeyPass^^}" = "N" ] && [ ! "$genNewKeyPass" = "" ]; then
 				bNewPass="true"
@@ -73,7 +73,7 @@ set_ssh_nonroot_user_keys() {
   \t 127.x.y.z	\t ni 10.x.y.z	\t ni 192.168.y.z	\t ni entre 172.16.0.0 et 172.31.255.255 )"
 	else
 		echo "par sécurité, pas de clé générée pour l'user système root, abandon de la création de clés"
-		exit 1
+		#exit 1
 	fi
 }
 
