@@ -55,6 +55,7 @@ set-newhostname() {
 main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
+	whoami
 	set-newhostname 		# set new host name has to be done before sshd config
 	sshd-config-settings
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
