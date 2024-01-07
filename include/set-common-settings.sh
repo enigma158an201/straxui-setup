@@ -57,7 +57,7 @@ main_common() {
 	source "${launchDir}/include/file-edition.sh"
 	whoami
 	set-newhostname 		# set new host name has to be done before sshd config
-	sshd-config-settings
+	if command -v sshd 1>/dev/null 2>&1; sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
 	if [ ! "${disableWireless^^}" = "N" ] && [ ! "$disableWireless" = "" ]; then disable-wireless-connections; fi
  	disable-cups-services
