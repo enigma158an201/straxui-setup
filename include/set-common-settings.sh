@@ -50,7 +50,7 @@ cronjob-disable-ipv6() {
 }
 set-newhostname() {
 	echo -e "\t>>> renommage de la machine suivant schéma modèle+distro"
-	eval "${launchDir}/include/set-hostname.sh"
+	"${launchDir}/include/set-hostname.sh"
 }
 main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"

@@ -24,7 +24,7 @@ getOsRelease() {
 
 getProductName() {
 	if command -v dmidecode 1>/dev/null 2>&1; then
-		suExecCommandNoPreserveEnv "dmidecode -s system-product-name" #sHardwareModel=$()
+		dmidecode -s system-product-name #sHardwareModel=$()
 	else
 		return 1
 	fi
@@ -64,7 +64,6 @@ updateHosts() {
 			return 1
 		fi
 	fi
-
 }
 
 main_set_hostname() {
