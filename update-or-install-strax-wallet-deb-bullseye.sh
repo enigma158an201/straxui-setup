@@ -9,7 +9,7 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "inclu
 #source "${launchDir}/include/pre-install-pkgs.sh"
 source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/file-edition.sh"
-#source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+source "${launchDir}/include/apt-functions.sh" #apt-pre-instal-pkg-ubuntu.sh"
 #source "${launchDir}/include/set-common-settings.sh"
 
 function determinerOS() {
@@ -134,7 +134,7 @@ main_installStrax() {
 				#		/usr/bin/apt-get install -y \$pkgToInstall; \
 				#	fi; \
 				#done\""
-				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+				#source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libappindicator3-0.1-cil{,-dev})
 				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
