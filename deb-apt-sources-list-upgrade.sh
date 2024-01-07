@@ -116,9 +116,17 @@ upgradeSourcesList() {
 
 upgradeDebianDist() {
 #if command -v sudo 1>/dev/null 2>&1; then
-    if env | grep XDG_SESSION_TYPE=tty; then #check tty env
-        suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
+    if ! env | grep XDG_SESSION_TYPE=tty; then #check tty env
+		echo -e "\t>>> La mise à jour depuis un environnement graphique est deconseillée,"
+		echo -e "\t    il est préférable de basculer sous le tty pour éviter le verrouillage de la session graphique,"
+		acho -e "\t    ou a minima de desactiver tout écran de veille"
+		read -rp "continuer (y/N)" -n 1 sConfirmUpgrade
+	else
+		sConfirmUpgrade="y"
     fi
+	if [ "${sConfirmUpgrade,,}" = "y" ]; then
+        suExecCommandNoPreserveEnv "apt-get autoremove && apt-get update && apt-get upgrade && apt-get full-upgrade && apt-get dist-upgrade && apt-get autoremove" 
+	fi
 }
 
 main() {
