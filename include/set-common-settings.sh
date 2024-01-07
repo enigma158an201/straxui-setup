@@ -8,12 +8,12 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 sshd-config-settings() {
 	echo -e "\t>>> application des fichiers config sshd"
-	suExecCommand "for sshdfile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do \
+	for sshdfile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do \
 		mysshddst=\"/etc/ssh/sshd_config.d/\$sshdfile\"; \
 		mysshdsrc=\"${launchDir}\$mysshddst\"; \
 		if [ -d \"$(dirname \"\$mysshddst\")\" ] && [ -f \"\$mysshdsrc\" ]; then install -o root -g root -m 0744 -pv \"\$mysshdsrc\" \"\$mysshddst\"; fi; \
 	done; \
-	systemctl restart sshd.service"
+	systemctl restart sshd.service
 }
 disable-systemd-sleep() {
 	#AllowSuspend=yes				to	AllowSuspend=no
@@ -55,7 +55,7 @@ main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
 	set-newhostname 		# set new host name has to be done before sshd config
-	sshd-config-settings
+	suExecCommandNoPreserveEnv sshd-config-settings
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
 	if [ ! "${disableWireless^^}" = "N" ] && [ ! "$disableWireless" = "" ]; then disable-wireless-connections; fi
  	disable-cups-services
