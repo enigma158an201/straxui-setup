@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libxml|^shared-mime|^adwaita|^libcups|^network-manager"
+sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libxml|^shared-mime|^adwaita|^libcups|^network-manager|^policy"
 
 for pkg3 in gnome libreoff cups #bluez
 do
