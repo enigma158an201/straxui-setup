@@ -28,7 +28,8 @@ apt install -y \
     xfdesktop4 \
     xfwm4 \
     adwaita-qt \
-    qt5ct 
+    qt5ct \
+    xfce4-power-manager
 
 echo 
 echo xfce install complete, please reboot and issue 'startx'
