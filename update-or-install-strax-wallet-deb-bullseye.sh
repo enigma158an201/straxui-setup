@@ -83,7 +83,7 @@ main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
 		echo -e "/t>>> ajust hostname before ssh configuration"
-		suExecCommandNoPreserveEnv "bash -c \"${launchDir}/include/set-hostname.sh; exit\""
+		suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
 		echo -e "/t>>> create ssh keys pair"
 		bash -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
 
