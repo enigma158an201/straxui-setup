@@ -82,10 +82,9 @@ isDebianLike="$isUbuntuLike$isDebian$isDeepin"
 main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
-		echo -e "/t>>> install des paquets pré requis"
+		echo -e "/t>>> install des paquets pré requis et ajust hostname before ssh configuration"
 		#apt-get update && apt-get install ipcalc ipv6calc dnsutils jq curl;
-		suExecCommandNoPreserveEnv "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh  
-		echo -e \"/t>>> ajust hostname before ssh configuration\"
+		suExecCommandNoPreserveEnv "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \		
 		${launchDir}/include/set-common-settings.sh" # suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
 		echo -e "/t>>> create ssh keys pair"
 		bash -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
