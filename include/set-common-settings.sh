@@ -50,10 +50,10 @@ cronjob-disable-ipv6() {
 }
 set-newhostname() {
 	echo -e "\t>>> renommage de la machine suivant schéma modèle+distro"
-	${launchDir}/include/set-hostname.sh
+	eval "${launchDir}/include/set-hostname.sh"
 }
 main_common() {
-	source "${launchDir}/include/test-superuser-privileges.sh"
+	#source "${launchDir}/include/test-superuser-privileges.sh"
 	source "${launchDir}/include/file-edition.sh"
 	set-newhostname 		# set new host name has to be done before sshd config
 	sshd-config-settings
