@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libxml|^shared-mime|^adwaita|^libcups|^network-manager|^policy"
+sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libxml|^shared-mime|^adwaita|^libcups|^network-manager|^policy|^at-spi"
 
-for pkg3 in gnome libreoff cups plymouth hitori quadrapassel sane scan transmission tumbler #bluez
+for pkg3 in gnome libreoff cups plymouth hitori quadrapassel sane scan transmission tumbler lynx #bluez
 do
   for pkg1 in $(dpkg -l | grep ^ii | awk '{ print $2 }' | grep $pkg3 | grep -vE "$sExceptions")
   do
