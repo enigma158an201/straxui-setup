@@ -38,7 +38,7 @@ disable-wireless-connections() {
 }
 disable-cups-services() {
 	echo -e "\t>>> désactivation cups (impression)"
-	if (systemctl status cups-browsed.service 1>/dev/null) || (systemctl status cups.service 1>/dev/null); then
+	if (systemctl status cups-browsed.service 1>/dev/null) || (systemctl status cups.service 1>/dev/null || false); then
 		suExecCommand "systemctl disable --now cups-browsed.service; \
  		systemctl disable --now cups.service"
 	fi
@@ -49,7 +49,7 @@ cronjob-disable-ipv6() {
 }
 set-newhostname() {
 	echo -e "\t>>> renommage de la machine suivant schéma modèle+distro"
-	suExecCommand "bash -c ${launchDir}/include/set-hostname.sh" 
+	suExecCommand "${launchDir}/include/set-hostname.sh" 
 }
 main_common() {
 	source "${launchDir}/include/test-superuser-privileges.sh"
