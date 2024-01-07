@@ -8,12 +8,14 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 sshd-config-settings() {
 	echo -e "\t>>> application des fichiers config sshd"
-	suExecCommandNoPreserveEnv "for sshdfile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do \
-		mysshddst=\"/etc/ssh/sshd_config.d/\$sshdfile\"; \
-		mysshdsrc=\"${launchDir}\$mysshddst\"; \
-		if [ -d \"$(dirname \"\$mysshddst\")\" ] && [ -f \"\$mysshdsrc\" ]; then install -o root -g root -m 0744 -pv \"\$mysshdsrc\" \"\$mysshddst\"; fi; \
-	done; \
-	systemctl restart sshd.service"
+	for sshdfile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do
+		mysshddst="/etc/ssh/sshd_config.d/$sshdfile"
+		mysshdsrc="${launchDir}$mysshddst"
+		if [ -d "$(dirname "$mysshddst")" ] && [ -f "$mysshdsrc" ]; then 
+			install -o root -g root -m 0744 -pv "$mysshdsrc" "$mysshddst"
+		fi
+	done
+	systemctl restart sshd.service
 }
 disable-systemd-sleep() {
 	#AllowSuspend=yes				to	AllowSuspend=no
@@ -62,4 +64,4 @@ main_common() {
 	disable-systemd-sleep
  	cronjob-disable-ipv6
 }
-main_common
+suExecCommandNoPreserveEnv main_common
