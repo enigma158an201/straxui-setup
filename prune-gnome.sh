@@ -11,7 +11,7 @@ do
   done
 done
 
-for pkg2 in $(LANG=C apt search gnome | grep "install" | awk {'print $1'}) | grep -vE "$sExceptions")
+for pkg2 in $(LANG=C apt search gnome | grep "install" | awk {'print $1'} | grep -vE "$sExceptions")
 do
   echo $pkg2
   apt-get autoremove ${pkg2%%/*}
