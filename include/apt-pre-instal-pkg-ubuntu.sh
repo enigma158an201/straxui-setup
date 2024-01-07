@@ -63,12 +63,12 @@ aptUnbloatPkg() {
 		fi
 	done
 }
-#main_preInstall() {
-	#getDpkgListInstalled
+main_preInstall() {
+	getDpkgListInstalled
 	#checkDpkgInstalled "zip"
 	#read -rp ""
 	#checkDpkgInstalled "znimporte"
-	#aptPreinstallPkg
+	aptPreinstallPkg
 	#aptUnbloatPkg
-#}
-#main_preInstall
+}
+main_preInstall
