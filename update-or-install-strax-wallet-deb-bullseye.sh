@@ -83,11 +83,12 @@ main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [ ! "${upgradeStratis^^}" = "N" ] && [ ! "$upgradeStratis" = "" ]; then
 		echo -e "/t>>> install des paquets pré requis"
-		suExecCommandNoPreserveEnv "apt-get update && apt-get install ipcalc ipv6calc dnsutils jq curl" 
-		echo -e "/t>>> ajust hostname before ssh configuration"
-		suExecCommandNoPreserveEnv "${launchDir}/include/set-common-settings.sh" # suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
+		#apt-get update && apt-get install ipcalc ipv6calc dnsutils jq curl;
+		suExecCommandNoPreserveEnv "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh  
+		echo -e \"/t>>> ajust hostname before ssh configuration\"
+		${launchDir}/include/set-common-settings.sh" # suExecCommandNoPreserveEnv "${launchDir}/include/set-hostname.sh"
 		echo -e "/t>>> create ssh keys pair"
-		suExecCommandNoPreserveEnv "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
+		bash -c "${launchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
 
 		if [ ! "$isDebianLike" = "" ]; then
 			dlDir="/tmp/"
@@ -103,7 +104,7 @@ main_installStrax() {
 				#		/usr/bin/apt-get install -y \$pkgToInstall; \
 				#	fi; \
 				#done\""
-				source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
+				#source "${launchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				pkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2)
 				for pkgToInstall in "${pkgsToInstall[@]}"; do
 					isInstalled=$(checkDpkgInstalled "$pkgToInstall")
