@@ -3,8 +3,6 @@
 # to check if this file is error free:
 # sudo nft -c -f /etc/nftables.conf
 
-# 2024/03/30: nfttables config for stratis evm by enigma158an201
-
 flush ruleset
 
 # tcp dport { 53 } 									counter accept comment "count accepted input dns packets"
@@ -12,12 +10,10 @@ flush ruleset
 # tcp dport { 41122 }								counter accept "count accepted input ssh packets"
 
 table inet filter {
-	counter cnt_geth {
-		comment "count accepted input stratis evm / geth packets"
+	counter cnt_straxui {
+		comment "count accepted input straxui packets"
 	}
-	counter cnt_prysm {
-		comment "count accepted input stratis evm / prysm packets"
-	}
+
 	counter cnt_ssh {
 		comment "count accepted input ssh packets"
 	}
@@ -43,14 +39,12 @@ table inet filter {
 
 	chain TCP {
 		#type filter hook input priority filter; policy accept;
-		tcp dport 30303										counter name cnt_stratis_evm accept
-		tcp dport 13000										counter name cnt_prysm accept
+		tcp dport 17105										counter name cnt_straxui accept
+		tcp dport 16179										counter name cnt_straxui accept
 		tcp dport 41122 									counter name cnt_ssh accept
 	}
 
 	chain UDP {
 		# udp dport { 53 }									counter accept comment "count accepted input dns packets"
-		udp dport 30303										counter name cnt_stratis_evm accept
-		udp dport 12000										counter name cnt_prysm accept
 	}
 }
