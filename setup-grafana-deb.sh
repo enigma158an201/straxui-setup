@@ -26,7 +26,6 @@ installPrometheusDeb() {
 	sudo apt-get install -y prometheus	
 }
 
-
 installGrafanaDeb() {
 	echo -e "\t>>> Install prometheus / Grafana (repositories for debian)"
 	#1. Install the prerequisite packages:
@@ -49,6 +48,13 @@ installGrafanaDeb() {
 }
 main() {
 	bIsDebian="$(checkIfDebianId)"
-    echo -e "$bIsDebian"
+	echo -e "\t>>> debian check: $bIsDebian"
+	if $bIsDebian; then
+		installPrometheusDeb
+		installGrafanaDeb
+	else
+		exit 1
+	fi
+
 }
 main
