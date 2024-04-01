@@ -8,10 +8,10 @@ createValidator() {
     sudo useradd -m -s /bin/bash "${myUser}"
     sudo passwd -l "${myUser}"
     sudo usermod -aG "${myUser}"
-    su "${myUser}"
+    #su "${myUser}"
 }
 
-main(){
+main() {
     createValidator
 }
 main
