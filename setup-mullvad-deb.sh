@@ -32,5 +32,8 @@ installMullvadDeb() {
 main() {
 	bIsDebian="$(checkIfDebianId)"
     echo -e "$bIsDebian"
+	if $bIsDebian; then
+		installMullvadDeb
+	fi
 }
 main
