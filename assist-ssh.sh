@@ -63,7 +63,7 @@ remoteAssistedCommands() {
 	sAssistedUser=$1
 	installX11vnc
 	installOpensshServer
-	killall x11vnc
+	killall x11vnc || true
 	x11vnc -display :0 -localhost -nopw &
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
