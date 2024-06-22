@@ -11,6 +11,7 @@ sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 sAssistantIp=82.66.69.134
 tabAssistedUser=( david guillaume sky )
 sAssistUser=gwen
+sAssistedAccountUser=assist
 
 oldRemoteAssistedCommands() {
 	echo -e "\t>>>\$DISPLAY Value for assistant\n$DISPLAY"
@@ -66,7 +67,7 @@ remoteAssistedCommands() {
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -i "${sEd25519PrvKeyPath}" -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}"
-	ssh -vv -p ${sTunnelSshPort} -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}" "x11vnc -display :0 -localhost -nopw"
+	ssh -vv -p ${sTunnelSshPort} -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedAccountUser}@${sAssistantIp}" "x11vnc -display :0 -localhost -nopw"
 }
 selectUserAssistOrAssistedCommands() {
 	if [ ! $EUID = 0 ]; then
@@ -93,5 +94,4 @@ selectUserAssistOrAssistedCommands() {
 main() {
 	selectUserAssistOrAssistedCommands
 }
-
 main
