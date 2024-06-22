@@ -46,7 +46,8 @@ remoteAssistedCommands() {
 	installX11vnc
 	installOpensshServer
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
-	ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
+	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
+	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 }
 selectUserAssistOrAssistedCommands() {
 	if [ ! $EUID = 0 ]; then
