@@ -22,11 +22,18 @@ oldLocalAssistantCommands() {	#se connecter à localhost:5901
 	x11vnc -display :1 -rfbauth /chemin/vers/votre/fichier/de/mot_de_passe -via user@${sAssistantIp}
 }
 
-installX11vnc(){
+installX11vnc() {
 	if command -v x11vnc 1>/dev/null 2>&1; then
 		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
 	elif ! command -v x11vnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
 		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install x11vnc; fi
+	fi
+}
+installOpensshServer() {
+	if command -v sshd 1>/dev/null 2>&1; then
+		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
+	elif ! command -v sshd 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
+		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install openssh-server; fi
 	fi
 }
 localAssistantCommands() {
@@ -37,6 +44,7 @@ localAssistantCommands() {
 }
 remoteAssistedCommands() {
 	installX11vnc
+	installOpensshServer
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 }
