@@ -27,6 +27,8 @@ installX11vnc() {
 		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
 	elif ! command -v x11vnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
 		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install x11vnc; fi
+	else
+		exit 1
 	fi
 }
 installOpensshServer() {
@@ -34,10 +36,24 @@ installOpensshServer() {
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
 	elif ! command -v sshd 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
 		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install openssh-server; fi
+	else
+		exit 1
 	fi
 }
 localAssistantCommands() {
 	sAssistedUser=$1
+	if ! id "${sAssistedUser}"; then
+		if command -v sudo 1>/dev/null 2>&1; then
+			if command -v adduser 1>/dev/null 2>&1; then
+				sudo adduser --no-create-home "${sAssistedUser}"
+			else
+				sudo useradd -M "${sAssistedUser}"
+				sudo passwd david
+			fi
+		else
+			exit 1
+		fi
+	fi
 	#installX11vnc && 11vnc -nopw -display :0 -localhost
 	#ssh -R ${sTunnelSshPort}:localhost:${sAssistedSshPort} "${sAssistedUser}@${sAssistantIp}"
 	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} #"x11vnc -display :0 -localhost -nopw"
