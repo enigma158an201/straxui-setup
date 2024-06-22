@@ -57,8 +57,8 @@ localAssistantCommands() {
 	#fi
 	#installX11vnc && 11vnc -nopw -display :0 -localhost
 	#ssh -R ${sTunnelSshPort}:localhost:${sAssistedSshPort} "${sAssistedUser}@${sAssistantIp}"
-	echo -e "\t>>> give remote user name"
-	sRemoteUser=$(read -rp)
+	echo -e "\t>>> give remote user name, be careful to letter case !!!"
+	read -rp " " sRemoteUser
 	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "remmina -c vnc://${sRemoteUser}@localhost &" #"x11vnc -display :0 -localhost -nopw"
 	#remmina -c vnc://david@localhost &
 }
@@ -67,7 +67,7 @@ remoteAssistedCommands() {
 	installX11vnc
 	installOpensshServer
 	killall x11vnc || true
-	x11vnc -display :0 -localhost -nopw &
+	x11vnc -display :0 -localhost -nopw -forever &
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
