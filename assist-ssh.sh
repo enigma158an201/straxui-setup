@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 sAssistedSshPort=22
-sVncPort=5922 #5901
+sVncPort=5900 #5922 #5901
 sTunnelSshPort=49157 #49222 #22
 sEd25519PrvKeyPath=~/.ssh/id_ed25519
 sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
@@ -63,6 +63,7 @@ remoteAssistedCommands() {
 	sAssistedUser=$1
 	installX11vnc
 	installOpensshServer
+	killall x11vnc
 	x11vnc -display :0 -localhost -nopw &
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
