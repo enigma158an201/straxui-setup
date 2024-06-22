@@ -31,12 +31,12 @@ installX11vnc(){
 }
 localAssistantCommands() {
 	sAssistedUser=$1
-	installX11vnc
+	#installX11vnc
 	#x11vnc -nopw -display :0 -localhost
 	ssh -R ${sTunnelSshPort}:localhost:${sAssistedSshPort} "${sAssistedUser}@${sAssistantIp}"
 }
 remoteAssistedCommands() {
-	#installX11vnc
+	installX11vnc
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 }
