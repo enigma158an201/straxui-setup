@@ -5,7 +5,7 @@ set -euo pipefail # set -euxo pipefail
 
 sAssistedSshPort=22
 sVncPort=5901
-sTunnelSshPort=49222
+sTunnelSshPort=49157 #49222 #22
 sEd25519PrvKeyPath=~/.ssh/id_ed25519
 sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 sAssistantIp=82.66.69.134
