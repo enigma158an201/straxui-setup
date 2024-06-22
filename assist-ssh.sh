@@ -5,7 +5,7 @@ set -euo pipefail # set -euxo pipefail
 
 sAssistedSshPort=22
 sVncPort=5901
-sTunnelSshPort=2222
+sTunnelSshPort=49222
 sEd25519PrvKeyPath=~/.ssh/id_ed25519
 sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 sAssistantIp=82.66.69.134
@@ -40,7 +40,7 @@ localAssistantCommands() {
 	sAssistedUser=$1
 	#installX11vnc && 11vnc -nopw -display :0 -localhost
 	#ssh -R ${sTunnelSshPort}:localhost:${sAssistedSshPort} "${sAssistedUser}@${sAssistantIp}"
-	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
+	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} #"x11vnc -display :0 -localhost -nopw"
 }
 remoteAssistedCommands() {
 	installX11vnc
@@ -49,7 +49,7 @@ remoteAssistedCommands() {
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -i "${sEd25519PrvKeyPath}" -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}"
-	ssh -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}"
+	ssh -p ${sTunnelSshPort} -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}" "x11vnc -display :0 -localhost -nopw"
 }
 selectUserAssistOrAssistedCommands() {
 	if [ ! $EUID = 0 ]; then
