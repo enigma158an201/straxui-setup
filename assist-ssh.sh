@@ -43,6 +43,7 @@ localAssistantCommands() {
 	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} #"x11vnc -display :0 -localhost -nopw"
 }
 remoteAssistedCommands() {
+	sAssistedUser=$1
 	installX11vnc
 	installOpensshServer
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
@@ -61,7 +62,7 @@ selectUserAssistOrAssistedCommands() {
 	iAssisted=0
 	for sAssistedUser in "${tabAssistedUser[@]}"; do
 		if [ "${sLoggedUser}" = "${sAssistedUser}" ]; then
-			remoteAssistedCommands
+			remoteAssistedCommands "${sLoggedUser}"
 			iAssisted=$(( iAssisted + 1 )) # bAssisted=true
 		#else 
 			#bAssisted=$(${bAssisted:-} || echo "false")
