@@ -67,7 +67,7 @@ remoteAssistedCommands() {
 	#ssh -p ${sTunnelSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -i "${sEd25519PrvKeyPath}" -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedUser}@${sAssistantIp}"
-	ssh -vv -p ${sTunnelSshPort} -R "${sVncPort}:localhost:${sVncPort}" "${sAssistedAccountUser}@${sAssistantIp}" "x11vnc -display :0 -localhost -nopw"
+	ssh -vv -p ${sTunnelSshPort} -NR "${sVncPort}:localhost:${sVncPort}" "${sAssistedAccountUser}@${sAssistantIp}" "x11vnc -display :0 -localhost -nopw"
 }
 selectUserAssistOrAssistedCommands() {
 	if [ ! $EUID = 0 ]; then
