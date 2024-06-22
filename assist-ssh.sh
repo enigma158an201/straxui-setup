@@ -9,7 +9,7 @@ sTunnelSshPort=49157 #49222 #22
 sEd25519PrvKeyPath=~/.ssh/id_ed25519
 sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 sAssistantIp=82.66.69.134
-tabAssistedUser=( david guillaume sky )
+tabAssistedUser=( assist david guillaume sky )
 sAssistUser=gwen
 sAssistedAccountUser=assist
 
@@ -43,21 +43,24 @@ installOpensshServer() {
 }
 localAssistantCommands() {
 	sAssistedUser=$1
-	if ! id "${sAssistedUser}"; then
-		if command -v sudo 1>/dev/null 2>&1; then
-			if command -v adduser 1>/dev/null 2>&1; then
-				sudo adduser --no-create-home "${sAssistedUser}"
-			else
-				sudo useradd -M "${sAssistedUser}"
-				sudo passwd david
-			fi
-		else
-			exit 1
-		fi
-	fi
+	#if ! id "${sAssistedUser}"; then
+	#	if command -v sudo 1>/dev/null 2>&1; then
+	#		if command -v adduser 1>/dev/null 2>&1; then
+	#			sudo adduser --no-create-home "${sAssistedUser}"
+	#		else
+	#			sudo useradd -M "${sAssistedUser}"
+	#			sudo passwd david
+	#		fi
+	#	else
+	#		exit 1
+	#	fi
+	#fi
 	#installX11vnc && 11vnc -nopw -display :0 -localhost
 	#ssh -R ${sTunnelSshPort}:localhost:${sAssistedSshPort} "${sAssistedUser}@${sAssistantIp}"
-	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} #"x11vnc -display :0 -localhost -nopw"
+	echo -e "\t>>> give remote user name"
+	sRemoteUser=$(read -rp)
+	ssh -p ${sAssistedSshPort} localhost -L ${sVncPort}:localhost:${sVncPort} "remmina -c vnc://${sRemoteUser}@localhost &" #"x11vnc -display :0 -localhost -nopw"
+	#remmina -c vnc://david@localhost &
 }
 remoteAssistedCommands() {
 	sAssistedUser=$1
@@ -89,7 +92,8 @@ selectUserAssistOrAssistedCommands() {
 	done
 
 	if [ ${iAssisted} -eq 0 ] ; then #! ${bAssisted}; then
-		if [ "${sLoggedUser}" = "${sAssistUser}" ]; then 	localAssistantCommands "${sAssistUser}"; fi #sAssistedUser
+
+		if [ "${sLoggedUser}" = "${sAssistUser}" ]; then 	localAssistantCommands "${sAssistedUser}"; fi #sAssistUser
 	fi
 }
 
