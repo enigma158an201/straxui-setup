@@ -130,7 +130,7 @@ remoteAssistedCommands() {
 	if [ "${sLocalSessionType}" = "x11" ]; then
 		echo -e "\t>>> x11 session detected, processsing with x11vnc"
 		installX11vnc
-		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -rfbportv6 -1 &
+		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -speeds dsl -rfbportv6 -1 &
 		
 	elif [ "${sLocalSessionType}" = "wayland" ] && false; then #wayvnc works only with wlroots based WM/DE
 		echo -e "\t>>> wayland & wlroots based session detected, processsing with wayvnc"
