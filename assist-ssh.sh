@@ -22,6 +22,8 @@ sRemoteVncPort=5900 #5922 #5901
 sEd25519PrvKeyPath=~/.ssh/id_ed25519
 sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 tabAssistedUser=( assist david guillaume sky )
+sLocalDisplay=$DISPLAY
+sLocalSessionType=${XDG_SESSION_TYPE,,}
 
 oldRemoteAssistedCommands() {
 	echo -e "\t>>>\$DISPLAY Value for assistant\n$DISPLAY"
@@ -54,24 +56,48 @@ oldCreateUser() {
 	fi
 }
 
-installX11vnc() {
-	if command -v x11vnc 1>/dev/null 2>&1; then
-		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
-	elif ! command -v x11vnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install x11vnc; fi
-	else
-		exit 1
-	fi
-}
 installOpensshServer() {
 	if command -v sshd 1>/dev/null 2>&1; then
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
 	elif ! command -v sshd 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt 1>/dev/null 2>&1; then 	sudo apt install openssh-server; fi
+		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install openssh-server; fi
 	else
 		exit 1
 	fi
 }
+installX11vnc() {
+	if command -v x11vnc 1>/dev/null 2>&1; then
+		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
+	elif ! command -v x11vnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
+		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install x11vnc; fi
+	else
+		exit 1
+	fi
+}
+installWayvnc() { #wayvnc works only with wlroots based WM/DE
+	if command -v wayvnc 1>/dev/null 2>&1; then
+		echo -e "\t>>> wayvnc already installed, skipping $0 !!!"
+	elif ! command -v wayvnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
+		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install wayvnc; fi
+	else
+		exit 1
+	fi
+	sWayvncConf=$HOME/.config/wayvnc/config
+	if [ ! -e "${sWayvncConf}" ]; then
+		mkdir -p "$(dirname "${sWayvncConf}")"
+		echo -e "address=127.0.0.0\nusername=$(whoami)\n# port=5900\n# xkb_layout=fr # The keyboard layout to use for key code lookup.            Default: XKB_DEFAULT_LAYOUT or system default." > "${sWayvncConf}"
+	fi
+}
+installWaypipe() {
+	if command -v waypipe 1>/dev/null 2>&1; then
+		echo -e "\t>>> waypipe already installed, skipping $0 !!!"
+	elif ! command -v waypipe 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
+		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install waypipe; fi
+	else
+		exit 1
+	fi
+}
+
 localAssistantCommands() {
 	echo -e "\t>>> give remote user name, be careful to letter case !!!"
 	read -rp " " sAssitedRemoteUser
@@ -79,10 +105,23 @@ localAssistantCommands() {
 }
 remoteAssistedCommands() {
 	sAssistedUser=$1
-	installX11vnc
 	installOpensshServer
-	killall x11vnc || true
-	x11vnc -display :0 -localhost -nopw -forever &
+	for sVncSrvApp in x11vnc wayvnc waypipe; do
+		killall ${sVncSrvApp} || true
+	done
+	if [ "${sLocalSessionType}" = "x11" ]; then
+		echo -e "\t>>> x11 session detected, processsing with x11vnc"
+		installX11vnc
+		x11vnc -display "${sLocalDisplay}" -localhost -nopw -forever &
+	elif [ "${sLocalSessionType}" = "wayland" ] && false; then #wayvnc works only with wlroots based WM/DE
+		echo -e "\t>>> wayland & wlroots based session detected, processsing with wayvnc"
+		installWayvnc
+		wayvnc # to complete
+	elif [ "${sLocalSessionType}" = "wayland" ] && true; then
+		echo -e "\t>>> wayland & non wlroots based session detected, processsing with waypipe"
+		installWaypipe
+		#waypipe ssh user@127.0.0.1 wayland
+	fi
 	ssh -vv -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}" #
 }
 selectUserAssistOrAssistedCommands() {
