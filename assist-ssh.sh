@@ -5,9 +5,12 @@ set -euo pipefail # set -euxo pipefail
 
 # ReadMe before use: this scrip intends to be used for establishing a ssh reverse tunneling for between local and remote machines
 # for remote assisted machine: 
-#	1. install openssh-server & x11vnc, 
-#	2. launch passwordless x11vnc process with localhost only access
+#	1. install openssh-server & x11vnc
+#	2. kills existing x11vnc, then launch passwordless x11vnc process with localhost only access
 #	3. create a tunnel with IP and port given in variables sAssistantIp and sTunnelSshPort
+# for local assistant machine:
+#	4. ask for remote username for vnc purpose
+#	5. one line connect to ssh tunnel and vnc port remotely opened
 
 sAssistantIp=82.66.69.134
 sTunnelSshPort=49157 #49222 #22
