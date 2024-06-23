@@ -110,7 +110,7 @@ installShortcuts() {
 	sShctName=assist.desktop
 	for sShortcutF in $HOME/{Bureau,.local/share/applications}; do
 		sShortcut=${sShortcutF}/${sShctName}
-		echo -e "[Desktop Entry]\nName=Assistance Gwen\n#Exec=bash -i $HOME/bin/gwen/straxui-setup/${sShctName}\nExec=terminator -e \"bash -i; $HOME/bin/gwen/straxui-setup/${sShctName}\"\n#Terminal=true\nType=Application\nIcon=network-transmit\nComment=Lance le reverse tunnel SSH pour connexion bureau distant via VNC " > "${sShortcut}"
+		echo -e "[Desktop Entry]\nName=Assistance Gwen\n#Exec=bash -i $HOME/bin/gwen/straxui-setup/${sShctName}\nExec=terminator -X bash -ic $HOME/bin/gwen/straxui-setup/${sShctName}\n#Terminal=true\nType=Application\nIcon=network-transmit\nComment=Lance le reverse tunnel SSH pour connexion bureau distant via VNC " > "${sShortcut}"
 		if [ ! -x truc ]; then chmod +x "${sShortcut}"; fi 
 	done
 }
