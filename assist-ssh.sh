@@ -19,8 +19,8 @@ sLocalAssistedUser=assist
 
 sAssistedRemoteSshPort=22
 sRemoteVncPort=5900 #5922 #5901
-sEd25519PrvKeyPath=~/.ssh/id_ed25519
-sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
+#sEd25519PrvKeyPath=~/.ssh/id_ed25519
+#sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 tabAssistedUser=( assist david guillaume sky )
 sLocalDisplay=$DISPLAY
 sLocalSessionType=${XDG_SESSION_TYPE,,}
@@ -28,7 +28,7 @@ sLocalSessionType=${XDG_SESSION_TYPE,,}
 oldRemoteAssistedCommands() {
 	echo -e "\t>>>\$DISPLAY Value for assistant\n$DISPLAY"
 	ssh-keygen -t ed25519
-	ssh-copy-id -i "${sEd25519PubKeyPath}" ${sLocalAssistantUser}@${sAssistantIp}
+	#ssh-copy-id -i "${sEd25519PubKeyPath}" ${sLocalAssistantUser}@${sAssistantIp}
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sTunnelSshPort} localhost -L ${sRemoteVncPort}:localhost:${sRemoteVncPort} "x11vnc -display :0 -localhost -nopw"
 	#ssh -p ${sAssistedRemoteSshPort} localhost -L ${sRemoteVncPort}:localhost:${sRemoteVncPort} "x11vnc -display :0 -localhost -nopw"
