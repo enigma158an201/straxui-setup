@@ -141,7 +141,7 @@ remoteAssistedCommands() {
 		installWaypipe
 		#waypipe ssh user@127.0.0.1 wayland
 	fi
-	sleep 1
+	sleep 2
 	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t>>> Success"; fi
 }
 selectUserAssistOrAssistedCommands() {
