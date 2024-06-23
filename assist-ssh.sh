@@ -56,6 +56,15 @@ oldCreateUser() {
 	fi
 }
 
+installTerminator() {
+	if command -v terminator 1>/dev/null 2>&1; then
+		echo -e "\t>>> terminator already installed, skipping $0 !!!"
+	elif ! command -v terminator 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
+		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install terminator; fi
+	else
+		exit 1
+	fi
+}
 installOpensshServer() {
 	if command -v sshd 1>/dev/null 2>&1 || [ -x /usr/sbin/sshd ]; then
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
@@ -97,7 +106,13 @@ installWaypipe() {
 		exit 1
 	fi
 }
-
+installShortcuts() {
+	sShctName=assist.desktop
+	for sShortcuts in $(echo "$HOME/{Bureau,.local/share/applications}/${sShctName}"); do
+		echo -e "[Desktop Entry]\nName=Assistance Gwen\nExec=$HOME/bin/gwen/straxui-setup/${sShctName}\nTerminal=true\nType=Application\nComment=Lance le tunnel SSH pouru connexion bureau distant via VNC " > "${sShortcuts}"
+		if [ ! -x truc ]; then chmod +x "${sShortcuts}"; fi 
+	done
+}
 localAssistantCommands() {
 	echo -e "\t>>> give remote user name, be careful to letter case !!!"
 	read -rp " " sAssitedRemoteUser
@@ -105,6 +120,7 @@ localAssistantCommands() {
 }
 remoteAssistedCommands() {
 	sAssistedUser=$1
+	installTerminator
 	installOpensshServer
 	for sVncSrvApp in x11vnc wayvnc waypipe; do
 		killall ${sVncSrvApp} || true
