@@ -108,9 +108,10 @@ installWaypipe() {
 }
 installShortcuts() {
 	sShctName=assist.desktop
-	for sShortcuts in $(echo "$HOME/{Bureau,.local/share/applications}/${sShctName}"); do
-		echo -e "[Desktop Entry]\nName=Assistance Gwen\nExec=$HOME/bin/gwen/straxui-setup/${sShctName}\nTerminal=true\nType=Application\nComment=Lance le tunnel SSH pouru connexion bureau distant via VNC " > "${sShortcuts}"
-		if [ ! -x truc ]; then chmod +x "${sShortcuts}"; fi 
+	for sShortcutF in $HOME/{Bureau,.local/share/applications}; do
+		sShortcut=${sShortcutF}/${sShctName}
+		echo -e "[Desktop Entry]\nName=Assistance Gwen\nExec=$HOME/bin/gwen/straxui-setup/${sShctName}\nTerminal=true\nType=Application\nComment=Lance le tunnel SSH pouru connexion bureau distant via VNC " > "${sShortcut}"
+		if [ ! -x truc ]; then chmod +x "${sShortcut}"; fi 
 	done
 }
 localAssistantCommands() {
@@ -122,6 +123,7 @@ remoteAssistedCommands() {
 	sAssistedUser=$1
 	installTerminator
 	installOpensshServer
+	installShortcuts
 	for sVncSrvApp in x11vnc wayvnc waypipe; do
 		killall ${sVncSrvApp} || true
 	done
