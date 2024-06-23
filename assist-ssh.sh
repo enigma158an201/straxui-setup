@@ -130,7 +130,7 @@ remoteAssistedCommands() {
 	if [ "${sLocalSessionType}" = "x11" ]; then
 		echo -e "\t>>> x11 session detected, processsing with x11vnc"
 		installX11vnc
-		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever &
+		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms &
 	elif [ "${sLocalSessionType}" = "wayland" ] && false; then #wayvnc works only with wlroots based WM/DE
 		echo -e "\t>>> wayland & wlroots based session detected, processsing with wayvnc"
 		installWayvnc
@@ -140,7 +140,7 @@ remoteAssistedCommands() {
 		installWaypipe
 		#waypipe ssh user@127.0.0.1 wayland
 	fi
-	ssh -vv -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}" #
+	ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}" #
 }
 selectUserAssistOrAssistedCommands() {
 	if [ ! $EUID = 0 ]; then
