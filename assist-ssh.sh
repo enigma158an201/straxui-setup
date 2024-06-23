@@ -142,6 +142,7 @@ remoteAssistedCommands() {
 		#waypipe ssh user@127.0.0.1 wayland
 	fi
 	sleep 2
+	echo -e "\>>> Press Ctrl+C to exit connection"
 	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t>>> Success"; fi
 }
 selectUserAssistOrAssistedCommands() {
