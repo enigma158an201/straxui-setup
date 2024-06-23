@@ -57,7 +57,7 @@ oldCreateUser() {
 }
 
 installOpensshServer() {
-	if command -v sshd 1>/dev/null 2>&1; then
+	if command -v sshd 1>/dev/null 2>&1 || [ -x /usr/sbin/sshd ]; then
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
 	elif ! command -v sshd 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
 		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install openssh-server; fi
