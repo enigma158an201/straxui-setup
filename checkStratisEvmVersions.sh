@@ -26,27 +26,25 @@ BBlue='\033[1;34m'        # Blue
 # BPurple='\033[1;35m'      # Purple
 # BCyan='\033[1;36m'        # Cyan
 # BWhite='\033[1;37m'       # White
-
-
-bold=$(tput bold)
+# bold=$(tput bold)
 
 sArch=amd64
 sSystem=linux
 sRepoFileFormat=tar.gz
-sStratisHome=/media/CommonData/telechargements/stratisEVM		#sStratisHome=$HOME/data/mainnet
-sBeaconBin=${sStratisHome}/beacon-chain							#sDepositBin=${sStratisHome}/deposit
-sGethBin=${sStratisHome}/geth
-sValidatorBin=${sStratisHome}/validator							#tLocalBins=("${sBeaconBin}" "${sGethBin}" "${sValidatorBin}")	#"${sDepositBin}"
+sStratisRepoHome=/media/CommonData/telechargements/stratisEVM		#sStratisRepoHome=$HOME/data/mainnet
+sBeaconChainBin=${sStratisRepoHome}/beacon-chain							#sDepositBin=${sStratisRepoHome}/deposit
+sGethBin=${sStratisRepoHome}/geth
+sValidatorBin=${sStratisRepoHome}/validator							#tLocalBins=("${sBeaconChainBin}" "${sGethBin}" "${sValidatorBin}")	#"${sDepositBin}"
 sProjectOwner=stratisproject
-declare -A tStratisFile=(["beacon"]="beacon" ["geth"]="geth" ["validator"]="validator")
-declare -A tStratisRepoName=(["beacon"]="prysm-stratis" ["geth"]="go-stratis" ["validator"]="prysm-stratis")
-declare -A tStratisRepoOwnerAndName=(["beacon"]="${sProjectOwner}/${tStratisRepoName[beacon]}" ["geth"]="${sProjectOwner}/${tStratisRepoName[geth]}" ["validator"]="${sProjectOwner}/${tStratisRepoName[validator]}")
+declare -A tStratisFile=(["beacon-chain"]="beacon-chain" ["geth"]="geth" ["validator"]="validator")
+declare -A tStratisRepoName=(["beacon-chain"]="prysm-stratis" ["geth"]="go-stratis" ["validator"]="prysm-stratis")
+declare -A tStratisRepoOwnerAndName=(["beacon-chain"]="${sProjectOwner}/${tStratisRepoName[beacon-chain]}" ["geth"]="${sProjectOwner}/${tStratisRepoName[geth]}" ["validator"]="${sProjectOwner}/${tStratisRepoName[validator]}")
 sStratisEvmUrl=https://api.github.com/repos/${sProjectOwner}/
-sBeaconUrl=${sStratisEvmUrl}${tStratisRepoName[beacon]}/releases/latest		#sStratisEvmUrl=https://api.github.com/repos/stratisproject/prysm-stratis
+sBeaconUrl=${sStratisEvmUrl}${tStratisRepoName[beacon-chain]}/releases/latest		#sStratisEvmUrl=https://api.github.com/repos/stratisproject/prysm-stratis
 sGethUrl=${sStratisEvmUrl}${tStratisRepoName[geth]}/releases/latest
-sValidatorUrl=${sStratisEvmUrl}${tStratisRepoName[validator]}/releases/latest	#sDepositUrl=${sStratisHome}/deposit
-declare -A tRepoUrl=(["beacon"]="${sBeaconUrl}" ["geth"]="${sGethUrl}" ["validator"]="${sValidatorUrl}")
-declare -A tLocalBin=(["beacon"]="${sBeaconBin}" ["geth"]="${sGethBin}" ["validator"]="${sValidatorBin}")
+sValidatorUrl=${sStratisEvmUrl}${tStratisRepoName[validator]}/releases/latest	#sDepositUrl=${sStratisRepoHome}/deposit
+declare -A tRepoUrl=(["beacon-chain"]="${sBeaconUrl}" ["geth"]="${sGethUrl}" ["validator"]="${sValidatorUrl}")
+declare -A tLocalBin=(["beacon-chain"]="${sBeaconChainBin}" ["geth"]="${sGethBin}" ["validator"]="${sValidatorBin}")
 
 getLocalBinVersion() {
 	sBinPath=${1}
@@ -89,6 +87,14 @@ getGhRepoReleases() {
 	sProject=${1}
 	gh release list --repo "${sProject}" #| grep --color=auto -i latest
 }
+dlGhReleaseTarball() {
+	sProject=${1}
+	sBeginFilename=${2}
+	#cd "${sStratisRepoHome}" || exit 1
+	#gh release download --skip-existing --repo "${sProject}" --pattern "*$sBeginFilename*" --pattern "*$sSystem*" --pattern "*$sArch*" --pattern "*$sRepoFileFormat"
+	gh release download --dir "${sStratisRepoHome}" --skip-existing --repo "${sProject}" --pattern "*$sBeginFilename*$sSystem*$sArch*$sRepoFileFormat"
+	#echo $?
+}
 preRequisitesInstall() {
 	if command -v sudo 1>dev/null 2>&1; then
 		if command -v apt-get 1>dev/null 2>&1; then
@@ -116,10 +122,11 @@ main() {
 	done
 }
 test() {
-	for sRepoName in "${tStratisFile[@]}"; do
-		sOwnerAndRepo="${tStratisRepoOwnerAndName[$sRepoName]}"
-		echo -e "\t>>> Getting repo ${BBlue}${sOwnerAndRepo}$normal releases for ${BBlue}${sRepoName}${normal} binary, please wait!"
+	for sBinFileName in "${tStratisFile[@]}"; do
+		sOwnerAndRepo="${tStratisRepoOwnerAndName[$sBinFileName]}"
+		echo -e "\t>>> Getting repo ${BBlue}${sOwnerAndRepo}$normal releases for ${BBlue}${sBinFileName}${normal} binary, please wait!"
 		getGhRepoReleases "${sOwnerAndRepo}" #gitRepoBinVersion ""
+		if true; then 	dlGhReleaseTarball "${sOwnerAndRepo}" "${sBinFileName}"; fi #|| echo -e "\t>>> File Already downloaded"
 	done
 }
 #preRequisitesInstall
