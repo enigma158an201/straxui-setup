@@ -103,7 +103,7 @@ preRequisitesInstall() {
 			if ! command -v curl 1>dev/null 2>&1; then 		sudo apt-get install curl; fi	#curl
 		fi		
 	fi
-	if [ -d "$HOME/.config/gh" ] || false; then 			gh auth login; fi
+	if [ -d "$HOME/.config/gh" ] || ! gh auth status; then 	gh auth login; fi
 }
 main() {
 	for sStratisFile in "${tStratisFile[@]}"; do #for sStratisUrl in "${tRepoUrl[@]}"; do
