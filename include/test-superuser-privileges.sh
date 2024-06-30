@@ -78,21 +78,21 @@ getSuCmdNoPreserveEnv() {			#set +x
 	else																											suCmd="su - -c"; fi #"su - -p -c"
 	echo "$suCmd"
 }
-
-getSuQuotes() {
-	#if [ -x /usr/bin/sudo ]; then	 			mySuQuotes=(false)
-	#elif [ -x /usr/bin/doas ]; then	 		mySuQuotes=(false)
-	#else										mySuQuotes=('"')
-	#fi
-	if [ ! "$sudoPath" = "false" ] || [ ! "$doasPath" = "false" ]; then				
-		if [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] || [ ! "$bDoasUser" = "false" ]; then	
-												mySuQuotes="false"
-		else									mySuQuotes=('"')
-		fi
-	else										mySuQuotes=('"')
-	fi
-	echo "${mySuQuotes[@]}"
-}
+# removed
+# getSuQuotes() {
+# 	#if [ -x /usr/bin/sudo ]; then	 			mySuQuotes=(false)
+# 	#elif [ -x /usr/bin/doas ]; then	 		mySuQuotes=(false)
+# 	#else										mySuQuotes=('"')
+# 	#fi
+# 	if [ ! "$sudoPath" = "false" ] || [ ! "$doasPath" = "false" ]; then				
+# 		if [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] || [ ! "$bDoasUser" = "false" ]; then	
+# 												mySuQuotes="false"
+# 		else									mySuQuotes=('"')
+# 		fi
+# 	else										mySuQuotes=('"')
+# 	fi
+# 	echo "${mySuQuotes[@]}"
+# }
 # shellcheck disable=SC2086
 suExecCommand() {
 	sCommand="$*"
