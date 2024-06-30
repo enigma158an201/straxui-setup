@@ -12,7 +12,6 @@ osReleaseFile=/etc/os-release
 getSystemdHostnameFileContent() {
 	cat "$systemdHostnameFile"
 }
-
 getOsRelease() {
 	if [ -r "${osReleaseFile}" ]; then
 		sOsIdLine=$(grep -i '^ID=' "${osReleaseFile}")
@@ -21,7 +20,6 @@ getOsRelease() {
 		return 1
 	fi
 }
-
 getProductName() {
 	if command -v dmidecode 1>/dev/null 2>&1; then
 		dmidecode -s system-product-name #sHardwareModel=$()
@@ -29,7 +27,6 @@ getProductName() {
 		return 1
 	fi
 }
-
 getNewHostname() {
 	if sHardwareModel=$(getProductName) && sOsId=$(getOsRelease); then
 		echo "${sHardwareModel,,}-${sOsId}"
@@ -37,10 +34,9 @@ getNewHostname() {
 		return 1
 	fi
 }
-
 updateHostname() {
 	if [ ! "${sOldHostname}" = "${sNewHostname}" ]; then
-		echo " > le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${systemdHostnameFile}"
+		echo -e "\t>>> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${systemdHostnameFile}"
 		if [ -w "${systemdHostnameFile}" ]; then		
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
 		elif [ -r "${systemdHostnameFile}" ]; then
@@ -50,10 +46,9 @@ updateHostname() {
 		fi
 	fi
 }
-
 updateHosts() {
 	if (grep -w "${sOldHostname}" "${hostsFile}" && ! grep -w "${sNewHostname}" "${hostsFile}" ); then
-		echo " > le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${hostsFile}"
+		echo -e "\t>>> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${hostsFile}"
 		if [ -w "${hostsFile}" ]; then
 			echo "-w"
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${hostsFile}"
@@ -72,7 +67,7 @@ main_set_hostname() {
 	sOldHostname="$(getSystemdHostnameFileContent)" #$(cat $systemdHostnameFile)
 	sNewHostname="$(getNewHostname)"
 	#replace old hostname by new one if needed
-	#updateHostname
+	updateHostname
 	updateHosts
 }
 main_set_hostname
