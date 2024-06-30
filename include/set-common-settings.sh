@@ -5,6 +5,7 @@ set -euo pipefail #; set -x
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
+source "${launchDir}/include/file-edition.sh"
 
 sshd-config-settings() {
 	echo -e "\t>>> application des fichiers config sshd"
@@ -54,7 +55,6 @@ set-newhostname() {
 }
 main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"
-	source "${launchDir}/include/file-edition.sh"
 	whoami
 	set-newhostname 		# set new host name has to be done before sshd config
 	if command -v sshd 1>/dev/null 2>&1; then sshd-config-settings; fi
