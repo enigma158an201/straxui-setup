@@ -22,7 +22,6 @@ sRemoteVncPort=5900 #5922 #5901
 #sEd25519PrvKeyPath=~/.ssh/id_ed25519
 #sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 tabAssistedUser=( assist david guillaume sky )
-sLocalDisplay=$(getLocalDisplay) #$DISPLAY
 sLocalSessionType=${XDG_SESSION_TYPE,,}
 
 oldRemoteAssistedCommands() {
@@ -176,7 +175,7 @@ selectUserAssistOrAssistedCommands() {
 		fi
 	fi
 }
-
+sLocalDisplay=$(getLocalDisplay) #$DISPLAY
 main() {
 	selectUserAssistOrAssistedCommands
 }
