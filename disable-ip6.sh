@@ -20,7 +20,8 @@ blacklist-ip6-kernel-modules-sysctl() {
 	myip6bcklsrc="${launchDir}$myip6bckldst"
 	if [ ! -f "$myip6bckldst" ]; then
 		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
-		suExecCommand "mkdir -p /etc/sysctl.d/; install -o root -g root -m 0744 -pv $myip6bcklsrc $myip6bckldst"
+		suExecCommand "mkdir -p \"$(dirname "$myip6bckldst")\""
+		suExecCommand "install -o root -g root -m 0744 -pv $myip6bcklsrc $myip6bckldst"
 	fi
 }
 blacklist-ip6-kernel-modules-grub() {
