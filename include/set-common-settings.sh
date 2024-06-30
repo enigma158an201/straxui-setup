@@ -57,11 +57,15 @@ main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"
 	whoami
 	set-newhostname 		# set new host name has to be done before sshd config
-	if command -v sshd 1>/dev/null 2>&1; then sshd-config-settings; fi
+	echo -e "\t>>> initialisation des paramètres du serveur ssh"
+	if command -v sshd 1>/dev/null 2>&1; then 										sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
-	if [ ! "${disableWireless^^}" = "N" ] && [ ! "$disableWireless" = "" ]; then disable-wireless-connections; fi
+	if [ ! "${disableWireless^^}" = "N" ] && [ ! "$disableWireless" = "" ]; then 	disable-wireless-connections; fi
+	echo -e "\t>>> désactivation de cups"
  	disable-cups-services
+	echo -e "\t>>> désactivation de systemd-sleep"
 	disable-systemd-sleep
+	echo -e "\t>>> désactivation de ipv6"
  	cronjob-disable-ipv6
 }
 main_common
