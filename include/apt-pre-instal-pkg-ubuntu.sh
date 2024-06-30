@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail #; set -x
 
-source ./apt-functions.sh
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+source "${launchDir}/include/apt-functions.sh"
 
 aptPreinstallPkg() {
 	declare -a pkgsToInstall

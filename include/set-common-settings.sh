@@ -33,9 +33,9 @@ disable-systemd-sleep() {
 }
 disable-wireless-connections() {
 	echo -e "\t>>> désactivation des connexions wireless"
-	if (systemctl status wpa_supplicant.service 1>/dev/null); then	systemctl disable --now wpa_supplicant.service; fi
+	if (systemctl status wpa_supplicant.service 1>/dev/null); then 	systemctl disable --now wpa_supplicant.service; fi
  	if (command -v nmcli 1>/dev/null 2>&1); then 					nmcli radio wifi off; fi
-	if (command -v rfkill 1>/dev/null 2>&1); then					rfkill block wlan bluetooth; fi
+	if (command -v rfkill 1>/dev/null 2>&1); then 					rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	echo -e "\t>>> désactivation cups (impression)"
