@@ -104,7 +104,7 @@ suExecCommand() {
 	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	echo "${sCommand}"
 	#elif [ "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 		echo $sCommand
 	if [ ! "$EUID" = "0" ]; then 									eval "$sPfxSu ${sCommand}"
-	elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	eval "${sCommand}"
+	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	eval "${sCommand}"
 	elif [ "$EUID" = "0" ]; then 									eval "${sCommand}"
 	fi	
 }
@@ -131,7 +131,7 @@ main_SU(){
 	bSudoersUser="$(checkSudoers)"
 	if [ ! "$doasPath" = "false" ]; then 							bDoasUser="$(checkDoasUser)"
 	else 															bDoasUser="false"; fi
-	suQuotes="$(getSuQuotes)"
+	#suQuotes="$(getSuQuotes)"
 	if ! sPfxSu="$(getSuCmd) "; then 								exit 01; fi
 	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 				exit 01; fi
 	#tests
