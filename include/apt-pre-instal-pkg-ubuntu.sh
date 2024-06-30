@@ -7,14 +7,14 @@ source "${launchDir}/include/apt-functions.sh"
 
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
-	pkgsToInstall=(net-tools wget curl tar zip grep gawk ipcalc ipv6calc git jq xinit screen cron desktop-file-utils rfkill conntrack )
+	pkgsToInstall=(net-tools wget curl tar zip grep gawk ipcalc ipv6calc git jq xinit screen cron desktop-file-utils rfkill conntrack dnsutils )
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
-		echo "verification si paquet $pkgToInstall installé" #; read -rp " "
-		if [ "$(checkDpkgInstalled "$pkgToInstall")" = "false" ]; then
+		#echo "verification si paquet $pkgToInstall installé" #; read -rp " "
+		#if [ "$(checkDpkgInstalled "$pkgToInstall")" = "false" ]; then
 			apt-get -y install "$pkgToInstall"
-		fi
+		#fi
 	done
 }
 aptUnbloatPkg() {
