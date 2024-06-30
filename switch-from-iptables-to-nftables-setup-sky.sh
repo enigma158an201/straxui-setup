@@ -81,13 +81,13 @@ mainDisableAndRemoveIptables() {
 	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire';
 	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi; \
 	echo '  >>> Suppression de ip-tables';
-	for fwPkg in iptables{-persistent,} {g,}ufw; do apt autoremove --purge \"\$fwPkg\" 2>&1; done; \
+	for fwPkg in iptables{-persistent,} {g,}ufw; do apt-get autoremove --purge \"\$fwPkg\" 2>&1; done; \
 	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
 	unset fwPkg
 }
 mainInstallAndSetupNftable() {
 	echo -e "\t>>> Installation du firewall nftables"
-	suExecCommand "apt install nftables; \
+	suExecCommand "apt-get install nftables; \
 	echo '  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire' \
 	$binNft flush ruleset; $binNft list ruleset"
 	echo -e "\t>>> Mise en route du service nftables"

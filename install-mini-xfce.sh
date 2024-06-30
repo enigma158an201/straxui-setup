@@ -14,7 +14,7 @@ fi
 #cat ./xsessionrc >> /home/$SUDO_USER/.xsessionrc
 #chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.xsessionrc
 
-apt install -y \
+apt-get install -y \
     libxfce4ui-utils \
     thunar \
     xfce4-appfinder \

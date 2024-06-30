@@ -27,7 +27,7 @@ installMullvadDeb() {
 	#3. To add a repository for stable releases, run the following command:
 	echo "deb [signed-by=/etc/apt/keyrings/mullvad-keyring.asc arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/mullvad.list
 	sudo apt-get update
-	sudo apt install mullvad-vpn
+	sudo apt-get install mullvad-vpn
 }
 main() {
 	bIsDebian="$(checkIfDebianId)"

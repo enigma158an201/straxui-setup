@@ -31,6 +31,6 @@ checkDpkgInstalled() {
 	#result="$(LANG=C /usr/bin/dpkg-query --show --showformat='\${db:Status-Status}\n' "$pkgname")"
 	#if [[ $result =~ \$not-installed ]] || [[ $result =~ $noPackageFoundString ]]; then echo "false"; else echo "true"; fi 
 	installedString="[installed]"
-	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$ | grep -E "$pkgname|$installedString")"
+	result="$(LANG=C /usr/bin/apt search --names-only ^"$pkgname"$ | grep -E "$pkgname|$installedString")" # apt-get search not valid
 	if [[ $result =~ $installedString ]]; then echo "true"; else echo "false"; fi 
 }
