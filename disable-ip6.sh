@@ -10,14 +10,20 @@ echo -e "\t>>> proceed set-common-settings.sh"
 suExecCommand "bash -c \"${launchDir}/include/set-common-settings.sh\""
 
 blacklist-ip6-kernel-modules() {
+	#todo check if include /etc/systctl.d present -> not necessary
+	blacklist-ip6-kernel-modules-sysctl
+	blacklist-ip6-kernel-modules-grub
+	suExecCommand update-initramfs -u
+}
+blacklist-ip6-kernel-modules-sysctl() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	myip6bcklsrc="${launchDir}$myip6bckldst"
 	if [ ! -f "$myip6bckldst" ]; then
 		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p /etc/sysctl.d/; install -o root -g root -m 0744 -pv $myip6bcklsrc $myip6bckldst"
 	fi
-	#todo check if include /etc/systctl.d present -> not necessary
-	#suExecCommand update-initramfs -u
+}
+blacklist-ip6-kernel-modules-grub() {
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX= /etc/default/grub | grep ipv6.disable || echo "false")"
 	bDisabledDefaultIpV6="$(grep ^GRUB_CMDLINE_LINUX_DEFAULT= /etc/default/grub | grep ipv6.disable || echo "false")"
 	if [ "$bDisabledIpV6" = "false" ] || [ "$bDisabledDefaultIpV6" = "false" ]; then
