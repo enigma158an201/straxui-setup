@@ -56,7 +56,7 @@ set-newhostname() {
 main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"
 	whoami
-	#set-newhostname 		# set new host name has to be done before sshd config
+	#set-newhostnam || true 		# set new host name has to be done before sshd config
 	echo -e "\t>>> initialisation des paramètres du serveur ssh"
 	if command -v sshd 1>/dev/null 2>&1; then 										sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 disableWireless
