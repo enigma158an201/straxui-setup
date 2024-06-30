@@ -22,7 +22,7 @@ sRemoteVncPort=5900 #5922 #5901
 #sEd25519PrvKeyPath=~/.ssh/id_ed25519
 #sEd25519PubKeyPath=${sEd25519PrvKeyPath}.pub
 tabAssistedUser=( assist david guillaume sky )
-sLocalDisplay=$DISPLAY
+sLocalDisplay=$(getLocalDisplay) #$DISPLAY
 sLocalSessionType=${XDG_SESSION_TYPE,,}
 
 oldRemoteAssistedCommands() {
@@ -55,7 +55,10 @@ oldCreateUser() {
 		fi
 	fi
 }
-
+getLocalDisplay() {
+	if [ ! "${DISPLAY:-}" = "" ]; then 	echo "$DISPLAY"
+	else 								echo "empty"; fi
+}
 installTerminator() {
 	if command -v terminator 1>/dev/null 2>&1; then
 		echo -e "\t>>> terminator already installed, skipping $0 !!!"
