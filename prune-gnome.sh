@@ -14,7 +14,7 @@ pruneDpkg() {
   done
 }
 pruneAptSearch() {
-  for pkg2 in $(LANG=C apt search gnome | grep "${installedString}" | awk '{ print $1 }' | grep -vE "$sExceptions") # apt-get search not valid
+  for pkg2 in $(LANG=C apt search gnome | grep "${installedString}" | grep -v "^ " | awk '{ print $1 }' | grep -vE "$sExceptions") # apt-get search not valid
   do
     echo -e "\t>>> suppression de echo $pkg2"
     apt-get autoremove "${pkg2%%/*}"
