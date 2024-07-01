@@ -21,7 +21,7 @@ pruneAptSearch() {
   done
 }
 main_prune() {
-  pruneDpkg
-  #pruneAptSearch
+  #pruneDpkg
+  pruneAptSearch
 }
 main_prune
