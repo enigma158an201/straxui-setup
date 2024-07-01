@@ -25,15 +25,15 @@ checkDpkgInstalledTests() {
 	#done
 	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
-	
-	if dpkg -l | grep -q -w $package_name; then
-		echo "Le paquet $package_name est installé."
-	elif apt list --installed 2>/dev/null | grep -q -w $package_name; then
-		echo "Le paquet $package_name est installé."
-	elif apt-get list --installed 2>/dev/null | grep -q -w $package_name; then
-		echo "Le paquet $package_name est installé."
+	package_name=pkg-to-test
+	if dpkg -l | grep -q -w "${package_name}"; then
+		echo "Le paquet ${package_name} est installé."
+	elif apt list --installed 2>/dev/null | grep -q -w "${package_name}"; then
+		echo "Le paquet ${package_name} est installé."
+	elif apt-get list --installed 2>/dev/null | grep -q -w "${package_name}"; then
+		echo "Le paquet ${package_name} est installé."
 	else
-		echo "Le paquet $package_name n'est pas installé."
+		echo "Le paquet ${package_name} n'est pas installé."
 	fi
 }
 checkDpkgInstalled() {
