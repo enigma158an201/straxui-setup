@@ -35,10 +35,10 @@ aptUnbloatPkg() {
 	done
 }
 main_preInstall() {
-	getDpkgListInstalled
+	#getDpkgListInstalled
 	#checkDpkgInstalled "zip"
 	#read -rp ""
-	#checkDpkgInstalled "znimporte"
+	#checkDpkgInstalled "nimporte"
 	aptPreinstallPkg
 	aptUnbloatPkg
 }
