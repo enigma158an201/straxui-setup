@@ -7,8 +7,8 @@ sEtcOsReleasePath=/etc/os-release
 
 checkIfDebianId() {
 	if [ -r "${sEtcOsReleasePath}" ]; then
-        sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo false)"
-		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo false)"
+        sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
+		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
 		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then
 			echo "true"
 		else
