@@ -7,7 +7,7 @@ source "${launchDir}/include/apt-functions.sh"
 
 aptPreinstallPkg() {
 	declare -a pkgsToInstall
-	pkgsToInstall=(net-tools wget curl tar zip grep gawk ipcalc ipv6calc git jq  cron rfkill conntrack dnsutils ) #xinit screen desktop-file-utils
+	pkgsToInstall=(net-tools wget curl tar zip grep gawk ipcalc ipv6calc git jq  cron rfkill conntrack dnsutils awk ) #xinit screen desktop-file-utils
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do

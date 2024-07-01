@@ -4,8 +4,8 @@ set -euo pipefail #; set -x
 getDpkgListInstalled() {
 	#dpkg -l | grep -E '(^|\s+)cron\b'
 	#declare -a dpkgInstalled
-	dpkgGlobList="$(dpkg -l | tail -n +6)"
-	prefix="ii  "
+	dpkgGlobList="$(dpkg -l | tail -n +6 | awk '{ print $2 }')"
+	prefix="ii  " # to do: check if other prefix can return installed software (ie: for update purpose)
 	dpkgInstalled="${dpkgGlobList[*]//$prefix/}"
 	echo "${dpkgInstalled[*]}"
 }
