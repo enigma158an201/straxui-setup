@@ -31,7 +31,7 @@ installWireguardDeb() {
 }
 setKeysWireguard() {
 	echo -e "\t>>> set conf wireguard for debian"
-	suExecCommand "cd /etc/wireguard/ || exit 1; umask 077; wg genkey | tee privatekey | wg pubkey > publickey"
+	suExecCommand "bash -c \"cd /etc/wireguard/ || exit 1; umask 077; wg genkey | tee privatekey | wg pubkey > publickey\""
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
