@@ -31,7 +31,7 @@ installWireguardDeb() {
 }
 setKeysWireguard() {
 	echo -e "\t>>> set conf wireguard for debian"
-	suExecCommand "bash -c \"cd /etc/wireguard/ || exit 1; umask 077; wg genkey | tee privatekey | wg pubkey > publickey\""
+	suExecCommand "bash -c \"cd /etc/wireguard/ || exit 1; umask 077; if ! test -e privatekey && ! test -e publickey; then wg genkey | tee privatekey | wg pubkey > publickey; fi\""
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
@@ -43,7 +43,43 @@ setIp4ForwardSysctl() {
 	fi
 }
 setLinksWireguard() {
-	echo ""
+	if true; then 	setLinksServer
+	else			setLinksClient; fi
+}
+setLinksServer() {
+	echo "[Interface]
+Address = 192.168.11.1/24
+SaveConfig = true
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+ListenPort = 51820
+PrivateKey = YOUR_SERVER_PRIVATE KEY
+
+[Peer]
+PublicKey = YOUR_CLIENT_PUBLIC_KEY
+AllowedIPs = 192.168.11.2/32" | tee /etc/wireguard/wg0.conf
+	systemctl start wg-quick@wg0
+	ip a show wg0
+}
+setLinksClient() {
+		echo "[Interface]
+PrivateKey = YOU_CLIENT_PRIVATE_KEY
+## Client IP
+Address = 192.168.11.2/24
+
+## if you have DNS server running
+# DNS = 192.168.11.1
+
+[Peer]
+PublicKey = YOUR_SERVER_PUBLIC_KEY
+ 
+## to pass internet trafic 0.0.0.0 but for peer connection only use 192.168.11.0/24, or you can also specify comma separated IPs
+AllowedIPs =  0.0.0.0/0
+
+Endpoint = SERVER_PUBLIC_IP:51820
+PersistentKeepalive = 20" | tee /etc/wireguard/wg0.conf
+	systemctl start wg-quick@wg0
+	ip a show wg0
 }
 
 main() {
