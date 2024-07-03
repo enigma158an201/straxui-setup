@@ -43,8 +43,8 @@ setIp4ForwardSysctl() {
 	fi
 }
 setLinksWireguard() {
-	if true; then 	setLinksServer
-	else 			setLinksClient; fi
+	if true; then 	suExecCommand setLinksServer
+	else 			suExecCommand setLinksClient; fi
 }
 setLinksServer() {
 	echo "[Interface]
