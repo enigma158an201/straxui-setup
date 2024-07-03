@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# script by enigma158an201
+set -euo pipefail # set -euxo pipefail
+
+launchDir="$(dirname "$0")"
+if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+source "${launchDir}/include/test-superuser-privileges.sh"
+
+sEtcOsReleasePath=/etc/os-release
+
+checkIfDebianId() {
+	if [ -r "${sEtcOsReleasePath}" ]; then
+        sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
+		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
+		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then
+			echo "true"
+		else
+			echo "false"
+			exit 1
+		fi
+	else
+		echo "false"
+		exit 1
+	fi
+}
+
+installWireguardDeb() {
+	echo -e "\t>>> Install wireguard for debian"
+	sudo apt-get install -y wireguard	
+}
+setKeysWireguard() {
+	echo -e "\t>>> set conf wireguard for debian"
+	cd /etc/wireguard/ || exit 1
+	umask 077
+	wg genkey | tee privatekey | wg pubkey > publickey
+}
+setIp4ForwardSysctl() {
+	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
+	sIp4FwdSrc="${launchDir}$sIp4FwdDst"
+	if [ ! -f "$sIp4FwdDst" ]; then
+		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
+		suExecCommand "mkdir -p \"$(dirname "$sIp4FwdDst")\""
+		suExecCommand "install -o root -g root -m 0744 -pv $sIp4FwdSrc $sIp4FwdDst"
+	fi
+}
+setLinksWireguard() {
+	echo ""
+}
+
+main() {
+	bIsDebian="$(checkIfDebianId)"
+	echo -e "\t>>> debian check: $bIsDebian"
+	if $bIsDebian; then
+		installWireguardDeb
+		setIp4ForwardSysctl
+		setKeysWireguard
+		#setLinksWireguard
+	else
+		exit 1
+	fi
+
+}
+main
