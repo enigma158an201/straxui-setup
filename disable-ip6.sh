@@ -67,8 +67,8 @@ disable-sshd-config-ipv6() {
 	mysshddst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
 	mysshdsrc="${launchDir}$mysshddst"
 	echo -e "\t>>> proceed set disable ipv6 to sshd_config" 
-	suExecCommand "if [ -d $(dirname $mysshddst) ] && [ -f $mysshdsrc ]; then 		install -o root -g root -m 0744 -pv $mysshdsrc $mysshddst; fi; \
-	systemctl reload sshd.service"
+	suExecCommand "bash -c \"if [ -d $(dirname $mysshddst) ] && [ -f $mysshdsrc ]; then 		install -o root -g root -m 0744 -pv $mysshdsrc $mysshddst; fi; \
+	systemctl reload sshd.service\""
 }
 disable-postfix-ipv6() {
 	# mypostfixsrc="${launchDir}$mypostfixdst" -> pas de install mais un sed
