@@ -103,10 +103,12 @@ suExecCommand() {
 	#elif [ ! "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 	$sPfxSu $sCommand
 	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	echo "${sCommand}"
 	#elif [ "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 		echo $sCommand
-	if [ ! "$EUID" = "0" ]; then 									eval "$sPfxSu ${sCommand}"
 	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	eval "${sCommand}"
-	elif [ "$EUID" = "0" ]; then 									eval "${sCommand}"
-	fi	
+	if [ ! "$EUID" = "0" ]; then
+		eval "$sPfxSu ${sCommand}"
+	elif [ "$EUID" = "0" ]; then
+		eval "${sCommand}"
+	fi
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
@@ -117,7 +119,6 @@ suExecCommandNoPreserveEnv() {
 	if [ ! "$EUID" = "0" ]; then 									eval "$sPfxSuNoEnv ${sCommand}"
 	elif [ "$EUID" = "0" ]; then 									eval "${sCommand}"
 	#if
-		#if [ ! "$suQuotes" = "false" ]; then	$sPfxSuNoEnv "${sCommand}"
 		#else									$sPfxSuNoEnv $sCommand
 		#fi
 	#else
