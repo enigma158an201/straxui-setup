@@ -42,10 +42,6 @@ setIp4ForwardSysctl() {
 		suExecCommand "install -o root -g root -m 0744 -pv $sIp4FwdSrc $sIp4FwdDst"
 	fi
 }
-setLinksWireguard() {
-	if true; then 	suExecCommand setLinksServer
-	else 			suExecCommand setLinksClient; fi
-}
 setLinksServer() {
 	echo "[Interface]
 Address = 192.168.11.1/24
@@ -57,8 +53,8 @@ PrivateKey = YOUR_SERVER_PRIVATE KEY
 
 [Peer]
 PublicKey = YOUR_CLIENT_PUBLIC_KEY
-AllowedIPs = 192.168.11.2/32" | tee /etc/wireguard/wg0.conf
-	systemctl start wg-quick@wg0
+AllowedIPs = 192.168.11.2/32" | suExecCommand "tee /etc/wireguard/wg0.conf"
+	suExecCommand "systemctl start wg-quick@wg0"
 	ip a show wg0
 }
 setLinksClient() {
@@ -77,9 +73,13 @@ PublicKey = YOUR_SERVER_PUBLIC_KEY
 AllowedIPs =  0.0.0.0/0
 
 Endpoint = SERVER_PUBLIC_IP:51820
-PersistentKeepalive = 20" | tee /etc/wireguard/wg0.conf
-	systemctl start wg-quick@wg0
+PersistentKeepalive = 20" | suExecCommand tee /etc/wireguard/wg0.conf
+	suExecCommand systemctl start wg-quick@wg0
 	ip a show wg0
+}
+setLinksWireguard() {
+	if true; then 	setLinksServer
+	else 			suExecCommand setLinksClient; fi
 }
 
 main() {
