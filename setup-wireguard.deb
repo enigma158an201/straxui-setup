@@ -44,7 +44,7 @@ setIp4ForwardSysctl() {
 }
 setLinksWireguard() {
 	if true; then 	setLinksServer
-	else			setLinksClient; fi
+	else 			setLinksClient; fi
 }
 setLinksServer() {
 	echo "[Interface]
@@ -89,7 +89,7 @@ main() {
 		installWireguardDeb
 		setIp4ForwardSysctl
 		setKeysWireguard
-		#setLinksWireguard
+		setLinksWireguard
 	else
 		exit 1
 	fi
