@@ -132,7 +132,7 @@ main_DisableIpv6() {
 	disable-etc-chrony-ipv6
 	#disable-etc-netconfig-ipv6
 	#disable-etc-dhcpcdconf-ipv6
-	disable-ipv6-cron-task
+	if command -v 1>/dev/null 2>&1; then 	disable-ipv6-cron-task; fi
 }
 
 main_DisableIpv6
