@@ -13,7 +13,7 @@ blacklist-ip6-kernel-modules() {
 	#todo check if include /etc/systctl.d present -> not necessary
 	blacklist-ip6-kernel-modules-sysctl
 	blacklist-ip6-kernel-modules-grub
-	suExecCommand update-initramfs -u
+	suExecCommand "update-initramfs -u"
 }
 blacklist-ip6-kernel-modules-sysctl() {
 	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
@@ -48,9 +48,9 @@ blacklist-ip6-NetworkManagement() {
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "$first"
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
-		suExecCommand "for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
-			nmcli connection modify \"\$ConnectionName\" ipv6.method disabled || true ; 
-		done"
+		suExecCommand "bash -c \"for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
+			nmcli connection modify \$ConnectionName ipv6.method disabled || true ; 
+		done\""
 	fi
 	#if (systemctl status systemd-networkd); then
 		##sed -i '/[Network]/ s/"$/nLinkLocalAddressing=ipv4"/' /etc/systemd/networkd.conf; fi
