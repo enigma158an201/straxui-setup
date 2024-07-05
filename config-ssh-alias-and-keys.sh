@@ -15,7 +15,7 @@ sSshRepoSource="${launchDir}/home/user/"
 sSshRepoConf=${sSshRepoSource}/${sSshSubFolder}
 sSshRepoAliasConfig=${sSshRepoConf}/${sSshAliasConfig}
 sSshRepoAliasConfigd=${sSshRepoConf}/${sSshAliasConfigd}
-sSshRepoAuthKeys=${sSshRepoConf}/${sSshAuthKeys}
+#sSshRepoAuthKeys=${sSshRepoConf}/${sSshAuthKeys}
 
 sSshLocalConf=$HOME/${sSshSubFolder}
 sSshLocalAliasConfig=$HOME/${sSshAliasConfig}
