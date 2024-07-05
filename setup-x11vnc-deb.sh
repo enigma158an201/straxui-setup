@@ -29,7 +29,7 @@ installX11vncDeb() {
 	sudo apt-get install -y x11vnc	
 }
 setupVncPassword() {
-	echo "" > "${sVncPasswd}"
+	if ! test -e "${sVncPasswd}"; then x11vnc -usepw; fi #echo "" > "${sVncPasswd}"
 }
 
 setupX11vncConf() {
@@ -38,14 +38,13 @@ setupX11vncConf() {
 
 display :0	# Overides DISPLAY to use local framebuffer
 # shared	# Let more than one person attach
-#forever	# Keep running, even after last one detaches
-#usepw		# Use a password: may be commented if only local ssh connections
+# forever	# Keep running, even after last one detaches
+# usepw		# Use a password: may be commented if only local ssh connections
 auth guess
 noipv6
 localhost	# allow only connections through localhost (usefull for ssh tunnelling)
 nopw		# uncomment nopw ONLY if localhost uncommented
-#unixpw		# uses su to check password
-" | tee "${sX11vncrc}"
+# unixpw	# uses su to check password" | tee "${sX11vncrc}"
 }
 main() {
 	bIsDebian="$(checkIfDebianId)"
