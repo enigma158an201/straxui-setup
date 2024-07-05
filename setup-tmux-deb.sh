@@ -45,7 +45,7 @@ main() {
 	echo -e "\t>>> debian check: $bIsDebian"
 	if $bIsDebian; then
 		installTmuxDeb
-		#installGrafanaDeb
+		setupTmuxConf
 	else
 		exit 1
 	fi
