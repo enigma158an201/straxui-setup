@@ -26,10 +26,11 @@ setupSshAlias() {
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	mkdir -p "${sSshLocalAliasConfigd}"
 	install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
-	for sAliasConfig in "${sSshRepoAliasConfigd}"/*; do 
-		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfig}" "${sSshLocalAliasConfigd}/${sAliasConfig}"
-		echo -e "\t>>> proceed file $sAliasConfig to ${sAliasConfig/$sSshRepoSource/$HOME}"
-		#install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfig}" "${sAliasConfig/$sSshRepoSource/$HOME}"
+	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
+		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
+		sAliasConfigDst="${sAliasConfigSrc/$sSshRepoSource/$HOME}"
+		echo -e "\t>>> proceed file $sAliasConfigSrc to ${sAliasConfigDst}"
+		install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
 	done
 }
 
