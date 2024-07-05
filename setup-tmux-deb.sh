@@ -40,7 +40,7 @@ set-option -g default-shell /usr/bin/bash
 # Permet d'utiliser la souris dans un terminal virtuel (à partir de la version 2.1)
 set -g mouse on" | tee ${sTmuxConf}
 }
-main() {
+main_tmux() {
 	bIsDebian="$(checkIfDebianId)"
 	echo -e "\t>>> debian check: $bIsDebian"
 	if $bIsDebian; then
@@ -51,4 +51,4 @@ main() {
 	fi
 
 }
-main
+main_tmux

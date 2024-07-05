@@ -90,7 +90,7 @@ setLinksWireguard() {
 	else 			suExecCommand setLinksClient; fi
 }
 
-main() {
+main_wireguard() {
 	bIsDebian="$(checkIfDebianId)"
 	echo -e "\t>>> debian check: $bIsDebian"
 	if $bIsDebian; then
@@ -103,4 +103,4 @@ main() {
 	fi
 
 }
-main
+main_wireguard

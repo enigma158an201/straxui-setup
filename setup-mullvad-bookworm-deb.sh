@@ -29,11 +29,11 @@ installMullvadDeb() {
 	sudo apt-get update
 	sudo apt-get install mullvad-vpn
 }
-main() {
+main_mullvad() {
 	bIsDebian="$(checkIfDebianId)"
     echo -e "$bIsDebian"
 	if $bIsDebian; then
 		installMullvadDeb
 	fi
 }
-main
+main_mullvad
