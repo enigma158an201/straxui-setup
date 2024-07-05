@@ -46,7 +46,7 @@ installGrafanaDeb() {
 		#7. # Installs the latest Enterprise release:
 		#sudo apt-get install grafana-enterprise
 }
-main() {
+main_prometheus_grafana() {
 	bIsDebian="$(checkIfDebianId)"
 	echo -e "\t>>> debian check: $bIsDebian"
 	if $bIsDebian; then
@@ -57,4 +57,4 @@ main() {
 	fi
 
 }
-main
+main_prometheus_grafana
