@@ -27,7 +27,8 @@ setupSshAlias() {
 	mkdir -p "${sSshLocalAliasConfigd}"
 	install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
 	for sAliasConfig in "${sSshRepoAliasConfigd}"/*; do 
-		install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfig}" "${sSshLocalAliasConfigd}/${sAliasConfig}"
+		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfig}" "${sSshLocalAliasConfigd}/${sAliasConfig}"
+		install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfig}" "${sSshLocalAliasConfigd}/${sAliasConfig}"
 	done
 }
 
