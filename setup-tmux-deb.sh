@@ -31,7 +31,7 @@ setupTmuxConf() {
 	echo -e "\t>>> setup tmux config at ${sTmuxConf}"
 	#3. To add a repository for stable releases, run the following command:
 	echo "# Permet de définir le shell utilisé par défaut
-set-option -g default-shell /usr/bin/zsh
+set-option -g default-shell /usr/bin/bash
 # Permet d'utiliser la souris dans un terminal virtuel (avant la version 2.1)
 setw -g mode-mouse on
 set -g mouse-resize-pane on
