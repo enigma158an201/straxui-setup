@@ -45,7 +45,7 @@ installSshKeys() {
 }
 importSshKeys() {
 	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
-	for sSshPubKey in "${sSshLocalConf}"/*.pub; do
+	for sSshPubKey in "${sSshRepoConf}"/*.pub; do
 		for sSshAlias in freebox-delta-wan SKY41 testsalonk wtestsalonk; do
 			if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
 		done
