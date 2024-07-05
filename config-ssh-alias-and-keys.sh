@@ -22,7 +22,7 @@ sSshLocalAliasConfig=$HOME/${sSshAliasConfig}
 sSshLocalAliasConfigd=$HOME/${sSshAliasConfigd}
 sSshLocalAuthKeys=$HOME/${sSshAuthKeys}
 
-setupSshAlias() {
+installSshAlias() {
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	mkdir -p "${sSshLocalAliasConfigd}"
 	install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
@@ -33,8 +33,7 @@ setupSshAlias() {
 		install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
 	done
 }
-
-setupSshkeys() {
+installSshKeys() {
 	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"
 	echo -e "\t>>> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
 	if ! test -e "${sSshLocalAuthKeys}"; then 	touch "${sSshLocalAuthKeys}"; fi
@@ -44,8 +43,17 @@ setupSshkeys() {
 		install -o "$USER" -g "$USER" -pv -m 0600 "${sSshRepoConf}/${sAliasPubKey/.pub/}" "${sSshLocalConf}/${sAliasPubKey/.pub/}"
 	done
 }
+importSshKeys() {
+	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
+	for sSshPubKey in truc machin; do
+		for sSshAlias in truc machin; do
+			if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
+		done
+	done
+}
 main_ssh_config() {
-	setupSshAlias
-	#setupSshkeys
+	installSshAlias
+	#installSshKeys
+	importSshKeys
 }
 main_ssh_config
