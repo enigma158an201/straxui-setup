@@ -5,8 +5,8 @@ set -euo pipefail # set -euxo pipefail
 
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
-source "${launchDir}/include/set-common-settings.sh"
+#source "${launchDir}/include/test-superuser-privileges.sh"
+#source "${launchDir}/include/set-common-settings.sh"
 
 sSshSubFolder=.ssh
 sSshAliasConfig=${sSshSubFolder}/config
@@ -62,6 +62,6 @@ main_ssh_config() {
 	installSshAlias
 	#installSshKeys
 	#importSshKeys
-	suExecCommand sshd-config-settings
+	#suExecCommand sshd-config-settings
 }
 main_ssh_config
