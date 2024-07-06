@@ -30,7 +30,7 @@ installSshAlias() {
 	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
 		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
 		sAliasConfigDst="${sAliasConfigSrc/$sSshRepoSource/$HOME}"
-		if [[ $$sAliasConfigSrc =~ $sLoggedUser ]]; then
+		if [[ $sAliasConfigSrc =~ $sLoggedUser ]]; then
 			echo -e "\t>>> proceed file $sAliasConfigSrc to ${sAliasConfigDst}"
 			install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
 		fi
