@@ -23,17 +23,17 @@ sSshLocalAliasConfigd=$HOME/${sSshAliasConfigd}
 sSshLocalAuthKeys=$HOME/${sSshAuthKeys}
 
 installSshAlias() {
-	sLoggedUser=$(whoami)
+	#sLoggedUser=$(whoami)
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	mkdir -p "${sSshLocalAliasConfigd}"
 	install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
 	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
 		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
 		sAliasConfigDst="${sAliasConfigSrc/$sSshRepoSource/$HOME}"
-		if [[ $sAliasConfigSrc =~ $sLoggedUser ]]; then
+		#if [[ $sAliasConfigDst =~ $sLoggedUser ]]; then
 			echo -e "\t>>> proceed file $sAliasConfigSrc to ${sAliasConfigDst}"
 			install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
-		fi
+		#fi
 	done
 }
 installSshKeys() {
