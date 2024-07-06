@@ -48,7 +48,7 @@ importSshKeys() {
 	#for sSshPubKey in "${sSshRepoConf}"/*.pub; do
 		for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
 		do
-			#to do check if alias reachable
+			sSshPubKey="to-do-check_if_alias_reachable_and_key_importable"
 			if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
 		done
 	#done
