@@ -45,11 +45,13 @@ installSshKeys() {
 }
 importSshKeys() {
 	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
-	for sSshPubKey in "${sSshRepoConf}"/*.pub; do
-		for sSshAlias in freebox-delta-wan SKY41 testsalonk wtestsalonk; do
+	#for sSshPubKey in "${sSshRepoConf}"/*.pub; do
+		for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
+		do
+			#to do check if alias reachable
 			if true; then 	echo "ssh-copy-id -i \"${sSshPubKey}\" \"${sSshAlias}\""; fi
 		done
-	done
+	#done
 }
 main_ssh_config() {
 	installSshAlias
