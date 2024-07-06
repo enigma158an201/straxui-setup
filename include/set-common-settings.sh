@@ -37,19 +37,19 @@ disable-systemd-sleep() {
 disable-wireless-connections() {
 	echo -e "\t>>> désactivation des connexions wireless"
 	if (systemctl status wpa_supplicant.service 1>/dev/null); then 	systemctl disable --now wpa_supplicant.service; fi
- 	if (command -v nmcli 1>/dev/null 2>&1); then 					nmcli radio wifi off; fi
+	if (command -v nmcli 1>/dev/null 2>&1); then 					nmcli radio wifi off; fi
 	if (command -v rfkill 1>/dev/null 2>&1); then 					rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	echo -e "\t>>> désactivation cups (impression)"
 	if (systemctl status cups-browsed.service 1>/dev/null) || (systemctl status cups.service 1>/dev/null || false); then
 		systemctl disable --now cups-browsed.service
- 		systemctl disable --now cups.service
+		systemctl disable --now cups.service
 	fi
 }
 cronjob-disable-ipv6() {
 	echo -e "\t>>> création du job cron en cas de reactivation ipV6"
- 	if (systemctl status cron.service 1>/dev/null); then systemctl enable --now cron.service; fi
+	if (systemctl status cron.service 1>/dev/null); then systemctl enable --now cron.service; fi
 }
 set-newhostname() {
 	echo -e "\t>>> renommage de la machine suivant schéma modèle+distro"
@@ -58,16 +58,16 @@ set-newhostname() {
 main_common() {
 	#source "${launchDir}/include/test-superuser-privileges.sh"
 	whoami
-	#set-newhostnam || true 		# set new host name has to be done before sshd config
+	#set-newhostnam || true		# set new host name has to be done before sshd config
 	echo -e "\t>>> initialisation des paramètres du serveur ssh"
 	if command -v sshd 1>/dev/null 2>&1; then 										sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 sDisableWireless
 	if [ ! "${sDisableWireless^^}" = "N" ] && [ ! "$sDisableWireless" = "" ]; then 	disable-wireless-connections; fi
 	echo -e "\t>>> désactivation de cups"
- 	disable-cups-services
+	disable-cups-services
 	echo -e "\t>>> désactivation de systemd-sleep"
 	disable-systemd-sleep
 	echo -e "\t>>> désactivation de ipv6"
- 	cronjob-disable-ipv6
+	cronjob-disable-ipv6
 }
 main_common
