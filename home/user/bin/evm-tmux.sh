@@ -5,6 +5,9 @@ set -euo pipefail # set -euxo pipefail
 
 # to allow aliases in script as in `bash -i`
 
+sTmuxSession="sky41"
+sTmuxWindow="evm"
+
 if shopt -q expand_aliases; then
     echo "Aliases are already enabled in this script."
 else
@@ -12,18 +15,16 @@ else
 	shopt -s expand_aliases || exit 1
 	source "$HOME/.bashrc"
 fi
-#alias
+if ! command -v detach; then alias detach='tmux detach'; fi
+#if ! command -v attach; then alias attach="tmux -a -t $sTmuxWindow"; fi # does not work
 
 startMainnetTmux() {
 	if ! command -v tmux 1>/dev/null 2>&1; then 
 		echo -e "\t>>> tmux not found, please install tmux, aborting"; exit 1; 
 	else
-		sTmuxSession="sky41"
-		sTmuxWindow="evm"
 
-		# Check if the tmux session "${sTmuxSession}" exists
-		if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then
-			# If it doesn't exist, create a new session named "${sTmuxSession}"
+		# Check if the tmux session "${sTmuxSession}" exists, # If it doesn't exist, create a new session named "${sTmuxSession}"
+		if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then			
 			tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
 		fi
 		
@@ -34,7 +35,7 @@ startMainnetTmux() {
 
 		tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
-		# Split the window into two panes on the left and one on the right
+		# Split the window into four panes: two panes on the left and two (one higher) on the right
 		if [ "$(tmux list-panes | wc -l)" -eq "1" ] ; then
 			tmux select-pane -t 0
 			tmux split-window -h -t "${sTmuxSession}"
