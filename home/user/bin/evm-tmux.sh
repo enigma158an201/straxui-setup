@@ -35,17 +35,21 @@ startMainnetTmux() {
 		tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
 		# Split the window into two panes on the left and one on the right
-		tmux split-window -h -t "${sTmuxSession}"
-		tmux select-pane -t 0 #-P 'p1'
-		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
-		tmux select-pane -t 2 #-n 'p3'
-		tmux split-window -v -l 2 #-p 90 #-t "${sTmuxSession}"
+		if [ "$(tmux list-panes | wc -l)" -eq "1" ] ; then
+			tmux select-pane -t 0
+			tmux split-window -h -t "${sTmuxSession}"
+			tmux select-pane -t 0 #-P 'p1'
+			tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
+			tmux select-pane -t 2 #-n 'p3'
+			tmux split-window -v -l 3 #-p 90 #-t "${sTmuxSession}"
 
-		# Execute specific commands in each pane: 0 1 2 are names of panes
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" 'tt' C-m
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.1" "watch -n 1 ps aux" C-m
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "watch -n 1 netstat -tuln" C-m #validator
-
+			# Execute specific commands in each pane: 0 1 2 are names of panes
+			tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" 'tt' C-m
+			tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.1" "watch -n 1 ps aux" C-m
+			tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "watch -n 1 netstat -tuln" C-m #validator
+		fi
+		# alway echo this line at right bottom
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'press ctrl+b then d or enter \`detach\` to hide\n or enter \`tmux kill-session -t evm\` to kill'" C-m
 		tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 	fi
 }
