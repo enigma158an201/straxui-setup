@@ -24,19 +24,22 @@ startMainnetTmux() {
 		# Check if the tmux session "${sTmuxSession}" exists
 		if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then
 			# If it doesn't exist, create a new session named "${sTmuxSession}"
-			tmux new-session -s "${sTmuxSession}" -d
+			tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
 		fi
-
+		
 		if ! tmux list-windows -t "${sTmuxSession}" | grep "${sTmuxWindow}"; then
 			# Create a window named ""${sTmuxWindow}"" if not exists in the "${sTmuxSession}" session
 			tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
 		fi
+
+		tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
 		# Split the window into two panes on the left and one on the right
 		tmux split-window -h -t "${sTmuxSession}"
 		tmux select-pane -t 0 #-P 'p1'
 		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
 		tmux select-pane -t 2 #-n 'p3'
+		tmux split-window -v -l 2 #-p 90 #-t "${sTmuxSession}"
 
 		# Execute specific commands in each pane: 0 1 2 are names of panes
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" 'tt' C-m
@@ -54,7 +57,7 @@ upgradeBinTmuxEvmScript() {
 	if true; then
 		mkdir -p "$HOME/bin"
 		#if ! test -z "${sTmuxEvmPath:-}"; then 
-			LANG=C find "$HOME" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --compare --target-directory="$HOME/bin" {} \; 2>/dev/null 
+			LANG=C find "$HOME" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --compare --target-directory="$HOME/bin" {} \; 2>/dev/null || true
 		#else
 			#find "$HOME" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --preserve-timestamps --target-directory="$HOME/bin" {} \;
 		#fi
