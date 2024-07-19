@@ -1,0 +1,1 @@
+./home/user/bin/evm-tmux.sh
