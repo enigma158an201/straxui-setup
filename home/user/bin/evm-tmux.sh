@@ -5,14 +5,21 @@ set -euo pipefail # set -euxo pipefail
 
 # to allow aliases in script as in `bash -i`
 
+sCommand="$*"
 if [ ! "${1:-}" = "" ]; then 	sArg=${1,,}; fi
  
 sTmuxSession="sky41"
 sTmuxWindow="evm"
-sAlias1="watch -n 1 ss -tp"
-sAlias2="watch -n 1 ps aux"
-sAlias3="watch -n 1 netstat -tulanp"
-sCommand="$*"
+sUsername=$(whoami)
+if [[ "${sUsername}" =~ "sky " ]]; then
+	sAlias1="mainnet-geth"
+	sAlias2="mainnet-prysm"
+	sAlias3="mainnet-validator-run"
+elif [[ "${sUsername}" =~ "gwen " ]] || [[ "${sUsername}" =~ "freebox " ]]; then
+	sAlias1="watch -n 1 ss -tp"
+	sAlias2="watch -n 1 ps aux"
+	sAlias3="watch -n 1 netstat -tulanp"
+fi
 
 if shopt -q expand_aliases; then
     echo "Aliases are already enabled in this script."
