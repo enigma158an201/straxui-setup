@@ -21,9 +21,9 @@ else
 	shopt -s expand_aliases || exit 1
 	source "$HOME/.bashrc"
 fi
-if ! command -v detach; then alias detach='tmux detach'; fi
+#if ! command -v detach; then alias detach='tmux detach'; fi
 #if ! command -v attach; then alias attach="tmux -a -t $sTmuxWindow"; fi # does not work
-if ! command -v stop; then alias stop='tmux detach'; fi
+#if ! command -v stop; then alias stop='tmux detach'; fi
 
 preCheck() {
 	if ! command -v tmux 1>/dev/null 2>&1; then 
@@ -88,7 +88,7 @@ startMainnetTmux() {
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "${sAlias3}" C-m #validator
 	fi
 	# alway echo this line at right bottom
-	tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'press ctrl+b then d or enter \`detach\` to hide\n or enter \`tmux kill-session -t evm\` to kill'" C-m
+	tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'press ctrl+b then d or enter \`tmux detach\` to hide\n or enter \`tmux kill-session -t evm\` to kill'" C-m
 	tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 
 }
