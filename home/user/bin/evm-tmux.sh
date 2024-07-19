@@ -9,9 +9,9 @@ if [ ! "${1:-}" = "" ]; then 	sArg=${1,,}; fi
  
 sTmuxSession="sky41"
 sTmuxWindow="evm"
-sAlias1="watch -n 1 "
+sAlias1="watch -n 1 ss -tp"
 sAlias2="watch -n 1 ps aux"
-sAlias3="watch -n 1 netstat -tuln"
+sAlias3="watch -n 1 netstat -tulanP"
 sCommand="$*"
 
 if shopt -q expand_aliases; then
