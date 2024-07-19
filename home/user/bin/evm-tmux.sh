@@ -69,15 +69,15 @@ startMainnetTmux() {
 	tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
 	# Split the window into four panes: two panes on the left and two (one higher) on the right
-	if [ "$(tmux list-panes | wc -l)" -eq "1" ]; then #&& [ "${TMUX_PANE:-}" = "%1" ]; then
+	if [ "$(tmux list-panes | wc -l)" -eq "1" ] && { [ "${TMUX_PANE:-}" = "%1" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 0
 		tmux split-window -h -t "${sTmuxSession}"
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && [ "${TMUX_PANE:-}" = "%2" ]; then
+	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 0 #-P 'p1'
 		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && [ "${TMUX_PANE:-}" = "%2" ]; then
+	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 2 #-n 'p3'
 		tmux split-window -v -l 3 #-p 90 #-t "${sTmuxSession}"
 	fi
