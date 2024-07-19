@@ -9,7 +9,7 @@ if [ ! "${1:-}" = "" ]; then 	sArg=${1,,}; fi
  
 sTmuxSession="sky41"
 sTmuxWindow="evm"
-sAlias1="tt"
+sAlias1="watch -n 1 "
 sAlias2="watch -n 1 ps aux"
 sAlias3="watch -n 1 netstat -tuln"
 sCommand="$*"
@@ -31,6 +31,16 @@ preCheck() {
 		echo -e "\t>>> Install tmux with \`sudo apt install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
 		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "$sTmuxInstall" = "" ]; then 	
 			if sudo apt-get install tmux; then
+				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
+			fi
+		fi
+		exit 1
+	fi
+	if ! command -v tput 1>/dev/null 2>&1; then
+		echo -e "\t>>> tput not found, please install tput, aborting";
+		echo -e "\t>>> Install tput with \`sudo apt install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
+		if [ ! "${sTputInstall^^}" = "N" ] && [ ! "$sTputInstall" = "" ]; then 	
+			if sudo apt-get install ncurses-bin; then
 				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
 		fi
