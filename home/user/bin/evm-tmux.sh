@@ -86,7 +86,7 @@ startMainnetTmux() {
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 2 #-n 'p3'
-		tmux split-window -v -l 4 #-p 90 #-t "${sTmuxSession}"
+		tmux split-window -v -l 5 #-p 90 #-t "${sTmuxSession}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "4" ]; then
 		# Execute specific commands in each pane: 0 1 2 are names of panes
