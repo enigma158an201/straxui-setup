@@ -11,7 +11,7 @@ sTmuxSession="sky41"
 sTmuxWindow="evm"
 sAlias1="watch -n 1 ss -tp"
 sAlias2="watch -n 1 ps aux"
-sAlias3="watch -n 1 netstat -tulanP"
+sAlias3="watch -n 1 netstat -tulanp"
 sCommand="$*"
 
 if shopt -q expand_aliases; then
