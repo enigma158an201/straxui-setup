@@ -99,10 +99,10 @@ startMainnetTmux() {
 	fi
 	# alway echo this line at right bottom
 	#if [ "${TMUX_PANE:-}" = "%4" ]; then
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e ' > hide tmux (and keep running): press ctrl+b then d or enter \`tmux detach\`\n \
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e ' > hide tmux (detach and keep running): press ctrl+b then d or enter \`tmux detach\`\n \
 		> navigate next|previous window: press ctrl+b then n or press ctrl+b then p\n \
-		> kill tmux window: enter \`tmux kill-window -t ${sTmuxWindow}\` to kill window\n \
-		> kill tmux session: enter \`tmux kill-session -t ${sTmuxSession}\` to kill session'" C-m
+		> kill tmux window: enter \`tmux kill-window -t ${sTmuxWindow}\`\n \
+		> kill tmux session: enter \`tmux kill-session -t ${sTmuxSession}\`'" C-m
 	#fi
 	tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 }
