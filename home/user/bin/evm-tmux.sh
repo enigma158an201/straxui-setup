@@ -15,7 +15,7 @@ if [[ "${sUsername}" =~ "sky " ]]; then
 	sAlias1="mainnet-geth"
 	sAlias2="mainnet-prysm"
 	sAlias3="mainnet-validator-run"
-elif [[ "${sUsername}" =~ "gwen " ]] || [[ "${sUsername}" =~ "freebox " ]]; then
+elif [[ "${sUsername}" =~ "gwen" ]] || [[ "${sUsername}" =~ "freebox" ]]; then
 	sAlias1="watch -n 1 ss -tp"
 	sAlias2="watch -n 1 ps aux"
 	sAlias3="watch -n 1 netstat -tulanp"
