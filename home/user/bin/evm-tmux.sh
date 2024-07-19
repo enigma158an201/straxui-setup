@@ -9,6 +9,9 @@ if [ ! "${1:-}" = "" ]; then 	sArg=${1,,}; fi
  
 sTmuxSession="sky41"
 sTmuxWindow="evm"
+sAlias1="tt"
+sAlias2="watch -n 1 ps aux"
+sAlias3="watch -n 1 netstat -tuln"
 
 if shopt -q expand_aliases; then
     echo "Aliases are already enabled in this script."
@@ -40,7 +43,7 @@ startMainnetTmux() {
 	if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then			
 		tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
 	fi
-		
+	
 	if ! tmux list-windows -t "${sTmuxSession}" | grep "${sTmuxWindow}"; then
 		# Create a window named ""${sTmuxWindow}"" if not exists in the "${sTmuxSession}" session
 		tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
@@ -52,15 +55,20 @@ startMainnetTmux() {
 	if [ "$(tmux list-panes | wc -l)" -eq "1" ] ; then
 		tmux select-pane -t 0
 		tmux split-window -h -t "${sTmuxSession}"
+	fi
+	if [ "$(tmux list-panes | wc -l)" -eq "2" ] ; then
 		tmux select-pane -t 0 #-P 'p1'
 		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
+	fi
+	if [ "$(tmux list-panes | wc -l)" -eq "3" ] ; then
 		tmux select-pane -t 2 #-n 'p3'
 		tmux split-window -v -l 3 #-p 90 #-t "${sTmuxSession}"
-
+	fi
+	if [ "$(tmux list-panes | wc -l)" -eq "4" ]; then
 		# Execute specific commands in each pane: 0 1 2 are names of panes
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" 'tt' C-m
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.1" "watch -n 1 ps aux" C-m
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "watch -n 1 netstat -tuln" C-m #validator
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" "${sAlias1}" C-m
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.1" "${sAlias2}" C-m
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "${sAlias3}" C-m #validator
 	fi
 	# alway echo this line at right bottom
 	tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'press ctrl+b then d or enter \`detach\` to hide\n or enter \`tmux kill-session -t evm\` to kill'" C-m
