@@ -63,13 +63,15 @@ stopMainnetTmux() {
 	done
 }
 startMainnetTmux() {
-	# Check if the tmux session "${sTmuxSession}" exists, # If it doesn't exist, create a new session named "${sTmuxSession}"
-	if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then			
+	# Check if the tmux session "${sTmuxSession}" exists, # If it doesn't exist, create a new session named "${sTmuxSession}": tmux new-session -A -s "${sTmuxSession}"
+	if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then
+		echo -e "\t Creating new session ${sTmuxSession}"
 		tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
 	fi
 	
 	if ! tmux list-windows -t "${sTmuxSession}" | grep "${sTmuxWindow}"; then
 		# Create a window named ""${sTmuxWindow}"" if not exists in the "${sTmuxSession}" session
+		echo -e "\t Creating new window ${sTmuxWindow} in existing session ${sTmuxSession}"
 		tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
 	fi
 
@@ -77,8 +79,8 @@ startMainnetTmux() {
 
 	# Split the window into four panes: two panes on the left and two (one higher) on the right
 	if [ "$(tmux list-panes | wc -l)" -eq "1" ] && { [ "${TMUX_PANE:-}" = "%1" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
-		tmux select-pane -t 0
-		tmux split-window -h -t "${sTmuxSession}"
+		tmux select-pane -t "${sTmuxWindow}:0"
+		tmux split-window -h -t "${sTmuxSession}:${sTmuxWindow}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 0 #-P 'p1'
