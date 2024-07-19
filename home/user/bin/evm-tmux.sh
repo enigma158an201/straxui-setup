@@ -84,12 +84,12 @@ startMainnetTmux() {
 		tmux split-window -h -t "${sTmuxSession}:${sTmuxWindow}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
-		tmux select-pane -t 0 #-P 'p1'
-		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
+		tmux select-pane -t "${sTmuxSession}:${sTmuxWindow}.0" #-P 'p1'
+		tmux split-window -v -t "${sTmuxSession}:${sTmuxWindow}" #-n 'p2'
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
-		tmux select-pane -t 2 #-n 'p3'
-		tmux split-window -v -l 5 #-p 90 #-t "${sTmuxSession}"
+		tmux select-pane -t "${sTmuxSession}:${sTmuxWindow}.2" #-n 'p3'
+		tmux split-window -v -t "${sTmuxSession}:${sTmuxWindow}" -l 5 #-p 90 #-t "${sTmuxSession}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "4" ]; then
 		# Execute specific commands in each pane: 0 1 2 are names of panes
