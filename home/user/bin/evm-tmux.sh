@@ -75,11 +75,12 @@ startMainnetTmux() {
 		tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
 	fi
 
+	iTmuxWindow=$(tmux list-windows | grep -F "${sTmuxWindow}" | cut -d: -f1)
 	tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
 	# Split the window into four panes: two panes on the left and two (one higher) on the right
 	if [ "$(tmux list-panes | wc -l)" -eq "1" ] && { [ "${TMUX_PANE:-}" = "%1" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
-		tmux select-pane -t "${sTmuxWindow}:0"
+		tmux select-pane -t "${iTmuxWindow}:0"
 		tmux split-window -h -t "${sTmuxSession}:${sTmuxWindow}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
