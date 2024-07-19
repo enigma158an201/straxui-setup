@@ -12,6 +12,7 @@ sTmuxWindow="evm"
 sAlias1="tt"
 sAlias2="watch -n 1 ps aux"
 sAlias3="watch -n 1 netstat -tuln"
+sCommand="$*"
 
 if shopt -q expand_aliases; then
     echo "Aliases are already enabled in this script."
@@ -26,7 +27,13 @@ if ! command -v stop; then alias stop='tmux detach'; fi
 
 preCheck() {
 	if ! command -v tmux 1>/dev/null 2>&1; then 
-		echo -e "\t>>> tmux not found, please install tmux, aborting"; 
+		echo -e "\t>>> tmux not found, please install tmux, aborting";
+		echo -e "\t>>> Install tmux with \`sudo apt install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
+		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "$sTmuxInstall" = "" ]; then 	
+			if sudo apt-get install tmux; then
+				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
+			fi
+		fi
 		exit 1
 	fi
 }
