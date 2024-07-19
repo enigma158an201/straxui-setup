@@ -77,7 +77,7 @@ startMainnetTmux() {
 		tmux select-pane -t 0 #-P 'p1'
 		tmux split-window -v -t "${sTmuxSession}" #-n 'p2'
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && [ "${TMUX_PANE:-}" = "%3" ]; then
+	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && [ "${TMUX_PANE:-}" = "%2" ]; then
 		tmux select-pane -t 2 #-n 'p3'
 		tmux split-window -v -l 3 #-p 90 #-t "${sTmuxSession}"
 	fi
