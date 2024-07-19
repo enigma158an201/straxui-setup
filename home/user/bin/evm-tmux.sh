@@ -86,7 +86,7 @@ startMainnetTmux() {
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
 		tmux select-pane -t 2 #-n 'p3'
-		tmux split-window -v -l 3 #-p 90 #-t "${sTmuxSession}"
+		tmux split-window -v -l 4 #-p 90 #-t "${sTmuxSession}"
 	fi
 	if [ "$(tmux list-panes | wc -l)" -eq "4" ]; then
 		# Execute specific commands in each pane: 0 1 2 are names of panes
@@ -96,7 +96,7 @@ startMainnetTmux() {
 	fi
 	# alway echo this line at right bottom
 	#if [ "${TMUX_PANE:-}" = "%4" ]; then
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'to hide tmux (and keep running): press ctrl+b then d or enter \`tmux detach\`\nor to kill tmux: enter \`tmux kill-session -t ${sTmuxSession}\` to kill'" C-m
+		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e 'to hide tmux (and keep running): press ctrl+b then d or enter \`tmux detach\`\nor to kill tmux: enter \`tmux kill-window -t ${sTmuxWindow}\` to kill window\nor to kill tmux: enter \`tmux kill-session -t ${sTmuxSession}\` to kill session'" C-m
 	#fi
 	tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 }
