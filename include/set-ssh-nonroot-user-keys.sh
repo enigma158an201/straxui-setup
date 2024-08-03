@@ -53,7 +53,7 @@ set_ssh_nonroot_user_keys() {
 		for keyAlreadySet in ${keysAlreadySet}; do
 			mySshPrvKeyName="$(basename "${keyAlreadySet}")"	# mySshPrvKeyPath
 			mySshPubKeyFilePath="${keyAlreadySet}.pub"		# mySshPrvKeyPath
-			#ssh-copy-id -p "${SSH_PORT}" -i "${mySshDir}/$outKeyFileName.pub" "${USER}@localhost" # for remote key install
+			#ssh-copy-id -p "${SSH_PORT}" -i "${mySshDir}/${outKeyFileName}.pub" "${USER}@localhost" # for remote key install
 			if [ ! -f "${myPubAutKeysFile}" ]; then touch "${myPubAutKeysFile}"; fi
 			mySshPubKeyFileContent="$(cat "${mySshPubKeyFilePath}")" # 1>/dev/null)" #		echo "${mySshPubKeyFileContent}"
 			if (! grep "${mySshPubKeyFileContent}" "${myPubAutKeysFile}"); then echo -e "\n${mySshPubKeyFileContent}" | tee -a "${myPubAutKeysFile}"; fi
