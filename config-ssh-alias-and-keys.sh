@@ -60,7 +60,8 @@ importSshKeys() {
 }
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config sshd"
-	suExecCommand "bash -x -c 'for sSshdConfigFile in ${launchDir}/etc/sshd_config.d/*.conf; do
+	sConfList="$(find "${launchDir}/etc/sshd_config.d/" -iname '*.conf')"
+	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList}; do
 		sSshdConfigFileName=\$(dirname \"\$sSshdConfigFile\")
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFileName
 		sSshdConfigSrc=${launchDir}\$sSshdConfigDst
