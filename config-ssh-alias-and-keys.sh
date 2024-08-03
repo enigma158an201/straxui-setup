@@ -70,6 +70,7 @@ updateSshdConfig() {
 	systemctl restart sshd.service"
 }
 main_ssh_config() {
+	updateSshdConfig
 	installSshAlias
 	#installSshKeys
 	#importSshKeys
