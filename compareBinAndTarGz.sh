@@ -18,14 +18,14 @@ main() {																			# Extract the binary file from the tar.gz archive to 
 	temp_dir=$(mktemp -d)															# Create a temporary directory
 
 	# Extract the binary file from the tar.gz archive to the temporary directory & Check if the extraction was successful
-	tar -xzvf "$tar_gz_file" -C "$temp_dir" "$binary_in_tar" 2>/dev/null || ( echo "Error: Failed to extract binary from the tar.gz file."; exit 1 )
+	tar -xzvf "${tar_gz_file}" -C "${temp_dir}" "${binary_in_tar}" 2>/dev/null || ( echo "Error: Failed to extract binary from the tar.gz file."; exit 1 )
 
-	if cmp -s "$temp_dir/$binary_in_tar" "$binary_on_disk"; then					# Compare the binary files using the `cmp` command & Check the exit status to determine if the files are the same
+	if cmp -s "${temp_dir}/${binary_in_tar}" "${binary_on_disk}"; then					# Compare the binary files using the `cmp` command & Check the exit status to determine if the files are the same
 		echo "Binary files are the same."
 	else
 		echo "Binary files are different."
 	fi
 
-	rm -rf "$temp_dir"																# Clean up temporary directory
+	rm -rf "${temp_dir}"																# Clean up temporary directory
 }
 main
