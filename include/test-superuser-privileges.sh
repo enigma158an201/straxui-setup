@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 set -euo pipefail # -x
-declare cmdParameters
-cmdParameters="$*"
+declare sCmdParameters
+sCmdParameters="$*"
 declare bSudoGroup
 declare bSudoersUser
 declare bDoasUser
@@ -78,50 +78,18 @@ getSuCmdNoPreserveEnv() {			#set +x
 	else																											suCmd="su - -c"; fi #"su - -p -c"
 	echo "$suCmd"
 }
-# removed
-# getSuQuotes() {
-# 	#if [ -x /usr/bin/sudo ]; then	 			mySuQuotes=(false)
-# 	#elif [ -x /usr/bin/doas ]; then	 		mySuQuotes=(false)
-# 	#else										mySuQuotes=('"')
-# 	#fi
-# 	if [ ! "$sudoPath" = "false" ] || [ ! "$doasPath" = "false" ]; then				
-# 		if [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] || [ ! "$bDoasUser" = "false" ]; then	
-# 												mySuQuotes="false"
-# 		else									mySuQuotes=('"')
-# 		fi
-# 	else										mySuQuotes=('"')
-# 	fi
-# 	echo "${mySuQuotes[@]}"
-# }
-# shellcheck disable=SC2086
 suExecCommand() {
 	sCommand="$*"
-	#if [ ! "$suQuotes" = "false" ]; then	$sPfxSu "${sCommand}"
-	#else									$sPfxSu $sCommand #$sPfxSu $(echo $sCommand) 	#echo "$sCommand" | xargs bash -c $sPfxSu  #$sPfxSu "$(xargs "$sCommand")" 		#$sPfxSu "${sCommand}"
-	#fi
-	#if [ ! "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	$sPfxSu "${sCommand}"
-	#elif [ ! "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 	$sPfxSu $sCommand
-	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	echo "${sCommand}"
-	#elif [ "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 		echo $sCommand
-	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	eval "${sCommand}"
 	if [ ! "$EUID" = "0" ]; then
-		eval "$sPfxSu ${sCommand}"
+		eval "${sPfxSu} ${sCommand}"
 	elif [ "$EUID" = "0" ]; then
 		eval "${sCommand}"
 	fi
 }
 suExecCommandNoPreserveEnv() {
 	sCommand="$*"
-	#if [ ! "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	$sPfxSuNoEnv "${sCommand}"
-	#elif [ ! "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 	$sPfxSuNoEnv $sCommand
-	#elif [ "$EUID" = "0" ] && [ ! "$suQuotes" = "false" ]; then 	echo "${sCommand}"
-	#elif [ "$EUID" = "0" ] && [ "$suQuotes" = "false" ]; then 		echo $sCommand
-	if [ ! "$EUID" = "0" ]; then 									eval "$sPfxSuNoEnv ${sCommand}"
+	if [ ! "$EUID" = "0" ]; then 									eval "${sPfxSuNoEnv} ${sCommand}"
 	elif [ "$EUID" = "0" ]; then 									eval "${sCommand}"
-	#if
-		#else									$sPfxSuNoEnv $sCommand
-		#fi
-	#else
 	fi
 }
 
@@ -138,7 +106,7 @@ main_SU(){
 	#tests
 	#[ -x /usr/bin/apt ] && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
 	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"
-	if [ -n "$cmdParameters" ]; then 								suExecCommand "${cmdParameters}" || suExecCommandNoPreserveEnv "${cmdParameters}"
+	if [ -n "$sCmdParameters" ]; then 								suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	else 															echo ; fi
 }
 main_SU
