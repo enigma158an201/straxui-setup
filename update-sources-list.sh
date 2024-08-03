@@ -68,10 +68,8 @@ installNewSourcesList() {
 	unset sSourcesList{Dst,Src,Bak}
 }
 
-main() {
-	#if [ "${sCurrentDistCodename}" = "buster" ]; then		 installBusterSourcesList
-	#elif [ "${sCurrentDistCodename}" = "bullseye" ]; then	 installBookwormSourcesList; fi
+main_upgrade_sources() {
 	installNewSourcesList
 }
 
-main
+main_upgrade_sources
