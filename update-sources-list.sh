@@ -5,7 +5,7 @@
 set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 
 getInstalledDebianDistCodeName() {
@@ -13,7 +13,7 @@ getInstalledDebianDistCodeName() {
 	if [ -f "${sEtcOsrelease}" ]; then
 		sOsId="$(grep -i ^ID= "${sEtcOsrelease}")"
 		sOsId="${sOsId##*=}"
-		if [ "$sOsId" = "debian" ]; then 
+		if [ "${sOsId}" = "debian" ]; then 
 			sOsRelease="$(grep -i ^VERSION_CODENAME= "${sEtcOsrelease}")"
 			sOsRelease="${sOsRelease##*=}"
 			echo "${sOsRelease}"
