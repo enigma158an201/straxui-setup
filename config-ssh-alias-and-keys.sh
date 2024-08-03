@@ -60,7 +60,7 @@ importSshKeys() {
 }
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config sshd"
-	suExecCommand "bash -x -c for sSshdConfigFile in ${launchDir}/etc/sshd_config.d/*.conf; do
+	suExecCommand "bash -x -c 'for sSshdConfigFile in ${launchDir}/etc/sshd_config.d/*.conf; do
 		sSshdConfigFileName=\$(dirname \"\$sSshdConfigFile\")
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFileName
 		sSshdConfigSrc=${launchDir}\$sSshdConfigDst
@@ -68,7 +68,7 @@ updateSshdConfig() {
 			install -o root -g root -m 0744 -pv \$sSshdConfigSrc \$sSshdConfigDst
 		fi
 	done
-	systemctl restart sshd.service"
+	systemctl restart sshd.service'"
 }
 main_ssh_config() {
 	updateSshdConfig
