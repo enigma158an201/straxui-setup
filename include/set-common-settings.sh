@@ -10,8 +10,8 @@ source "${launchDir}/include/file-edition.sh"
 
 sshd-config-settings() {
 	echo -e "\t>>> application des fichiers config sshd"
-	#for sSshdConfigFile in prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do
-	for sSshdConfigFile in enable-only-ip4.conf prohibit-root.conf protocol.conf pubkey-accepted-types.conf pubkey-only.conf sshd-port.conf; do
+	#for sSshdConfigFile in enable-only-ip4.conf prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do
+	for sSshdConfigFile in "${launchDir}"/etc/sshd_config.d/*.conf; do
 		sSshdConfigDst="/etc/ssh/sshd_config.d/$sSshdConfigFile"
 		sSshdConfigSrc="${launchDir}$sSshdConfigDst"
 		if [ -d "$(dirname "$sSshdConfigDst")" ] && [ -f "$sSshdConfigSrc" ]; then 
