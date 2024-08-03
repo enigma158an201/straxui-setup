@@ -92,8 +92,8 @@ setLinksWireguard() {
 
 main_wireguard() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: $bIsDebian"
-	if $bIsDebian; then
+	echo -e "\t>>> debian check: ${bIsDebian}"
+	if ${bIsDebian}; then
 		installWireguardDeb
 		setIp4ForwardSysctl
 		setKeysWireguard

@@ -42,8 +42,8 @@ set -g mouse on" | tee ${sTmuxConf}
 }
 main_tmux() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: $bIsDebian"
-	if $bIsDebian; then
+	echo -e "\t>>> debian check: ${bIsDebian}"
+	if ${bIsDebian}; then
 		installTmuxDeb
 		setupTmuxConf
 	else

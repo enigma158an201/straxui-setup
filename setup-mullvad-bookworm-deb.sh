@@ -31,8 +31,8 @@ installMullvadDeb() {
 }
 main_mullvad() {
 	bIsDebian="$(checkIfDebianId)"
-    echo -e "$bIsDebian"
-	if $bIsDebian; then
+    echo -e "${bIsDebian}"
+	if ${bIsDebian}; then
 		installMullvadDeb
 	fi
 }
