@@ -31,8 +31,8 @@ BBlue='\033[1;34m'			# Blue
 sArch=amd64
 sSystem=linux
 sRepoFileFormat=tar.gz
-sStratisRepoHome=/media/CommonData/telechargements/stratisEVM		#sStratisRepoHome=$HOME/data/mainnet
-sBeaconChainBin=${sStratisRepoHome}/beacon-chain							#sDepositBin=${sStratisRepoHome}/deposit
+sStratisRepoHome=/media/CommonData/telechargements/stratisEVM		#sStratisRepoHome=${HOME}/data/mainnet
+sBeaconChainBin=${sStratisRepoHome}/beacon-chain					#sDepositBin=${sStratisRepoHome}/deposit
 sGethBin=${sStratisRepoHome}/geth
 sValidatorBin=${sStratisRepoHome}/validator							#tLocalBins=("${sBeaconChainBin}" "${sGethBin}" "${sValidatorBin}")	#"${sDepositBin}"
 sProjectOwner=stratisproject
@@ -48,19 +48,19 @@ declare -A tLocalBin=(["beacon-chain"]="${sBeaconChainBin}" ["geth"]="${sGethBin
 
 getLocalBinVersion() {
 	sBinPath=${1}
-	eval "$sBinPath --version"
+	eval "${sBinPath} --version"
 }
 oldGitRepoBinVersion() {
 	sBinUrl=${1}
-	curl -s "$sBinUrl" | grep -i tag_name
+	curl -s "${sBinUrl}" | grep -i tag_name
 }
 oldGitRepoLatestBinUrl() {
 	sBinUrl=${1}
-	curl -s "$sBinUrl" | grep -i browser_download_url
+	curl -s "${sBinUrl}" | grep -i browser_download_url
 }
 gitRepoContent() {
 	sBinUrl=${1}
-	curl -s "$sBinUrl"
+	curl -s "${sBinUrl}"
 }
 gitRepoBinVersion() {
 	sContent="${1}"
@@ -74,7 +74,7 @@ gitRepoLatestBinUrl() {
 	sName="${2}"
 	sUrl=$(echo "${sContent}" | grep -i browser_download_url)
 	for sCrit in "$(basename "${sName}")" ${sSystem} ${sArch} ${sRepoFileFormat}; do
-		#echo -e "$sCrit\t${sUrl}"; read -rp " "
+		#echo -e "${sCrit}\t${sUrl}"; read -rp " "
 		sUrl="$(echo "${sUrl}" | grep "${sCrit}" || echo "false")"
 		read -rp " "
 		if [ "${sUrl}" = "false" ]; then sUrl="${sUrl#*\: }"; break; fi
@@ -91,8 +91,8 @@ dlGhReleaseTarball() {
 	sProject=${1}
 	sBeginFilename=${2}
 	#cd "${sStratisRepoHome}" || exit 1
-	#gh release download --skip-existing --repo "${sProject}" --pattern "*$sBeginFilename*" --pattern "*$sSystem*" --pattern "*$sArch*" --pattern "*$sRepoFileFormat"
-	gh release download --dir "${sStratisRepoHome}" --skip-existing --repo "${sProject}" --pattern "*$sBeginFilename*$sSystem*$sArch*$sRepoFileFormat"
+	#gh release download --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*" --pattern "*${sSystem}*" --pattern "*${sArch}*" --pattern "*${sRepoFileFormat}"
+	gh release download --dir "${sStratisRepoHome}" --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*${sSystem}*${sArch}*${sRepoFileFormat}"
 	#echo $?
 }
 preRequisitesInstall() {
@@ -103,7 +103,7 @@ preRequisitesInstall() {
 			if ! command -v curl 1>dev/null 2>&1; then 		sudo apt-get install curl; fi	#curl
 		fi		
 	fi
-	if [ -d "$HOME/.config/gh" ] || ! gh auth status; then 	gh auth login; fi
+	if [ -d "${HOME}/.config/gh" ] || ! gh auth status; then 	gh auth login; fi
 }
 main() {
 	for sStratisFile in "${tStratisFile[@]}"; do #for sStratisUrl in "${tRepoUrl[@]}"; do
@@ -123,8 +123,8 @@ main() {
 }
 test() {
 	for sBinFileName in "${tStratisFile[@]}"; do
-		sOwnerAndRepo="${tStratisRepoOwnerAndName[$sBinFileName]}"
-		echo -e "\t>>> Getting repo ${BBlue}${sOwnerAndRepo}$normal releases for ${BBlue}${sBinFileName}${normal} binary, please wait!"
+		sOwnerAndRepo="${tStratisRepoOwnerAndName[${sBinFileName}]}"
+		echo -e "\t>>> Getting repo ${BBlue}${sOwnerAndRepo}${normal} releases for ${BBlue}${sBinFileName}${normal} binary, please wait!"
 		getGhRepoReleases "${sOwnerAndRepo}" #gitRepoBinVersion ""
 		if true; then 	dlGhReleaseTarball "${sOwnerAndRepo}" "${sBinFileName}"; fi #|| echo -e "\t>>> File Already downloaded"
 	done
