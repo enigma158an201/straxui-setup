@@ -70,7 +70,6 @@ updateSshdConfig() {
 	systemctl restart sshd.service"
 }
 main_ssh_config() {
-	sudo bash -c "source ${launchDir}/include/set-common-settings.sh"
 	installSshAlias
 	#installSshKeys
 	#importSshKeys
