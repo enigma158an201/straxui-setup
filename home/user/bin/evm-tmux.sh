@@ -26,17 +26,17 @@ if shopt -q expand_aliases; then
 else
     echo "Aliases are not enabled in this script, try to enable aliases."
 	shopt -s expand_aliases || exit 1
-	source "$HOME/.bashrc"
+	source "${HOME}/.bashrc"
 fi
 #if ! command -v detach; then alias detach='tmux detach'; fi
-#if ! command -v attach; then alias attach="tmux -a -t $sTmuxWindow"; fi # does not work
+#if ! command -v attach; then alias attach="tmux -a -t ${sTmuxWindow}"; fi # does not work
 #if ! command -v stop; then alias stop='tmux detach'; fi
 
 preCheck() {
 	if ! command -v tmux 1>/dev/null 2>&1; then 
 		echo -e "\t>>> tmux not found, please install tmux, aborting";
 		echo -e "\t>>> Install tmux with \`sudo apt install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
-		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "$sTmuxInstall" = "" ]; then 	
+		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "${sTmuxInstall}" = "" ]; then 	
 			if sudo apt-get install tmux; then
 				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
@@ -46,7 +46,7 @@ preCheck() {
 	if ! command -v tput 1>/dev/null 2>&1; then
 		echo -e "\t>>> tput not found, please install tput, aborting";
 		echo -e "\t>>> Install tput with \`sudo apt install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
-		if [ ! "${sTputInstall^^}" = "N" ] && [ ! "$sTputInstall" = "" ]; then 	
+		if [ ! "${sTputInstall^^}" = "N" ] && [ ! "${sTputInstall}" = "" ]; then 	
 			if sudo apt-get install ncurses-bin; then
 				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
@@ -56,7 +56,7 @@ preCheck() {
 }
 stopMainnetTmux() {
 	for iWindow in 4 3 2 1; do
-	if [ "$(tmux list-panes | wc -l)" -eq "$iWindow" ] ; then 	
+	if [ "$(tmux list-panes | wc -l)" -eq "${iWindow}" ] ; then 	
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" C-c
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" 'exit' C-m
 	fi
@@ -112,11 +112,11 @@ upgradeBinTmuxEvmScript() {
 		echo "${sTmuxEvmPath}"
 	fi
 	if true; then
-		mkdir -p "$HOME/bin"
+		mkdir -p "${HOME}/bin"
 		#if ! test -z "${sTmuxEvmPath:-}"; then 
-			LANG=C find "$HOME" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --compare --target-directory="$HOME/bin" {} \; 2>/dev/null || true
+			LANG=C find "${HOME}" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --compare --target-directory="${HOME}/bin" {} \; 2>/dev/null || true
 		#else
-			#find "$HOME" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --preserve-timestamps --target-directory="$HOME/bin" {} \;
+			#find "${HOME}" -iwholename '*/straxui-setup/*evm-tmux.sh' -exec install --mode=0755 --preserve-timestamps --target-directory="${HOME}/bin" {} \;
 		#fi
 	fi
 }
