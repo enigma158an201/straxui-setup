@@ -45,7 +45,7 @@ setParameterInFile() {
 	local setnewparam="$3"
 
 	for s in "|" "#" "/" ":" ";" "~"; do 
-		if [ "$(grep "$s" <<< "${findText}")" = "" ]; then 			separateursed="$"; break; fi
+		if [ "$(grep "${s}" <<< "${findText}")" = "" ]; then 		separateursed="$"; break; fi
 	done
 	if [ "$(grep -i "${setnewparam}" "${inputfile}")" = "" ]; then	isAlreadySet="false"
 	else															isAlreadySet="true"
