@@ -11,8 +11,8 @@ if ! [ "$(id -u)" = "0" ]; then
   exit 1
 fi
 
-#cat ./xsessionrc >> /home/$SUDO_USER/.xsessionrc
-#chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.xsessionrc
+#cat ./xsessionrc >> /home/${SUDO_USER}/.xsessionrc
+#chown ${SUDO_USER}:${SUDO_USER} /home/${SUDO_USER}/.xsessionrc
 
 apt-get install -y \
     libxfce4ui-utils \
