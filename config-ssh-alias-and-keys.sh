@@ -61,7 +61,9 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config sshd"
 	declare -a sConfList
-	sConfList=( "$(find "${launchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
+	#sConfList=( "$(find "${launchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
+	#sConfList=( $(ls "${launchDir}/etc/ssh/sshd_config.d/*.conf") )
+	mapfile -t sConfList < <(ls "${launchDir}/etc/ssh/sshd_config.d/*.conf")
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
 		sSshdConfigFileName=\$(basename \"\$sSshdConfigFile\")
