@@ -3,14 +3,14 @@
 set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 systemdHostnameFile=/etc/hostname
 hostsFile=/etc/hosts
 osReleaseFile=/etc/os-release
 
 getSystemdHostnameFileContent() {
-	cat "$systemdHostnameFile"
+	cat "${systemdHostnameFile}"
 }
 getOsRelease() {
 	if [ -r "${osReleaseFile}" ]; then
@@ -64,7 +64,7 @@ updateHosts() {
 main_set_hostname() {
 	#source ${launchDir}/include/test-superuser-privileges.sh
 	#if systemd
-	sOldHostname="$(getSystemdHostnameFileContent)" #$(cat $systemdHostnameFile)
+	sOldHostname="$(getSystemdHostnameFileContent)"
 	sNewHostname="$(getNewHostname)"
 	#replace old hostname by new one if needed
 	updateHostname
