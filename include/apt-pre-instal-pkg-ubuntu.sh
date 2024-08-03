@@ -2,7 +2,7 @@
 set -euo pipefail #; set -x
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/apt-functions.sh"
 
 aptPreinstallPkg() {
@@ -11,9 +11,9 @@ aptPreinstallPkg() {
 	apt-get update && apt-get upgrade
 	for pkgToInstall in "${pkgsToInstall[@]}" #${pkgsToInstall[*]}
 	do
-		#echo "verification si paquet $pkgToInstall installé" #; read -rp " "
-		#if [ "$(checkDpkgInstalled "$pkgToInstall")" = "false" ]; then
-			apt-get -y install "$pkgToInstall"
+		#echo "verification si paquet ${pkgToInstall} installé" #; read -rp " "
+		#if [ "$(checkDpkgInstalled "${pkgToInstall}")" = "false" ]; then
+			apt-get -y install "${pkgToInstall}"
 		#fi
 	done
 }
@@ -29,8 +29,8 @@ aptUnbloatPkg() {
 
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
-		if [ "$(checkDpkgInstalled "$pkgToInstall")" = "true" ]; then
-			apt-get -y autoremove "$pkgsToRemove"
+		if [ "$(checkDpkgInstalled "${pkgToInstall}")" = "true" ]; then
+			apt-get -y autoremove "${pkgsToRemove}"
 		fi
 	done
 }
