@@ -14,11 +14,11 @@ checkUserSudoOrWheelGroup() {
 	bSudoGroup="false"
 	for sGr in sudo wheel; do
 		for myGr in $myUserGroups; do
-			if [ "$sGr" = "$myGr" ]; then bSudoGroup="true"; break; fi
+			if [ "${sGr}" = "${myGr}" ]; then bSudoGroup="true"; break; fi
 		done
-		if [ "$bSudoGroup" = "true" ]; then break; fi
+		if [ "${bSudoGroup}" = "true" ]; then break; fi
 	done
-	echo "$bSudoGroup"
+	echo "${bSudoGroup}"
 }
 
 checkSudoers() {
@@ -45,45 +45,43 @@ checkSudoers() {
 	#fi
 	#if false; then sudo --validate; fi
 	#if false; then sudo -n true; fi #sudo -l $USER -n true
-	#is_user_sudo=$(sudo -v) # if is empty sudo can be used otherwise not
+	#bUserSudo=$(sudo -v) # if is empty sudo can be used otherwise not
 	#SUDO_ASKPASS=/bin/false sudo -A whoami 2>&1
 	#getent group | grep -E 'wheel|sudo'
 	#echo "a coder" #true
-	is_user_sudo="$(LANG=C sudo -v -A 2>&1)" #is_user_sudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
+	bUserSudo="$(LANG=C sudo -v -A 2>&1)" #bUserSudo=$(LANG=C sudo -v -A || echo "false") # if is sudo error no SUDO_ASKPASS otherwise not
 	keyWord="try setting SUDO_ASKPASS"
-	if [[ $is_user_sudo =~ $keyWord ]] || [ "$is_user_sudo" = "" ]; then
+	if [[ ${bUserSudo} =~ $keyWord ]] || [ "${bUserSudo}" = "" ]; then
 		bSudoers="true"
 	else bSudoers="false"
 	fi
-	echo "$bSudoers"
+	echo "${bSudoers}"
 } 
 checkDoasUser() {		#set +x
-	is_user_doas="$(LANG=C timeout -v 1 doas true 2>&1)" #echo "test doas valid user" 
+	bUserDoas="$(LANG=C timeout -v 1 doas true 2>&1)" #echo "test doas valid user" 
 	keyWord="doas: Operation not permitted"
-	if [[ ! $is_user_doas =~ $keyWord ]]; then
+	if [[ ! ${bUserDoas} =~ $keyWord ]]; then
 		bDoasUser="true"
 	else
 		bDoasUser="false"; fi
-	echo "$bDoasUser"
+	echo "${bDoasUser}"
 }
 getSuCmd() {			#set +x
-	if [ ! "$sudoPath" = "false" ] && { [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] ; }; then	suCmd="$sudoPath" #"/usr/bin/sudo"
-	elif [ ! "$doasPath" = "false" ] && [ -f /etc/doas.conf ] && [ ! "$bSudoGroup" = "false" ]; then				suCmd="$doasPath" #"/usr/bin/doas"
-	else																											suCmd="su -p -c"; fi #"su - -p -c"
-	echo "$suCmd"
+	if [ ! "${sSudoPath}" = "false" ] && { [ ! "${bSudoGroup}" = "false" ] || [ ! "${bSudoersUser}" = "false" ] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [ ! "${sDoasPath}" = "false" ] && [ -f /etc/doas.conf ] && [ ! "${bSudoGroup}" = "false" ]; then					sSuCmd="$sDoasPath" #"/usr/bin/doas"
+	else																													sSuCmd="su -p -c"; fi #"su - -p -c"
+	echo "${sSuCmd}"
 }
 getSuCmdNoPreserveEnv() {			#set +x
-	if [ ! "$sudoPath" = "false" ] && { [ ! "$bSudoGroup" = "false" ] || [ ! "$bSudoersUser" = "false" ] ; }; then	suCmd="$sudoPath" #"/usr/bin/sudo"
-	elif [ ! "$doasPath" = "false" ] && [ -f /etc/doas.conf ] && [ ! "$bSudoGroup" = "false" ]; then				suCmd="$doasPath" #"/usr/bin/doas"
-	else																											suCmd="su - -c"; fi #"su - -p -c"
-	echo "$suCmd"
+	if [ ! "${sSudoPath}" = "false" ] && { [ ! "${bSudoGroup}" = "false" ] || [ ! "${bSudoersUser}" = "false" ] ; }; then	sSuCmd="${sSudoPath}" #"/usr/bin/sudo"
+	elif [ ! "${sDoasPath}" = "false" ] && [ -f /etc/doas.conf ] && [ ! "${bSudoGroup}" = "false" ]; then					sSuCmd="${sDoasPath}" #"/usr/bin/doas"
+	else																													sSuCmd="su - -c"; fi #"su - -p -c"
+	echo "${sSuCmd}"
 }
 suExecCommand() {
 	sCommand="$*"
-	if [ ! "$EUID" = "0" ]; then
-		eval "${sPfxSu} ${sCommand}"
-	elif [ "$EUID" = "0" ]; then
-		eval "${sCommand}"
+	if [ ! "$EUID" = "0" ]; then 									eval "${sPfxSu} ${sCommand}"
+	elif [ "$EUID" = "0" ]; then 									eval "${sCommand}"
 	fi
 }
 suExecCommandNoPreserveEnv() {
@@ -94,11 +92,11 @@ suExecCommandNoPreserveEnv() {
 }
 
 main_SU(){
-	sudoPath="$(command -v sudo || echo "false")"
-	doasPath="$(command -v doas || echo "false")"
+	sSudoPath="$(command -v sudo || echo "false")"
+	sDoasPath="$(command -v doas || echo "false")"
 	bSudoGroup="$(checkUserSudoOrWheelGroup)"
 	bSudoersUser="$(checkSudoers)"
-	if [ ! "$doasPath" = "false" ]; then 							bDoasUser="$(checkDoasUser)"
+	if [ ! "${sDoasPath}" = "false" ]; then 						bDoasUser="$(checkDoasUser)"
 	else 															bDoasUser="false"; fi
 	#suQuotes="$(getSuQuotes)"
 	if ! sPfxSu="$(getSuCmd) "; then 								exit 01; fi
