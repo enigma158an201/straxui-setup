@@ -8,7 +8,7 @@
 # deb http://deb.debian.org/debian bullseye-updates main
 # deb-src http://deb.debian.org/debian bullseye-updates main
 
-if [ "$launchDir" = "." ] || [ "$launchDir" = "include" ] || [ "$launchDir" = "" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "${launchDir}" = "." ] || [ "${launchDir}" = "include" ] || [ "${launchDir}" = "" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
 
 aptSourcesListFile=/etc/apt/sources.list
@@ -25,7 +25,7 @@ upgradeJessieToStretch() {
 	suExecCommandNoPreserveEnv sed -i.old 's/jessie/stretch/g' ${aptSourcesListFile}
 	if [ -n "${tiersRepos}" ]; then 
 		for sRepo in ${tiersRepos}; do
-			suExecCommandNoPreserveEnv sed -i.old 's/jessie/stretch/g' "${sRepo}"
+			suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' ${sRepo}"
 		done
 	fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ stretch/updates#\ stretch-security#g' ${aptSourcesListFile}
@@ -94,16 +94,12 @@ upgradeToSid() {
 upgradeSourcesList() {
 	if [ -r /etc/debian_version ]; then
 		debInstalledVersion=$(getDebianVersion)
-		if [ "$debInstalledVersion" = "8" ]; then
-			upgradeJessieToStretch
-		elif [ "$debInstalledVersion" = "9" ]; then
-			upgradeStretchToBuster
-		elif [ "$debInstalledVersion" = "10" ]; then
-			upgradeBusterToBullseye
-		elif [ "$debInstalledVersion" = "11" ]; then
-			upgradeBullseyeToBookworm
-		elif [ "$debInstalledVersion" = "12" ]; then
-			echo "trixie not stable at moment of this script version"
+		if [ "${debInstalledVersion}" = "8" ]; then 			upgradeJessieToStretch
+		elif [ "${debInstalledVersion}" = "9" ]; then 			upgradeStretchToBuster
+		elif [ "${debInstalledVersion}" = "10" ]; then 			upgradeBusterToBullseye
+		elif [ "${debInstalledVersion}" = "11" ]; then 			upgradeBullseyeToBookworm
+		elif [ "${debInstalledVersion}" = "12" ]; then 			echo "trixie not stable at moment of this script version"
+		elif [ "${debInstalledVersion}" = "13" ]; then 			echo "forky not stable at moment of this script version"
 			exit 1 #upgradeBookwormToTrixie
 		else
 			echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"

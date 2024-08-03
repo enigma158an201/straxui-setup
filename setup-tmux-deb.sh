@@ -27,7 +27,7 @@ installTmuxDeb() {
 }
 
 setupTmuxConf() {
-	sTmuxConf=$HOME/.tmux.conf
+	sTmuxConf=${HOME}/.tmux.conf
 	echo -e "\t>>> setup tmux config at ${sTmuxConf}"
 	#3. To add a repository for stable releases, run the following command:
 	echo "# Permet de définir le shell utilisé par défaut
@@ -38,7 +38,7 @@ set-option -g default-shell /usr/bin/bash
 # set -g mouse-select-pane on
 # set -g mouse-select-window on
 # Permet d'utiliser la souris dans un terminal virtuel (à partir de la version 2.1)
-set -g mouse on" | tee ${sTmuxConf}
+set -g mouse on" | tee "${sTmuxConf}"
 }
 main_tmux() {
 	bIsDebian="$(checkIfDebianId)"
