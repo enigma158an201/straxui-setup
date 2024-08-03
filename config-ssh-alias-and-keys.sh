@@ -63,7 +63,7 @@ updateSshdConfig() {
 	suExecCommand "bash -c 'for sSshdConfigFile in ${launchDir}/etc/sshd_config.d/*.conf; do
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFile
 		sSshdConfigSrc=${launchDir}\$sSshdConfigDst
-		if [ -d $\(dirname \"\$sSshdConfigDst\"\) ] && [ -f \"\$sSshdConfigSrc\" ]; then
+		if [ -d \$(dirname \"\$sSshdConfigDst\"\) ] && [ -f \"\$sSshdConfigSrc\" ]; then
 			install -o root -g root -m 0744 -pv \$sSshdConfigSrc \$sSshdConfigDst
 		fi
 	done
