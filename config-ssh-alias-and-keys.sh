@@ -61,7 +61,8 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config sshd"
 	suExecCommand "bash -x -c for sSshdConfigFile in ${launchDir}/etc/sshd_config.d/*.conf; do
-		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFile
+		sSshdConfigFileName=\$(dirname \"\$sSshdConfigFile\")
+		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFileName
 		sSshdConfigSrc=${launchDir}\$sSshdConfigDst
 		if [ -d \$(dirname \"\$sSshdConfigDst\") ] && [ -f \"\$sSshdConfigSrc\" ]; then
 			install -o root -g root -m 0744 -pv \$sSshdConfigSrc \$sSshdConfigDst
