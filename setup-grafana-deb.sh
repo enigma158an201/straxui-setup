@@ -48,8 +48,8 @@ installGrafanaDeb() {
 }
 main_prometheus_grafana() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: $bIsDebian"
-	if $bIsDebian; then
+	echo -e "\t>>> debian check: ${bIsDebian}"
+	if ${bIsDebian}; then
 		installPrometheusDeb
 		installGrafanaDeb
 	else
