@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
+if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 #source "${launchDir}/include/test-superuser-privileges.sh"
 #source "${launchDir}/include/set-common-settings.sh"
 
@@ -19,22 +19,22 @@ sSshRepoAliasConfig=${sSshRepoSource}/${sSshAliasConfig}
 sSshRepoAliasConfigd=${sSshRepoSource}/${sSshAliasConfigd}
 #sSshRepoAuthKeys=${sSshRepoSource}/${sSshAuthKeys}
 
-sSshLocalConf=$HOME/${sSshSubFolder}
-sSshLocalAliasConfig=$HOME/${sSshAliasConfig}
-sSshLocalAliasConfigd=$HOME/${sSshAliasConfigd}
-sSshLocalAuthKeys=$HOME/${sSshAuthKeys}
+sSshLocalConf=${HOME}/${sSshSubFolder}
+sSshLocalAliasConfig=${HOME}/${sSshAliasConfig}
+sSshLocalAliasConfigd=${HOME}/${sSshAliasConfigd}
+sSshLocalAuthKeys=${HOME}/${sSshAuthKeys}
 
 installSshAlias() {
 	#sLoggedUser=$(whoami)
 	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	mkdir -p "${sSshLocalAliasConfigd}"
-	install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
+	install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
 	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
-		#install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
-		sAliasConfigDst="${sAliasConfigSrc/$sSshRepoSource/$HOME}"
-		#if [[ $sAliasConfigDst =~ $sLoggedUser ]]; then
-			echo -e "\t>>> proceed file $sAliasConfigSrc to ${sAliasConfigDst}"
-			install -o "$USER" -g "$USER" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
+		#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
+		sAliasConfigDst="${sAliasConfigSrc/${sSshRepoSource}/${HOME}}"
+		#if [[ ${sAliasConfigDst} =~ ${sLoggedUser} ]]; then
+			echo -e "\t>>> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
+			install -o "${USER}" -g "${USER}" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
 		#fi
 	done
 }
@@ -42,10 +42,10 @@ installSshKeys() {
 	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"
 	echo -e "\t>>> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
 	if ! test -e "${sSshLocalAuthKeys}"; then 	touch "${sSshLocalAuthKeys}"; fi
-	install -o "$USER" -g "$USER" -pv truc machin
+	install -o "${USER}" -g "${USER}" -pv truc machin
 	for sAliasPubKey in "${sSshRepoConf}"/*.pub; do 
-		install -o "$USER" -g "$USER" -pv -m 0644 "${sSshRepoConf}/${sAliasPubKey}" "${sSshLocalConf}/${sAliasPubKey}"
-		install -o "$USER" -g "$USER" -pv -m 0600 "${sSshRepoConf}/${sAliasPubKey/.pub/}" "${sSshLocalConf}/${sAliasPubKey/.pub/}"
+		install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoConf}/${sAliasPubKey}" "${sSshLocalConf}/${sAliasPubKey}"
+		install -o "${USER}" -g "${USER}" -pv -m 0600 "${sSshRepoConf}/${sAliasPubKey/.pub/}" "${sSshLocalConf}/${sAliasPubKey/.pub/}"
 	done
 }
 importSshKeys() {
