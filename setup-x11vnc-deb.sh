@@ -4,9 +4,9 @@
 set -euo pipefail # set -euxo pipefail
 
 sEtcOsReleasePath=/etc/os-release
-sVncConfDir=$HOME/.vnc
+sVncConfDir=${HOME}/.vnc
 sVncPasswd="${sVncConfDir}/passwd"
-sX11vncrc=$HOME/.x11vncrc
+sX11vncrc=${HOME}/.x11vncrc
 	
 checkIfDebianId() {
 	if [ -r "${sEtcOsReleasePath}" ]; then
@@ -48,8 +48,8 @@ nopw		# uncomment nopw ONLY if localhost uncommented
 }
 main() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: $bIsDebian"
-	if $bIsDebian; then
+	echo -e "\t>>> debian check: ${bIsDebian}"
+	if ${bIsDebian}; then
 		installX11vncDeb
 		setupX11vncConf
 	else

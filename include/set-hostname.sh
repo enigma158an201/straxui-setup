@@ -15,7 +15,7 @@ getSystemdHostnameFileContent() {
 getOsRelease() {
 	if [ -r "${osReleaseFile}" ]; then
 		sOsIdLine=$(grep -i '^ID=' "${osReleaseFile}")
-		echo ${sOsIdLine//ID=/} #sOsId=
+		echo "${sOsIdLine//ID=/}" #sOsId=
 	else
 		return 1
 	fi
