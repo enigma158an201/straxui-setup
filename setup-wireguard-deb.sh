@@ -9,7 +9,7 @@ source "${launchDir}/include/test-superuser-privileges.sh"
 
 sEtcOsReleasePath=/etc/os-release
 sVirtualIpVpnServer=192.168.11.1
-sVirtualIpVpnClient=192.168.11.3
+sVirtualIpVpnClient=192.168.11.2
 
 checkIfDebianId() {
 	if [ -r "${sEtcOsReleasePath}" ]; then
