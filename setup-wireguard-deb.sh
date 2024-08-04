@@ -12,7 +12,7 @@ sVirtualIpVpnServer=192.168.11.1 # constant fixed for all machines
 sVirtualIpVpnClient=192.168.11.2
 sPortVpnServer=51820
 sSshAliasVpnServer=freebox-delta-local
-sSshAliasVpnclient=gl553vd-archlinux
+sSshAliasVpnClient=gl553vd-archlinux
 
 echo -e "to do: get free ip address for new client, or check existing ip"
 sEtcWg=/etc/wireguard
@@ -72,7 +72,7 @@ getEchoWgKey() {
 }
 setLinksServer() {
 	sSrvPrivKey="$(suExecCommand "cat ${sServerPrvKey}")"
-	sCliPublKey="$(suExecCommand "cat ${sEtcWg}/publickey")"
+	sCliPublKey="$(getEchoWgKey ${sSshAliasVpnClient} "${sClientPubKey}")" #"$(suExecCommand "cat ${sEtcWg}/publickey")"
 	echo "[Interface]
 Address = ${sVirtualIpVpnServer}/24
 SaveConfig = true
@@ -130,7 +130,7 @@ getExistingWgpeers() {
 }
 
 main_wireguard_server() {
-	sHostnameVpnClient=$(ssh ${sSshAliasVpnclient} hostname)
+	sHostnameVpnClient=$(ssh ${sSshAliasVpnClient} hostname)
 	sHostnameVpnServer=$(hostname)
 	setIp4ForwardSysctl
 	setKeysWireguard 2
