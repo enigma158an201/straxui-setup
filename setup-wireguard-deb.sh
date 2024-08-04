@@ -71,7 +71,7 @@ setIp4ForwardSysctl() {
 getEchoWgKey() {
 	sSshAlias=${1}
 	sKeyFile=${2}
-	ssh "${sSshAlias}" "sudo cat \"${sKeyFile}\" || su - -c cat \"${sKeyFile}\""
+	ssh "${sSshAlias}" "sudo -S cat \"${sKeyFile}\" || su - -c cat \"${sKeyFile}\""
 }
 setLinksServer() {
 	sSrvPrivKey="$(suExecCommand "cat ${sServerPrvKey}")"
