@@ -73,7 +73,7 @@ updateSshdConfig() {
 			install -o root -g root -m 0744 -pv \$sSshdConfigSrc \$sSshdConfigDst
 		fi
 	done
-	rm /etc/ssh/ssh_host_ecdsa_key*
+	rm /etc/ssh/ssh_host_ecdsa_key* || true
 	systemctl restart sshd.service'"
 }
 main_ssh_config() {
