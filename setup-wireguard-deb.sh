@@ -12,7 +12,7 @@ sVirtualIpVpnServer=192.168.11.1 # constant fixed for all machines
 sVirtualIpVpnClient=192.168.11.2
 sPortVpnServer=51820
 sSshAliasVpnServer=freebox-delta-local
-sSshAliasVpnClient=gl553vd-archlinux
+sSshAliasVpnClient=gwen@192.168.0.53 #gl553vd-archlinux
 
 echo -e "to do: get free ip address for new client, or check existing ip"
 sEtcWg=/etc/wireguard
