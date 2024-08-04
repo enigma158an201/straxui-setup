@@ -8,6 +8,8 @@ if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "inclu
 source "${launchDir}/include/test-superuser-privileges.sh"
 
 sEtcOsReleasePath=/etc/os-release
+sVirtualIpVpnServer=192.168.11.1
+sVirtualIpVpnClient=192.168.11.3
 
 checkIfDebianId() {
 	if [ -r "${sEtcOsReleasePath}" ]; then
@@ -27,11 +29,15 @@ checkIfDebianId() {
 
 installWireguardDeb() {
 	echo -e "\t>>> Install wireguard for debian"
-	sudo apt-get install -y wireguard	
+	suExecCommand "apt-get install -y wireguard"	
 }
 setKeysWireguard() {
 	echo -e "\t>>> set conf wireguard for debian"
-	suExecCommand "bash -c \"cd /etc/wireguard/ || exit 1; umask 077; if ! test -e privatekey && ! test -e publickey; then wg genkey | tee privatekey | wg pubkey > publickey; fi\""
+	suExecCommand "bash -c \"cd /etc/wireguard/ || exit 1
+		umask 077
+		if ! test -e privatekey && ! test -e publickey; then 
+			wg genkey | tee privatekey | wg pubkey > publickey
+		fi\""
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
@@ -46,7 +52,7 @@ setLinksServer() {
 	sPrivKey="$(suExecCommand "cat /etc/wireguard/privatekey")"
 	sPublKey="$(suExecCommand "cat /etc/wireguard/publickey")"
 	echo "[Interface]
-Address = 192.168.11.1/24
+Address = ${sVirtualIpVpnServer}/24
 SaveConfig = true
 PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
@@ -57,7 +63,7 @@ PrivateKey = ${sPrivKey}
 [Peer]
 #YOUR_CLIENT_PUBLIC_KEY
 PublicKey = ${sPublKey}
-AllowedIPs = 192.168.11.2/32" | suExecCommand "tee /etc/wireguard/wg0.conf"
+AllowedIPs = ${sVirtualIpVpnClient}/32" | suExecCommand "tee /etc/wireguard/wg0.conf"
 	suExecCommand "systemctl start wg-quick@wg0"
 	ip a show wg0
 }
@@ -68,10 +74,10 @@ setLinksClient() {
 PrivateKey = ${sPrivKey}
 #YOU_CLIENT_PRIVATE_KEY
 ## Client IP
-Address = 192.168.11.2/24
+Address = ${sVirtualIpVpnClient}/24
 
 ## if you have DNS server running
-# DNS = 192.168.11.1
+# DNS = ${sVirtualIpVpnServer}
 
 [Peer]
 PublicKey = ${sPublKey}
@@ -82,7 +88,7 @@ AllowedIPs =  0.0.0.0/0
 
 Endpoint = SERVER_PUBLIC_IP:51820
 PersistentKeepalive = 20" | suExecCommand tee /etc/wireguard/wg0.conf
-	suExecCommand systemctl start wg-quick@wg0
+	suExecCommand "systemctl start wg-quick@wg0"
 	ip a show wg0
 }
 setLinksWireguard() {
