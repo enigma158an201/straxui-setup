@@ -76,6 +76,7 @@ getEchoWgKey() {
 setLinksServer() {
 	sSrvPrivKey="$(suExecCommand "cat ${sServerPrvKey}")"
 	sCliPublKey="$(getEchoWgKey ${sSshAliasVpnClient} "${sClientPubKey}")" #"$(suExecCommand "cat ${sEtcWg}/publickey")"
+	export sCliPublKey
 	echo "[Interface]
 Address = ${sVirtualIpVpnServer}/24
 SaveConfig = true
@@ -143,7 +144,7 @@ main_wireguard_server() {
 	setKeysWireguard 2
 	setLinksServer
 	#stuff
-	suExecCommand "wg set wg0 peer $(cat "${sClientPubKey}") allowed-ips ${sVirtualIpVpnClient}"
+	suExecCommand "wg set wg0 peer ${sCliPublKey} allowed-ips ${sVirtualIpVpnClient}"
 }
 main_wireguard_client() {
 	getExistingWgInterfaces
