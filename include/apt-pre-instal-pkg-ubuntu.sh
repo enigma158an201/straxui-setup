@@ -16,6 +16,7 @@ aptPreinstallPkg() {
 			apt-get -y install "${pkgToInstall}"
 		#fi
 	done
+	unset pkgsToInstall
 }
 aptUnbloatPkg() {
 	declare -a pkgsToRemove
@@ -33,6 +34,7 @@ aptUnbloatPkg() {
 			apt-get -y autoremove "${pkgsToRemove}"
 		fi
 	done
+	unset pkgsToRemove
 }
 main_preInstall() {
 	#getDpkgListInstalled
