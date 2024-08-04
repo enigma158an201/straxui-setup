@@ -16,10 +16,6 @@ sSshAliasVpnClient=gl553vd-archlinux
 
 echo -e "to do: get free ip address for new client, or check existing ip"
 sEtcWg=/etc/wireguard
-sServerPubKey=${sEtcWg}/${sHostnameVpnServer}.pub.key
-sServerPrvKey=${sEtcWg}/${sHostnameVpnServer}.key
-sClientPubKey=${sEtcWg}/${sHostnameVpnClient}.pub.key
-sClientPrvKey=${sEtcWg}/${sHostnameVpnClient}.key
 
 checkIfDebianId() {
 	if [ -r "${sEtcOsReleasePath}" ]; then
@@ -39,6 +35,13 @@ checkIfDebianId() {
 installWireguardDeb() {
 	echo -e "\t>>> Install wireguard for debian"
 	suExecCommand "apt-get install -y wireguard"	
+}
+setWgKeysName() {
+	sClientPubKey=${sEtcWg}/${sHostnameVpnClient}.pub.key
+	sClientPrvKey=${sEtcWg}/${sHostnameVpnClient}.key
+	sServerPubKey=${sEtcWg}/${sHostnameVpnServer}.pub.key
+	sServerPrvKey=${sEtcWg}/${sHostnameVpnServer}.key
+	export sClientPrvKey sClientPubKey sServerPubKey sServerPrvKey
 }
 setKeysWireguard() {
 	echo -e "\t>>> set conf wireguard"
@@ -132,6 +135,8 @@ getExistingWgpeers() {
 main_wireguard_server() {
 	sHostnameVpnClient=$(ssh ${sSshAliasVpnClient} hostname)
 	sHostnameVpnServer=$(hostname)
+	setWgKeysName
+	sWanIpVpnServer="$(curl ifconfig.me)"
 	setIp4ForwardSysctl
 	setKeysWireguard 2
 	setLinksServer
@@ -141,6 +146,8 @@ main_wireguard_server() {
 main_wireguard_client() {
 	sHostnameVpnServer=$(ssh ${sSshAliasVpnServer} hostname)
 	sHostnameVpnClient=$(hostname)
+	setWgKeysName
+	sWanIpVpnServer="$(ssh ${sSshAliasVpnServer} curl ifconfig.me)"
 	setKeysWireguard 1
 	setLinksClient
 	#stuff
