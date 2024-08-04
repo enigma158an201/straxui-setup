@@ -111,7 +111,7 @@ PublicKey = ${sSrvPublKey}
 ## to pass internet trafic 0.0.0.0 but for peer connection only use 192.168.11.0/24, or you can also specify comma separated IPs
 AllowedIPs =  0.0.0.0/0
 
-Endpoint = 82.66.69.134:${sPortVpnServer}
+Endpoint = ${sWanIp4VpnServer}:${sPortVpnServer}
 PersistentKeepalive = 20" #| suExecCommand tee ${sEtcWg}/wg0.conf
 	#suExecCommand "systemctl enable wg-quick@wg0"
 	#suExecCommand "systemctl start wg-quick@wg0"
@@ -133,10 +133,12 @@ getExistingWgpeers() {
 }
 
 main_wireguard_server() {
+	getExistingWgInterfaces
+	getExistingWgpeers
 	sHostnameVpnClient=$(ssh ${sSshAliasVpnClient} hostname)
 	sHostnameVpnServer=$(hostname)
 	setWgKeysName
-	sWanIpVpnServer="$(curl ifconfig.me)"
+	#sWanIp4VpnServer="$(curl ifconfig.me)"
 	setIp4ForwardSysctl
 	setKeysWireguard 2
 	setLinksServer
@@ -144,10 +146,12 @@ main_wireguard_server() {
 	suExecCommand "wg set wg0 peer $(cat "${sClientPubKey}") allowed-ips ${sVirtualIpVpnClient}"
 }
 main_wireguard_client() {
+	getExistingWgInterfaces
+	getExistingWgpeers
 	sHostnameVpnServer=$(ssh ${sSshAliasVpnServer} hostname)
 	sHostnameVpnClient=$(hostname)
 	setWgKeysName
-	sWanIpVpnServer="$(ssh ${sSshAliasVpnServer} curl ifconfig.me)"
+	sWanIp4VpnServer="$(ssh ${sSshAliasVpnServer} curl ifconfig.me)"
 	setKeysWireguard 1
 	setLinksClient
 	#stuff
@@ -168,9 +172,6 @@ main_wireguard() {
 		if ! ${bClient}; then 		main_wireguard_server
 		elif ${bClient}; then 		main_wireguard_client; fi
 	#fi
-	getExistingWgInterfaces
-	getExistingWgpeers
-	
 	ip a
 }
 main_wireguard
