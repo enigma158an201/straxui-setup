@@ -44,7 +44,7 @@ setWgKeysName() {
 	export sClientPrvKey sClientPubKey sServerPubKey sServerPrvKey
 }
 setKeysWireguard() {
-	echo -e "\t>>> set conf wireguard"
+	echo -e "\t>>> set private and pulic keys for wireguard"
 	if [ "${1}" -eq "1" ]; then
 		sPubKey=${sClientPubKey}
 		sPrvKey=${sClientPrvKey}
@@ -52,11 +52,15 @@ setKeysWireguard() {
 		sPubKey=${sServerPubKey}
 		sPrvKey=${sServerPrvKey}
 	fi
-	suExecCommand "bash -c \"cd ${sEtcWg}/ || exit 1
+	suExecCommand "bash -c \"mkdir -p ${sEtcWg} && cd ${sEtcWg}/ || exit 1
 		umask 077
-		if ! test -e ${sPrvKey} && ! test -e ${sPubKey}; then 
+		if ! test -e ${sPrvKey} && ! test -e ${sPubKey}; then
+			#wg genkey | tee /etc/wireguard/private.key && cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
 			wg genkey | tee ${sPrvKey} | wg pubkey > ${sPubKey}
-		fi\""
+		fi\"
+		if true; then
+			chmod -R 0600 ${sEtcWg}
+		fi"
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
@@ -65,12 +69,23 @@ setIp4ForwardSysctl() {
 		echo -e "\t>>> proceed add enable ipv4 formward file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "$sIp4FwdDst")\""
 		suExecCommand "install -o root -g root -m 0744 -pv $sIp4FwdSrc $sIp4FwdDst"
-		suExecCommand "sysctl --system" #reload sysctl conf files without reboot
 	fi
+	suExecCommand "sysctl --system" #reload sysctl conf files without reboot
+}
+setIp6ForwardSysctl() {
+	sIp6FwdDst="/etc/sysctl.d/99-enable-ip6-forward.conf"
+	sIp6FwdSrc="${launchDir}$sIp6FwdDst"
+	if [ ! -f "$sIp6FwdDst" ]; then
+		echo -e "\t>>> proceed add enable ipv6 formward file to /etc/sysctl.d/ "
+		suExecCommand "mkdir -p \"$(dirname "$sIp6FwdDst")\""
+		suExecCommand "install -o root -g root -m 0744 -pv $sIp6FwdSrc $sIp6FwdDst"
+	fi
+	suExecCommand "sysctl --system" #reload sysctl conf files without reboot
 }
 getEchoWgKey() {
 	sSshAlias=${1}
 	sKeyFile=${2}
+	# shellcheck disable=SC2029
 	ssh "${sSshAlias}" "sudo -S cat \"${sKeyFile}\" || su - -c cat \"${sKeyFile}\""
 }
 setLinksServer() {
@@ -80,6 +95,12 @@ setLinksServer() {
 	echo "[Interface]
 Address = ${sVirtualIpVpnServer}/24
 SaveConfig = true
+#PostUp = ufw route allow in on wg0 out on eth0
+#PostUp = iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
+#PostUp = ip6tables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
+#PreDown = ufw route delete allow in on wg0 out on eth0
+#PreDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+#PreDown = ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 ListenPort = ${sPortVpnServer}
@@ -108,7 +129,7 @@ Address = ${sVirtualIpVpnClient}/24
 [Peer]
 PublicKey = ${sSrvPublKey}
 #YOUR_SERVER_PUBLIC_KEY
- 
+
 ## to pass internet trafic 0.0.0.0 but for peer connection only use 192.168.11.0/24, or you can also specify comma separated IPs
 AllowedIPs =  0.0.0.0/0
 
