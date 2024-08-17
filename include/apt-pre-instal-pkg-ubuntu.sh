@@ -13,7 +13,7 @@ aptPreinstallPkg() {
 	do
 		#echo "verification si paquet ${pkgToInstall} installé" #; read -rp " "
 		#if [ "$(checkDpkgInstalled "${pkgToInstall}")" = "false" ]; then
-			apt-get -y install "${pkgToInstall}"
+			apt-get -y install "${pkgToInstall}" || true
 		#fi
 	done
 	unset pkgsToInstall
@@ -31,7 +31,7 @@ aptUnbloatPkg() {
 	for pkgsToRemove in "${pkgsToRemove[@]}" #${pkgsToRemove[*]}
 	do
 		if [ "$(checkDpkgInstalled "${pkgToInstall}")" = "true" ]; then
-			apt-get -y autoremove "${pkgsToRemove}"
+			apt-get -y autoremove "${pkgsToRemove}" || true
 		fi
 	done
 	unset pkgsToRemove
