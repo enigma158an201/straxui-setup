@@ -66,11 +66,11 @@ updateSshdConfig() {
 	mapfile -t sConfList < <(find "${launchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
-		sSshdConfigFileName=\$(basename \"\$sSshdConfigFile\")
-		sSshdConfigDst=/etc/ssh/sshd_config.d/\$sSshdConfigFileName
-		sSshdConfigSrc=${launchDir}\$sSshdConfigDst
-		if [ -d \$(dirname \"\$sSshdConfigDst\") ] && [ -f \"\$sSshdConfigSrc\" ]; then
-			install -o root -g root -m 0744 -pv \$sSshdConfigSrc \$sSshdConfigDst
+		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
+		sSshdConfigDst=/etc/ssh/sshd_config.d/\${sSshdConfigFileName}
+		sSshdConfigSrc=${launchDir}\${sSshdConfigDst}
+		if [ -d \$(dirname \"\${sSshdConfigDst}\") ] && [ -f \"\${sSshdConfigSrc}\" ]; then
+			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi
 	done
 	rm /etc/ssh/ssh_host_ecdsa_key* || true

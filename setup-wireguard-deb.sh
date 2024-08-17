@@ -178,7 +178,7 @@ getExistingWgInterfaces() {
 	done
 	echo "${sWgIfList}"
 }
-getExistingWgpeers() {
+getExistingWgPeers() {
 	sWgCmdResult=$( (sudo wg | grep -iE ^peer:) || true) #wg
 	for sWgPeer in "${sWgCmdResult[@]}"; do #sWgCmdResult
 		sWgPeerList+="${sWgPeer#* } "
@@ -188,7 +188,7 @@ getExistingWgpeers() {
 
 main_wireguard_server() {
 	getExistingWgInterfaces
-	getExistingWgpeers
+	getExistingWgPeers
 	sHostnameVpnClient=$(ssh ${sSshAliasVpnClient} hostname)
 	sHostnameVpnServer=$(hostname)
 	setWgKeysName
@@ -202,7 +202,7 @@ main_wireguard_server() {
 }
 main_wireguard_client() {
 	getExistingWgInterfaces
-	getExistingWgpeers
+	getExistingWgPeers
 	sHostnameVpnServer=$(ssh ${sSshAliasVpnServer} hostname)
 	sHostnameVpnClient=$(hostname)
 	setWgKeysName

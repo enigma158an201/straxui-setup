@@ -155,8 +155,9 @@ main_installStrax() {
 				myfilenamegz="${dlDir}$(basename "${projectlatestcontentgz}")"
 				if [ ! -f "${myfilenamegz}" ]; then wget -O "${myfilenamegz}" "${projectlatestcontentgz}"; fi			
 				echo -e "/t>>> extract and install straxui .gz archive"
-				suExecCommand "folderinsidetar=$(tar --exclude=\"*/*\" -tf \"\$myfilenamegz\"); straxuidestfolder=/opt/straxui/; mkdir -p \$straxuidestfolder; \ 
-				tar --strip-components=1 -C \"\$straxuidestfolder" -xvzf "\${myfilenamegz}\" \"\$folderinsidetar" # /opt/straxui
+				#shellcheck disable=SC1083
+				suExecCommand "folderinsidetar=$(tar --exclude=\"*/*\" -tf \"\${myfilenamegz}\"); straxuidestfolder=/opt/straxui/; mkdir -p \${straxuidestfolder}; \ 
+				tar --strip-components=1 -C \"\${straxuidestfolder}" -xvzf "\${myfilenamegz}\" \"\${folderinsidetar}" # /opt/straxui
 			fi
 
 			# echo ${projectlatestcontent}
