@@ -4,7 +4,12 @@ sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libx
 installedString="[installed]"
 
 pruneDebianDefaultSoftware() {
-  echo ""
+  if test -f include/debian-software-debloat.txt; then
+    #shellcheck disable=SC2013
+    for sPkg in $(grep -v ^# debian-software-debloat.txt); do 
+      echo -e "\t$sPkg"; sudo apt autoremove "${sPkg}"
+    done
+  fi
 }
 
 pruneObsoletePkg() {
@@ -37,10 +42,11 @@ pruneAptSearch() {
     apt-get autoremove "${pkg2%%/*}"
   done
 }
-main_prune() {
+main_prune_pkg() {
   pruneDpkg
   pruneAptSearch
   pruneUndeletedConf
   pruneObsoletePkg
+  pruneDebianDefaultSoftware
 }
-main_prune
+main_prune_pkg
