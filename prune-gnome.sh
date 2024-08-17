@@ -8,7 +8,7 @@ pruneDebianDefaultSoftware() {
   if test -f $sPkgListFile; then
     #shellcheck disable=SC2013
     for sPkg in $(grep -v ^# $sPkgListFile); do 
-      echo -e "\t$sPkg"; sudo apt autoremove "${sPkg}"
+      echo -e "\t$sPkg"; sudo apt-get autoremove "${sPkg}"
     done
   fi
 }
