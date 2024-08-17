@@ -13,16 +13,20 @@ pruneDebianDefaultSoftware() {
 }
 
 pruneObsoletePkg() {
-  apt-get list ~o
-  echo -e "\t>>> the Following packages are not in your apt repositories, proceed to autoremove ?"
-  read -rp "y/N" -n 1 sAutoremovePkg
-  if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~o; fi
+  sPkgObsolete="$(apt-get list ~o)"
+  if [ -n "${sPkgObsolete}" ]; then
+    echo -e "\t>>> the Following packages are not in your apt repositories, proceed to autoremove ?"
+    read -rp "y/N" -n 1 sAutoremovePkg
+    if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~o; fi
+  fi
 }
 pruneUndeletedConf() {
-  apt-get list ~c
-  echo -e "\t>>> the Following packages were not completely removed, proceed to autoremove remaining configs ?"
-  read -rp "y/N" -n 1 sAutoremovePkg
-  if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~c; fi
+  sPkgUndeleted="$(apt-get list ~c)"
+  if [ -n "${sPkgUndeleted}" ]; then
+    echo -e "\t>>> the Following packages were not completely removed, proceed to autoremove remaining configs ?"
+    read -rp "y/N" -n 1 sAutoremovePkg
+    if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~c; fi
+  fi
 }
 
 pruneDpkg() {
@@ -43,8 +47,8 @@ pruneAptSearch() {
   done
 }
 main_prune_pkg() {
-  pruneDpkg
-  pruneAptSearch
+  #pruneDpkg
+  #pruneAptSearch
   pruneUndeletedConf
   pruneObsoletePkg
   pruneDebianDefaultSoftware
