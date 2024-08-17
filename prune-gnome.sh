@@ -52,6 +52,6 @@ main_prune_pkg() {
   #pruneAptSearch
   pruneUndeletedConf
   pruneObsoletePkg
-  pruneDebianDefaultSoftware
+  #pruneDebianDefaultSoftware
 }
 main_prune_pkg
