@@ -4,9 +4,10 @@ sExceptions="^xf|^desktop-base|^libexo|^libglib|libgtop|libsoup|libstartup|^libx
 installedString="[installed]"
 
 pruneDebianDefaultSoftware() {
-  if test -f include/debian-software-debloat.txt; then
+  sPkgListFile=include/debian-software-debloat.txt
+  if test -f $sPkgListFile; then
     #shellcheck disable=SC2013
-    for sPkg in $(grep -v ^# debian-software-debloat.txt); do 
+    for sPkg in $(grep -v ^# $sPkgListFile); do 
       echo -e "\t$sPkg"; sudo apt autoremove "${sPkg}"
     done
   fi
