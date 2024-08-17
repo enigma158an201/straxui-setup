@@ -14,7 +14,7 @@ pruneDebianDefaultSoftware() {
 }
 
 pruneObsoletePkg() {
-  sPkgObsolete="$(apt-get list ~o)"
+  sPkgObsolete="$(apt list ~o | tail -n +2)"
   if [ -n "${sPkgObsolete}" ]; then
     echo -e "\t>>> the Following packages are not in your apt repositories, proceed to autoremove ?"
     read -rp "y/N" -n 1 sAutoremovePkg
@@ -22,7 +22,7 @@ pruneObsoletePkg() {
   fi
 }
 pruneUndeletedConf() {
-  sPkgUndeleted="$(apt-get list ~c)"
+  sPkgUndeleted="$(apt list ~c | tail -n +2)"
   if [ -n "${sPkgUndeleted}" ]; then
     echo -e "\t>>> the Following packages were not completely removed, proceed to autoremove remaining configs ?"
     read -rp "y/N" -n 1 sAutoremovePkg
