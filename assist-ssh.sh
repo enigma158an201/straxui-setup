@@ -42,8 +42,8 @@ oldLocalAssistantCommands() {	#se connecter à localhost:5901
 oldCreateUser() {
 	sAssistedUser=$1
 	if ! id "${sAssistedUser}"; then
-		if command -v sudo 1>/dev/null 2>&1; then
-			if command -v adduser 1>/dev/null 2>&1; then
+		if command -v sudo &> /dev/null; then
+			if command -v adduser &> /dev/null; then
 				sudo adduser --no-create-home "${sAssistedUser}"
 			else
 				sudo useradd -M "${sAssistedUser}"
@@ -59,37 +59,37 @@ getLocalDisplay() {
 	else 								echo "empty"; fi
 }
 installTerminator() {
-	if command -v terminator 1>/dev/null 2>&1; then
+	if command -v terminator &> /dev/null; then
 		echo -e "\t>>> terminator already installed, skipping $0 !!!"
-	elif ! command -v terminator 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install terminator; fi
+	elif ! command -v terminator &> /dev/null && command -v sudo &> /dev/null; then
+		if command -v apt-get &> /dev/null; then 	sudo apt-get install terminator; fi
 	else
 		exit 1
 	fi
 }
 installOpensshServer() {
-	if command -v sshd 1>/dev/null 2>&1 || [ -x /usr/sbin/sshd ]; then
+	if command -v sshd &> /dev/null || [ -x /usr/sbin/sshd ]; then
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
-	elif ! command -v sshd 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install openssh-server; fi
+	elif ! command -v sshd &> /dev/null && command -v sudo &> /dev/null; then
+		if command -v apt-get &> /dev/null; then 	sudo apt-get install openssh-server; fi
 	else
 		exit 1
 	fi
 }
 installX11vnc() {
-	if command -v x11vnc 1>/dev/null 2>&1; then
+	if command -v x11vnc &> /dev/null; then
 		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
-	elif ! command -v x11vnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install x11vnc; fi
+	elif ! command -v x11vnc &> /dev/null && command -v sudo &> /dev/null; then
+		if command -v apt-get &> /dev/null; then 	sudo apt-get install x11vnc; fi
 	else
 		exit 1
 	fi
 }
 installWayvnc() { #wayvnc works only with wlroots based WM/DE
-	if command -v wayvnc 1>/dev/null 2>&1; then
+	if command -v wayvnc &> /dev/null; then
 		echo -e "\t>>> wayvnc already installed, skipping $0 !!!"
-	elif ! command -v wayvnc 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install wayvnc; fi
+	elif ! command -v wayvnc &> /dev/null && command -v sudo &> /dev/null; then
+		if command -v apt-get &> /dev/null; then 	sudo apt-get install wayvnc; fi
 	else
 		exit 1
 	fi
@@ -100,10 +100,10 @@ installWayvnc() { #wayvnc works only with wlroots based WM/DE
 	fi
 }
 installWaypipe() {
-	if command -v waypipe 1>/dev/null 2>&1; then
+	if command -v waypipe &> /dev/null; then
 		echo -e "\t>>> waypipe already installed, skipping $0 !!!"
-	elif ! command -v waypipe 1>/dev/null 2>&1 && command -v sudo 1>/dev/null 2>&1; then
-		if command -v apt-get 1>/dev/null 2>&1; then 	sudo apt-get install waypipe; fi
+	elif ! command -v waypipe &> /dev/null && command -v sudo &> /dev/null; then
+		if command -v apt-get &> /dev/null; then 	sudo apt-get install waypipe; fi
 	else
 		exit 1
 	fi

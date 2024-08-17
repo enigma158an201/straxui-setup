@@ -3,6 +3,9 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+#source: https://github.com/sergibarroso/wireguard-vpn-setup
+#
+
 launchDir="$(dirname "$0")"
 if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
 source "${launchDir}/include/test-superuser-privileges.sh"
@@ -65,8 +68,8 @@ setKeysWireguard() {
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
 	sIp4FwdSrc="${launchDir}$sIp4FwdDst"
-	if [ ! -f "$sIp4FwdDst" ]; then
-		echo -e "\t>>> proceed add enable ipv4 formward file to /etc/sysctl.d/ "
+	if [ ! -f "$sIp4FwdDst" ] || [ ! "$(sysctl net.ipv4.ip_forward)" = "net.ipv4.ip_forward = 1" ]; then
+		echo -e "\t>>> proceed add enable ipv4 forward file to ${sIp4FwdDst} in /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "$sIp4FwdDst")\""
 		suExecCommand "install -o root -g root -m 0744 -pv $sIp4FwdSrc $sIp4FwdDst"
 	fi
@@ -75,12 +78,20 @@ setIp4ForwardSysctl() {
 setIp6ForwardSysctl() {
 	sIp6FwdDst="/etc/sysctl.d/99-enable-ip6-forward.conf"
 	sIp6FwdSrc="${launchDir}$sIp6FwdDst"
-	if [ ! -f "$sIp6FwdDst" ]; then
+	if [ ! -f "$sIp6FwdDst" ] || [ ! "$(sysctl net.ipv6.ip_forward)" = "net.ipv6.ip_forward = 1" ]; then
 		echo -e "\t>>> proceed add enable ipv6 formward file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "$sIp6FwdDst")\""
 		suExecCommand "install -o root -g root -m 0744 -pv $sIp6FwdSrc $sIp6FwdDst"
 	fi
 	suExecCommand "sysctl --system" #reload sysctl conf files without reboot
+}
+applyIpForwardParameters() {
+	if [ ! "$(sysctl net.ipv4.ip_forward)" = "net.ipv4.ip_forward = 1" ] || ( [ ! "$(sysctl net.ipv6.ip_forward)" = "net.ipv6.ip_forward = 1" ] && false ); then
+		echo -e "\t>>> proceed update kernel image(s) with ipv4 forward enabled, please wait (this may take a few minutes)"
+		suExecCommand "update-initramfs -u -k all"
+		echo -e "\t>>> kernel need restart to finish ipv4|ipv6 forwarding, and try to reload sysctl files"
+		suExecCommand "sysctl --system"
+	fi
 }
 getEchoWgKey() {
 	sSshAlias=${1}
@@ -93,17 +104,29 @@ setLinksServer() {
 	sCliPublKey="$(getEchoWgKey ${sSshAliasVpnClient} "${sClientPubKey}")" #"$(suExecCommand "cat ${sEtcWg}/publickey")"
 	export sCliPublKey
 	echo "[Interface]
+# Configuration for the server
 Address = ${sVirtualIpVpnServer}/24
+ListenPort = ${sPortVpnServer}
 SaveConfig = true
+
+# Enable ip forwarding in all interfaces
+# PreUp = sysctl -w net.ipv4.ip_forward=1
+# PostDown = sysctl -w net.ipv4.ip_forward=0
+
 #PostUp = ufw route allow in on wg0 out on eth0
 #PostUp = iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
 #PostUp = ip6tables -t nat -I POSTROUTING -o eth0 -j MASQUERADE
 #PreDown = ufw route delete allow in on wg0 out on eth0
 #PreDown = iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 #PreDown = ip6tables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
-ListenPort = ${sPortVpnServer}
+#PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# Allowing any traffic from <LAN_NETWORK_INTERFACE> (internal) to go over %i (tunnel):
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o <LAN_NETWORK_INTERFACE> -j MASQUERADE
+PostUp = iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o <LAN_NETWORK_INTERFACE> -j MASQUERADE
+
 #YOUR_SERVER_PRIVATE KEY
 PrivateKey = ${sSrvPrivKey}
 
@@ -118,6 +141,7 @@ setLinksClient() {
 	sCliPrivKey="$(suExecCommand "cat ${sClientPrvKey}")"
 	sSrvPublKey="$(getEchoWgKey ${sSshAliasVpnServer} "${sServerPubKey}")" #"$(suExecCommand "cat ${sEtcWg}/publickey")"
 	echo "[Interface]
+# Configuration for the client
 PrivateKey = ${sCliPrivKey}
 #YOU_CLIENT_PRIVATE_KEY
 ## Client IP
@@ -125,6 +149,14 @@ Address = ${sVirtualIpVpnClient}/24
 
 ## if you have DNS server running
 # DNS = ${sVirtualIpVpnServer}
+
+# Enable ip forwarding in all interfaces
+# PreUp = sysctl -w net.ipv4.ip_forward=1
+# PostDown = sysctl -w net.ipv4.ip_forward=0
+
+# Enable traffic to be passed from the server network to the private subnet of the client
+PostUp = iptables -A FORWARD -i %i -j ACCEPT; iptables -A FORWARD -o %i -j ACCEPT; iptables -t nat -A POSTROUTING -o <LAN_NETWORK_INTERFACE> -j MASQUERADE
+PostDown = iptables -D FORWARD -i %i -j ACCEPT; iptables -D FORWARD -o %i -j ACCEPT; iptables -t nat -D POSTROUTING -o <LAN_NETWORK_INTERFACE> -j MASQUERADE
 
 [Peer]
 PublicKey = ${sSrvPublKey}
@@ -162,6 +194,7 @@ main_wireguard_server() {
 	setWgKeysName
 	#sWanIp4VpnServer="$(curl ifconfig.me)"
 	setIp4ForwardSysctl
+	applyIpForwardParameters
 	setKeysWireguard 2
 	setLinksServer
 	#stuff

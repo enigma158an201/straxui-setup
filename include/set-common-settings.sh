@@ -36,9 +36,9 @@ disable-systemd-sleep() {
 }
 disable-wireless-connections() {
 	echo -e "\t>>> désactivation des connexions wireless"
-	if (systemctl status wpa_supplicant.service 1>/dev/null); then 	systemctl disable --now wpa_supplicant.service; fi
-	if (command -v nmcli 1>/dev/null 2>&1); then 					nmcli radio wifi off; fi
-	if (command -v rfkill 1>/dev/null 2>&1); then 					rfkill block wlan bluetooth; fi
+	if systemctl status wpa_supplicant.service 1>/dev/null; then 	systemctl disable --now wpa_supplicant.service; fi
+	if command -v nmcli &> /dev/null; then 					nmcli radio wifi off; fi
+	if command -v rfkill &> /dev/null; then 					rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	echo -e "\t>>> désactivation cups (impression)"
@@ -60,7 +60,7 @@ main_common() {
 	whoami
 	#set-newhostnam || true		# set new host name has to be done before sshd config
 	echo -e "\t>>> initialisation des paramètres du serveur ssh"
-	if command -v sshd 1>/dev/null 2>&1; then 											sshd-config-settings; fi
+	if command -v sshd &> /dev/null; then 											sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 sDisableWireless
 	if [ ! "${sDisableWireless^^}" = "N" ] && [ ! "${sDisableWireless}" = "" ]; then 	disable-wireless-connections; fi
 	echo -e "\t>>> désactivation de cups"

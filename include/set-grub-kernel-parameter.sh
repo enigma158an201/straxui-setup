@@ -3,9 +3,9 @@
 set -euo pipefail #; set -x
 
 grubUpdate() {
-	if command -v update-grub 1>/dev/null 2>&1; then update-grub
-	elif command -v grub2-mkconfig 1>/dev/null 2>&1; then grub2-mkconfig -o /boot/grub2/grub.cfg
-	elif command -v grub-mkconfig 1>/dev/null 2>&1; then grub-mkconfig -o /boot/grub/grub.cfg
+	if command -v update-grub &> /dev/null; then 		update-grub
+	elif command -v grub2-mkconfig &> /dev/null; then 	grub2-mkconfig -o /boot/grub2/grub.cfg
+	elif command -v grub-mkconfig &> /dev/null; then 	grub-mkconfig -o /boot/grub/grub.cfg
 	fi
 }
 main_grubsettings() {

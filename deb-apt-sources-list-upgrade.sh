@@ -21,7 +21,6 @@ getDebianVersion() {
 }
 
 upgradeJessieToStretch() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	suExecCommandNoPreserveEnv sed -i.old 's/jessie/stretch/g' ${aptSourcesListFile}
 	if [ -n "${tiersRepos}" ]; then 
 		for sRepo in ${tiersRepos}; do
@@ -29,11 +28,9 @@ upgradeJessieToStretch() {
 		done
 	fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ stretch/updates#\ stretch-security#g' ${aptSourcesListFile}
-#fi
 }
 
 upgradeStretchToBuster() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	suExecCommandNoPreserveEnv sed -i.old 's/stretch/buster/g' ${aptSourcesListFile} #{,.d/*.list}
 	if [ -n "${tiersRepos}" ]; then 
 		for sRepo in ${tiersRepos}; do
@@ -41,11 +38,9 @@ upgradeStretchToBuster() {
 		done
 	fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ buster/updates#\ buster-security#g' ${aptSourcesListFile} 
-#fi
 }
 
 upgradeBusterToBullseye() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	#suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}
 	#suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile}.d/*.list
 	suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' ${aptSourcesListFile} #{,.d/*.list}
@@ -57,11 +52,9 @@ upgradeBusterToBullseye() {
 			suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' "${sRepo}"
 		done
 	fi
-#fi
 }
 
 upgradeBullseyeToBookworm() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	suExecCommandNoPreserveEnv sed -i.old 's/bullseye/bookworm/g' ${aptSourcesListFile}
 	suExecCommandNoPreserveEnv sed -i.old 's/non-free/non-free\ non-free-firmware/g' ${aptSourcesListFile}
 	if [ -n "${tiersRepos}" ]; then
@@ -69,11 +62,9 @@ upgradeBullseyeToBookworm() {
 			suExecCommandNoPreserveEnv sed -i.old 's/bullseye/bookworm/g' "${sRepo}"
 		done	
 	fi
-#fi
 }
 
 upgradeBookwormToTrixie() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	suExecCommandNoPreserveEnv sed -i.old 's/bookworm/trixie/g' ${aptSourcesListFile}
 	#suExecCommandNoPreserveEnv sed -i.old 's/non-free/non-free non-free-firmware/g' ${aptSourcesListFile}
 	if [ -n "${tiersRepos}" ]; then
@@ -81,14 +72,11 @@ upgradeBookwormToTrixie() {
 			suExecCommandNoPreserveEnv sed -i.old 's/bookworm/trixie/g' "${sRepo}"
 		done
 	fi
-#fi
 }
 
 upgradeToSid() {
-#if command -v sudo 1>/dev/null 2>&1; then
 	suExecCommandNoPreserveEnv sed -i.old 's/bookworm/sid/g' ${aptSourcesListFile}
 	#suExecCommandNoPreserveEnv sed -i.old 's/non-free/non-free\ non-free-firmware/g' ${aptSourcesListFile}
-#fi
 }
 
 upgradeSourcesList() {
@@ -111,7 +99,7 @@ upgradeSourcesList() {
 }
 
 upgradeDebianDist() {
-#if command -v sudo 1>/dev/null 2>&1; then
+#if command -v sudo &> /dev/null; then
     if ! env | grep XDG_SESSION_TYPE=tty; then #check tty env
 		echo -e "\t>>> Le processus d'upgrade peut prendre selon la vitesse de connexion internet et la performance matériel 30 minutes ou plus."
 		echo -e "\t    La mise à jour depuis un environnement graphique est déconseillée, à moins d'avoir pris les dispositions pour empêcher"

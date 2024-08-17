@@ -21,7 +21,7 @@ getOsRelease() {
 	fi
 }
 getProductName() {
-	if command -v dmidecode 1>/dev/null 2>&1; then
+	if command -v dmidecode &> /dev/null; then
 		dmidecode -s system-product-name #sHardwareModel=$()
 	else
 		return 1

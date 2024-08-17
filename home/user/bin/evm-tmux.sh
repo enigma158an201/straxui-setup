@@ -33,7 +33,7 @@ fi
 #if ! command -v stop; then alias stop='tmux detach'; fi
 
 preCheck() {
-	if ! command -v tmux 1>/dev/null 2>&1; then 
+	if ! command -v tmux &> /dev/null; then 
 		echo -e "\t>>> tmux not found, please install tmux, aborting";
 		echo -e "\t>>> Install tmux with \`sudo apt install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
 		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "${sTmuxInstall}" = "" ]; then 	
@@ -43,7 +43,7 @@ preCheck() {
 		fi
 		exit 1
 	fi
-	if ! command -v tput 1>/dev/null 2>&1; then
+	if ! command -v tput &> /dev/null; then
 		echo -e "\t>>> tput not found, please install tput, aborting";
 		echo -e "\t>>> Install tput with \`sudo apt install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
 		if [ ! "${sTputInstall^^}" = "N" ] && [ ! "${sTputInstall}" = "" ]; then 	
@@ -107,7 +107,7 @@ startMainnetTmux() {
 	tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 }
 upgradeBinTmuxEvmScript() {
-	if command -v evm-tmux.sh 1>/dev/null 2>&1; then
+	if command -v evm-tmux.sh &> /dev/null; then
 		sTmuxEvmPath=$(command -v evm-tmux.sh) #
 		echo "${sTmuxEvmPath}"
 	fi

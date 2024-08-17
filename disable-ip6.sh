@@ -16,12 +16,12 @@ blacklist-ip6-kernel-modules() {
 	suExecCommand "update-initramfs -u"
 }
 blacklist-ip6-kernel-modules-sysctl() {
-	myip6bckldst="/etc/sysctl.d/00-disable-ip6-R13.conf"
-	myip6bcklsrc="${launchDir}${myip6bckldst}"
-	if [ ! -f "${myip6bckldst}" ]; then
+	sIp6BcklDst="/etc/sysctl.d/00-disable-ip6-R13.conf"
+	sIp6BcklSrc="${launchDir}${sIp6BcklDst}"
+	if [ ! -f "${sIp6BcklDst}" ]; then
 		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
-		suExecCommand "mkdir -p \"$(dirname "${myip6bckldst}")\""
-		suExecCommand "install -o root -g root -m 0744 -pv ${myip6bcklsrc} ${myip6bckldst}"
+		suExecCommand "mkdir -p \"$(dirname "${sIp6BcklDst}")\""
+		suExecCommand "install -o root -g root -m 0744 -pv ${sIp6BcklSrc} ${sIp6BcklDst}"
 	fi
 }
 blacklist-ip6-kernel-modules-grub() {
@@ -42,7 +42,7 @@ blacklist-ip6-NetworkManagement() {
 		sysctl -p"
 	fi
 
-	if (command -v nmcli 1>/dev/null 2>&1) && (systemctl status NetworkManager); then
+	if (command -v nmcli &> /dev/null) && (systemctl status NetworkManager); then
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "${first}"
 		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
@@ -70,7 +70,7 @@ disable-sshd-config-ipv6() {
 }
 disable-postfix-ipv6() {
 	# mypostfixsrc="${launchDir}${mypostfixdst}" -> pas de install mais un sed
-	if command -v postfix 1>/dev/null 2>&1; then
+	if command -v postfix &> /dev/null; then
 		echo -e "\t>>> proceed set disable ipv6 to postfix mail" 
 		suExecCommand "bash -c \"mypostfixdst=/etc/postfix/main.cf;
 		if [ -f \${mypostfixdst} ]; then
@@ -130,7 +130,7 @@ main_DisableIpv6() {
 	disable-etc-chrony-ipv6
 	#disable-etc-netconfig-ipv6
 	#disable-etc-dhcpcdconf-ipv6
-	if command -v crontab 1>/dev/null 2>&1; then 	disable-ipv6-cron-task; fi
+	if command -v crontab &> /dev/null; then 	disable-ipv6-cron-task; fi
 }
 
 main_DisableIpv6
