@@ -8,13 +8,13 @@ declare bSudoersUser
 declare bDoasUser
 
 checkUserSudoOrWheelGroup() {
- 	#set +x #myUser=${USER}
-	myUserGroups="$(groups "${USER}")" 		# la commande id pourrait etre une alternative
-	myUserGroups="${myUserGroups##*: }"		#myUserGroups="${`groups ${USER}`##*: }"
+ 	#set +x #sUser=${USER}
+	sUserGroups="$(groups "${USER}")" 		# la commande id pourrait etre une alternative
+	sUserGroups="${sUserGroups##*: }"		#sUserGroups="${`groups ${USER}`##*: }"
 	bSudoGroup="false"
 	for sGr in sudo wheel; do
-		for myGr in ${myUserGroups}; do
-			if [ "${sGr}" = "${myGr}" ]; then bSudoGroup="true"; break; fi
+		for sGr2 in ${sUserGroups}; do
+			if [ "${sGr}" = "${sGr2}" ]; then bSudoGroup="true"; break; fi
 		done
 		if [ "${bSudoGroup}" = "true" ]; then break; fi
 	done
@@ -24,7 +24,7 @@ checkUserSudoOrWheelGroup() {
 checkSudoers() {
 	#set +x #if false; then sudo -l -U ${USER}; fi
 	#if false; then
-		#printf "mypassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
+		#printf "sPassword\n" | sudo -S /bin/chmod --help >/dev/null 2>&1
 		#if [ $? -eq 0 ];then
 			#has_sudo_access="YES"
 		#else
@@ -102,9 +102,9 @@ main_SU(){
 	if ! sPfxSu="$(getSuCmd) "; then 								exit 01; fi
 	if ! sPfxSuNoEnv="$(getSuCmdNoPreserveEnv) "; then 				exit 01; fi
 	#tests
-	#[ -x /usr/bin/apt ] && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
-	#[ -x /usr/bin/zypper ] && suExecCommand "zypper update" #install doas"
-	if [ -n "${sCmdParameters}" ]; then								suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
+	#command -v apt-get &> /dev/null && suExecCommand "apt-get upgrade" #install vim" #"cat /etc/sudoers"
+	#command -v zypper &> /dev/null && suExecCommand "zypper update" #install doas"
+	if [ -n "${sCmdParameters}" ]; then 							suExecCommand "${sCmdParameters}" || suExecCommandNoPreserveEnv "${sCmdParameters}"
 	else 															echo ; fi
 }
 main_SU

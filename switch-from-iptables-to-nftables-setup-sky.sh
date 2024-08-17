@@ -19,23 +19,23 @@ set -euo pipefail #; set -x
 # arp 				arptables
 # bridge 			ebtables
 
-# myifname=enp10s0 # enp4s0
+# sIfDevName=enp10s0 # enp4s0
 
 #getSuCmd() {
-	#if [ -x /usr/bin/sudo ]; then		suCmd="/usr/bin/sudo"
-	#elif [ -x /usr/bin/doas ]; then	 	suCmd="/usr/bin/doas"
-	#else								suCmd="su - -c "
+	#if command -v sudo &> /dev/null; then		suCmd="/usr/bin/sudo"
+	#elif command -v doas&> /dev/null; then	 	suCmd="/usr/bin/doas"
+	#else										suCmd="su - -c "
 	#fi
 	#echo "$suCmd"
 #}
 #if ! sPfxSu="$(getSuCmd)"; then 		exit 02; fi
 
 #getSuQuotes() {
-	#if [ -x /usr/bin/sudo ]; then		mySuQuotes=(false)
-	#elif [ -x /usr/bin/doas ]; then	 	mySuQuotes=(false)
-	#else								mySuQuotes=('"')
+	#if command -v sudo &> /dev/null; then		sSuQuotes=(false)
+	#elif command -v doas&> /dev/null; then	 	sSuQuotes=(false)
+	#else										sSuQuotes=('"')
 	#fi
-	#echo "${mySuQuotes[@]}"
+	#echo "${sSuQuotes[@]}"
 #}
 #suQuotes="$(getSuQuotes)"
 #suExecCommand() {
@@ -44,42 +44,42 @@ set -euo pipefail #; set -x
 	#else									"$sPfxSu" $sCommand
 	#fi
 #}
-launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
-source "${launchDir}/include/file-edition.sh"
+sLaunchDir="$(dirname "$0")"
+if [ "$sLaunchDir" = "." ]; then sLaunchDir="$(pwd)"; elif [ "$sLaunchDir" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/include/test-superuser-privileges.sh"
+source "${sLaunchDir}/include/file-edition.sh"
 
-binNft=$(suExecCommandNoPreserveEnv "which nft")
+sBinNft=$(suExecCommandNoPreserveEnv "command -v nft")
 
 restore-nft-conf() {
 	echo -e "\t>>> mise en place de la nouvelle version du fichier de configuration nftables"
-	mynftconfdst=/etc/nftables.conf
-	mynftconfsrc="${launchDir}$mynftconfdst"
+	sNftConfDst=/etc/nftables.conf
+	sNftConfSrc="${sLaunchDir}$sNftConfDst"
 	suExecCommandNoPreserveEnv " \
-	#binNft=\$(which nft); \
-	isErrorFree=\"$($binNft -c -f "$mynftconfsrc" && echo \"true\")\"; \
+	#sBinNft=\$(which nft); \
+	isErrorFree=\"$($sBinNft -c -f "$sNftConfSrc" && echo \"true\")\"; \
 	if [ \"\$isErrorFree\" = \"true\" ]; then \
 		#echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
-		install -o root -g root -m 0744 -pv $mynftconfsrc $mynftconfdst; \
+		install -o root -g root -m 0744 -pv $sNftConfSrc $sNftConfDst; \
 	else \
 		echo \"\$isErrorFree\"; \
 		exit 1; \
 	fi"
-	unset mynftconf{dst,src}
+	unset sNftConf{Dst,Src}
 }
 blacklist-iptables-kernel-modules() {
 	echo -e "\t>>> désactivation totale des modules de iptables"
-	myiptablesbckldst="/etc/modprobe.d/iptables-blacklist.conf"
-	myiptablesbcklsrc="${launchDir}$myiptablesbckldst"
-	suExecCommand install -o root -g root -m 0744 -pv "$myiptablesbcklsrc" "$myiptablesbckldst"
-	unset myiptablesbckl{dst,src}
+	sIptablesBcklDst="/etc/modprobe.d/iptables-blacklist.conf"
+	sIptablesBcklSrc="${sLaunchDir}$sIptablesBcklDst"
+	suExecCommand install -o root -g root -m 0744 -pv "$sIptablesBcklSrc" "$sIptablesBcklDst"
+	unset sIptablesBckl{Dst,Src}
 }
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
 	echo -e "\t>>> Désactivation de ufw si necessaire"
-	suExecCommand "if [ -x /usr/sbin/ufw ]; then suExecCommand ufw disable; fi; \
+	suExecCommand "if command -v ufw &> /dev/null; then suExecCommand ufw disable; fi; \
 	echo '  >>> Remise à zéro des éventuelles règles iptables chargées en mémoire';
-	if [ -x /usr/sbin/iptables ]; then iptables -F; fi; if [ -x /usr/sbin/ip6tables ]; then ip6tables -F; fi; \
+	if command -v iptables &> /dev/null; then iptables -F; fi; if command -v ip6tables &> /dev/null; then ip6tables -F; fi; \
 	echo '  >>> Suppression de ip-tables';
 	for fwPkg in iptables{-persistent,} {g,}ufw; do apt-get autoremove --purge \"\$fwPkg\" 2>&1; done; \
 	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
@@ -89,9 +89,9 @@ mainInstallAndSetupNftable() {
 	echo -e "\t>>> Installation du firewall nftables"
 	suExecCommand "apt-get install nftables; \
 	echo '  >>> Remise à zéro des eventuelles règles nftables chargées en mémoire' \
-	$binNft flush ruleset; $binNft list ruleset"
+	$sBinNft flush ruleset; $sBinNft list ruleset"
 	echo -e "\t>>> Mise en route du service nftables"
-	restore-nft-conf #&& suExecCommand $binNft list ruleset
+	restore-nft-conf #&& suExecCommand $sBinNft list ruleset
 	suExecCommand "if true; then
 		systemctl enable --now nftables
 	else
@@ -99,23 +99,23 @@ mainInstallAndSetupNftable() {
 	fi
 	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
 	
-	if [ -x /usr/bin/update-alternatives ]; then
+	if command -v update-alternatives &> /dev/null; then
 		echo -e "\t>>> installation des alternatives nftables"
 		suExecCommand "if [ -x /usr/sbin/iptables-nft ]; then update-alternatives --set iptables /usr/sbin/iptables-nft; fi; \
-		if [ -x /usr/sbin/ip6tables-nft ]; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi; \
-		if [ -x /usr/sbin/arptables-nft ]; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi; \
-		if [ -x /usr/sbin/ebtables-nft ]; then update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi"
+		if command -v /usr/sbin/ip6tables-nft; then update-alternatives --set ip6tables /usr/sbin/ip6tables-nft; fi; \
+		if command -v arptables-nft; then update-alternatives --set arptables /usr/sbin/arptables-nft; fi; \
+		if command -v ebtables-nft; then update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi"
 	fi
 }
 
 mainInstallStraxuiDeb() {
-	installStraxuiDeb="${launchDir}/update-or-install-strax-wallet-deb-bullseye.sh"
+	installStraxuiDeb="${sLaunchDir}/update-or-install-strax-wallet-deb-bullseye.sh"
 	if [ -f "$installStraxuiDeb" ]; then bash "$installStraxuiDeb"; fi
 	unset installStraxuiDeb
 }
 
 mainInstallStraxuiTargz() {
-	installStraxuiTargz="${launchDir}/install-strax-wallet-gz.sh"
+	installStraxuiTargz="${sLaunchDir}/install-strax-wallet-gz.sh"
 	if [ -f "$installStraxuiTargz" ]; then bash "$installStraxuiTargz"; fi
 	unset installStraxuiTargz
 }

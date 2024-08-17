@@ -2,19 +2,19 @@
 
 set -euo pipefail #; set -x
 
-launchDir="$(dirname "$0")"
-if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
-systemdHostnameFile=/etc/hostname
-hostsFile=/etc/hosts
-osReleaseFile=/etc/os-release
+sLaunchDir="$(dirname "$0")"
+if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/include/test-superuser-privileges.sh"
+sSystemdHostnameFile=/etc/hostname
+sHostsFile=/etc/hosts
+sOsReleaseFile=/etc/os-release
 
 getSystemdHostnameFileContent() {
-	cat "${systemdHostnameFile}"
+	cat "${sSystemdHostnameFile}"
 }
 getOsRelease() {
-	if [ -r "${osReleaseFile}" ]; then
-		sOsIdLine=$(grep -i '^ID=' "${osReleaseFile}")
+	if [ -r "${sOsReleaseFile}" ]; then
+		sOsIdLine=$(grep -i '^ID=' "${sOsReleaseFile}")
 		echo "${sOsIdLine//ID=/}" #sOsId=
 	else
 		return 1
@@ -36,25 +36,25 @@ getNewHostname() {
 }
 updateHostname() {
 	if [ ! "${sOldHostname}" = "${sNewHostname}" ]; then
-		echo -e "\t>>> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${systemdHostnameFile}"
-		if [ -w "${systemdHostnameFile}" ]; then		
-			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
-		elif [ -r "${systemdHostnameFile}" ]; then
-			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
+		echo -e "\t>>> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sSystemdHostnameFile}"
+		if [ -w "${sSystemdHostnameFile}" ]; then		
+			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
+		elif [ -r "${sSystemdHostnameFile}" ]; then
+			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
 		else
 			return 1
 		fi
 	fi
 }
 updateHosts() {
-	if (grep -w "${sOldHostname}" "${hostsFile}" && ! grep -w "${sNewHostname}" "${hostsFile}" ); then
-		echo -e "\t>>> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${hostsFile}"
-		if [ -w "${hostsFile}" ]; then
+	if (grep -w "${sOldHostname}" "${sHostsFile}" && ! grep -w "${sNewHostname}" "${sHostsFile}" ); then
+		echo -e "\t>>> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sHostsFile}"
+		if [ -w "${sHostsFile}" ]; then
 			echo "-w"
-			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${hostsFile}"
-		elif [ -r "${hostsFile}" ]; then
+			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sHostsFile}"
+		elif [ -r "${sHostsFile}" ]; then
 			echo "-r"
-			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${systemdHostnameFile}"
+			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
 		else
 			return 1
 		fi
@@ -62,7 +62,7 @@ updateHosts() {
 }
 
 main_set_hostname() {
-	#source ${launchDir}/include/test-superuser-privileges.sh
+	#source ${sLaunchDir}/include/test-superuser-privileges.sh
 	#if systemd
 	sOldHostname="$(getSystemdHostnameFileContent)"
 	sNewHostname="$(getNewHostname)"

@@ -4,11 +4,11 @@
 #set -euo pipefail # set -euxo pipefail
 
 createValidator() {
-    myUser=deposit-validator
-    sudo useradd -m -s /bin/bash "${myUser}"
-    sudo passwd -l "${myUser}"
-    sudo usermod -aG "${myUser}"
-    #su "${myUser}"
+    sUser=deposit-validator
+    sudo useradd -m -s /bin/bash "${sUser}"
+    sudo passwd -l "${sUser}"
+    sudo usermod -aG "${sUser}"
+    #su "${sUser}"
 }
 
 main() {

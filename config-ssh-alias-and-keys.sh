@@ -3,17 +3,17 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
-launchDir="$(dirname "$0")"
-if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
-#source "${launchDir}/include/set-common-settings.sh"
+sLaunchDir="$(dirname "$0")"
+if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/include/test-superuser-privileges.sh"
+#source "${sLaunchDir}/include/set-common-settings.sh"
 
 sSshSubFolder=.ssh
 sSshAliasConfig=${sSshSubFolder}/config
 sSshAliasConfigd=${sSshAliasConfig}.d
 sSshAuthKeys=${sSshSubFolder}/authorized_keys
 
-sSshRepoSource="${launchDir}/home/user"
+sSshRepoSource="${sLaunchDir}/home/user"
 sSshRepoConf=${sSshRepoSource}/${sSshSubFolder}
 sSshRepoAliasConfig=${sSshRepoSource}/${sSshAliasConfig}
 sSshRepoAliasConfigd=${sSshRepoSource}/${sSshAliasConfigd}
@@ -61,14 +61,14 @@ importSshKeys() {
 updateSshdConfig() {
 	echo -e "\t>>> application des fichiers config sshd"
 	declare -a sConfList
-	#sConfList=( "$(find "${launchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
-	#sConfList=( $(ls "${launchDir}/etc/ssh/sshd_config.d/*.conf") )
-	mapfile -t sConfList < <(find "${launchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')
+	#sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
+	#sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") )
+	mapfile -t sConfList < <(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')
 	export sConfList
 	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
 		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\${sSshdConfigFileName}
-		sSshdConfigSrc=${launchDir}\${sSshdConfigDst}
+		sSshdConfigSrc=${sLaunchDir}\${sSshdConfigDst}
 		if [ -d \$(dirname \"\${sSshdConfigDst}\") ] && [ -f \"\${sSshdConfigSrc}\" ]; then
 			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi

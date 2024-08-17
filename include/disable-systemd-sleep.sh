@@ -1,20 +1,20 @@
 #!/usr/bin/env bash
 
 set -euo pipefail #; set -x
-launchDir="$(dirname "$0")"
-if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"; launchDir="${launchDir//\/\//}"
+sLaunchDir="$(dirname "$0")"
+if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"; sLaunchDir="${sLaunchDir//\/\//}"
 
 main_disable_sleep() {
- 	source "${launchDir}/include/file-edition.sh"
-	sleepconfDir=/etc/systemd/sleep.conf
-	sleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
-	for sleepLine in ${sleepLines}; do
-		lineWithoutVal="${sleepLine/yes/}"
-		lineWithoutVal="${sleepLine/no/}"
+ 	source "${sLaunchDir}/include/file-edition.sh"
+	sSleepconfDir=/etc/systemd/sleep.conf
+	sSleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
+	for sleepLine in ${sSleepLines}; do
+		sLineWithoutVal="${sleepLine/yes/}"
+		sLineWithoutVal="${sleepLine/no/}"
 		#read -rp "${sleepLine}"
-		uncomment			"${lineWithoutVal}"	"${sleepconfDir}"
-		lineNo="${lineWithoutVal}no"
-		setParameterInFile "${sleepconfDir}"	"${lineWithoutVal}"		"${lineNo}"
+		uncomment			"${sLineWithoutVal}"	"${sSleepconfDir}"
+		lineNo="${sLineWithoutVal}no"
+		setParameterInFile "${sSleepconfDir}"	"${sLineWithoutVal}"		"${lineNo}"
 	done
 	systemctl daemon-reload
 }

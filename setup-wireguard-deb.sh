@@ -6,9 +6,9 @@ set -euo pipefail # set -euxo pipefail
 #source: https://github.com/sergibarroso/wireguard-vpn-setup
 #
 
-launchDir="$(dirname "$0")"
-if [ "$launchDir" = "." ]; then launchDir="$(pwd)"; elif [ "$launchDir" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
+sLaunchDir="$(dirname "$0")"
+if [ "$sLaunchDir" = "." ]; then sLaunchDir="$(pwd)"; elif [ "$sLaunchDir" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/include/test-superuser-privileges.sh"
 
 sEtcOsReleasePath=/etc/os-release
 sVirtualIpVpnServer=192.168.11.1 # constant fixed for all machines
@@ -67,7 +67,7 @@ setKeysWireguard() {
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
-	sIp4FwdSrc="${launchDir}$sIp4FwdDst"
+	sIp4FwdSrc="${sLaunchDir}$sIp4FwdDst"
 	if [ ! -f "$sIp4FwdDst" ] || [ ! "$(sysctl net.ipv4.ip_forward)" = "net.ipv4.ip_forward = 1" ]; then
 		echo -e "\t>>> proceed add enable ipv4 forward file to ${sIp4FwdDst} in /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "$sIp4FwdDst")\""
@@ -77,7 +77,7 @@ setIp4ForwardSysctl() {
 }
 setIp6ForwardSysctl() {
 	sIp6FwdDst="/etc/sysctl.d/99-enable-ip6-forward.conf"
-	sIp6FwdSrc="${launchDir}$sIp6FwdDst"
+	sIp6FwdSrc="${sLaunchDir}$sIp6FwdDst"
 	if [ ! -f "$sIp6FwdDst" ] || [ ! "$(sysctl net.ipv6.ip_forward)" = "net.ipv6.ip_forward = 1" ]; then
 		echo -e "\t>>> proceed add enable ipv6 formward file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "$sIp6FwdDst")\""

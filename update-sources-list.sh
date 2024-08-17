@@ -4,9 +4,9 @@
 
 set -euo pipefail #; set -x
 
-launchDir="$(dirname "$0")"
-if [ "${launchDir}" = "." ]; then launchDir="$(pwd)"; elif [ "${launchDir}" = "include" ]; then eval launchDir="$(pwd)"; fi; launchDir="${launchDir//include/}"
-source "${launchDir}/include/test-superuser-privileges.sh"
+sLaunchDir="$(dirname "$0")"
+if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+source "${sLaunchDir}/include/test-superuser-privileges.sh"
 
 getInstalledDebianDistCodeName() {
 	sEtcOsrelease=/etc/os-release
@@ -28,10 +28,10 @@ sCurrentDistCodename="$(getInstalledDebianDistCodeName)"
 
 installNewSourcesList() {
 	sSourcesListDst="/etc/apt/sources.list"
-	if [ "${sCurrentDistCodename}" = "buster" ]; then			sSourcesListSrc="${launchDir}/etc/apt/bullseye-sources.list"
-	elif [ "${sCurrentDistCodename}" = "bullseye" ]; then		sSourcesListSrc="${launchDir}/etc/apt/bookworm-sources.list"
-	elif [ "${sCurrentDistCodename}" = "bookworm" ]; then		sSourcesListSrc="${launchDir}/etc/apt/trixie-sources.list"
-	elif [ "${sCurrentDistCodename}" = "trixie" ]; then			sSourcesListSrc="${launchDir}/etc/apt/forky-sources.list"
+	if [ "${sCurrentDistCodename}" = "buster" ]; then			sSourcesListSrc="${sLaunchDir}/etc/apt/bullseye-sources.list"
+	elif [ "${sCurrentDistCodename}" = "bullseye" ]; then		sSourcesListSrc="${sLaunchDir}/etc/apt/bookworm-sources.list"
+	elif [ "${sCurrentDistCodename}" = "bookworm" ]; then		sSourcesListSrc="${sLaunchDir}/etc/apt/trixie-sources.list"
+	elif [ "${sCurrentDistCodename}" = "trixie" ]; then			sSourcesListSrc="${sLaunchDir}/etc/apt/forky-sources.list"
 	fi
 	sSourcesListBak="${sSourcesListDst}.${sCurrentDistCodename}-gg.save"
 	if [ -f "${sSourcesListDst}" ]; then
