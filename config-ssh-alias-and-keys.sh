@@ -3,6 +3,8 @@
 # script by enigma158an201
 set -euo pipefail # set -euxo pipefail
 
+#https://www.ssh-audit.com/hardening_guides.html#debian_12
+
 sLaunchDir="$(dirname "$0")"
 if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
@@ -73,12 +75,18 @@ updateSshdConfig() {
 			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi
 	done
-	rm /etc/ssh/ssh_host_ecdsa_key* || true
+	rm /etc/ssh/ssh_host_*dsa* || true
 	systemctl restart sshd.service'"
 }
+cleanModuli() {
+	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe;
+	mv /etc/ssh/moduli /etc/ssh/moduli.bak;
+	mv /etc/ssh/moduli.safe /etc/ssh/moduli"
+}
 main_ssh_config() {
+	cleanModuli
 	updateSshdConfig
-	installSshAlias
+	#installSshAlias
 	#installSshKeys
 	#importSshKeys
 	#suExecCommand sshd-config-settings
