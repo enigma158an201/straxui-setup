@@ -25,7 +25,7 @@ tabAssistedUser=( assist david guillaume sky )
 sLocalSessionType=${XDG_SESSION_TYPE,,}
 
 oldRemoteAssistedCommands() {
-	echo -e "\t>>>\$DISPLAY Value for assistant\n$DISPLAY"
+	echo -e "\t>>>\$DISPLAY Value for assistant\n${DISPLAY}"
 	ssh-keygen -t ed25519
 	#ssh-copy-id -i "${sEd25519PubKeyPath}" ${sLocalAssistantUser}@${sAssistantIp}
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
@@ -55,7 +55,7 @@ oldCreateUser() {
 	fi
 }
 getLocalDisplay() {
-	if [ ! "${DISPLAY:-}" = "" ]; then 	echo "$DISPLAY"
+	if [[ ! "${DISPLAY:-}" = "" ]]; then 	echo "${DISPLAY}"
 	else 								echo "empty"; fi
 }
 installTerminator() {
@@ -68,7 +68,7 @@ installTerminator() {
 	fi
 }
 installOpensshServer() {
-	if command -v sshd &> /dev/null || [ -x /usr/sbin/sshd ]; then
+	if command -v sshd &> /dev/null || [[ -x /usr/sbin/sshd ]]; then
 		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
 	elif ! command -v sshd &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install openssh-server; fi
@@ -93,8 +93,8 @@ installWayvnc() { #wayvnc works only with wlroots based WM/DE
 	else
 		exit 1
 	fi
-	sWayvncConf=$HOME/.config/wayvnc/config
-	if [ ! -e "${sWayvncConf}" ]; then
+	sWayvncConf=${HOME}/.config/wayvnc/config
+	if [[ ! -e "${sWayvncConf}" ]]; then
 		mkdir -p "$(dirname "${sWayvncConf}")"
 		echo -e "address=127.0.0.0\nusername=$(whoami)\n# port=5900\n# xkb_layout=fr # The keyboard layout to use for key code lookup.            Default: XKB_DEFAULT_LAYOUT or system default." > "${sWayvncConf}"
 	fi
@@ -110,10 +110,10 @@ installWaypipe() {
 }
 installShortcuts() {
 	sShctName=assist.desktop
-	for sShortcutF in $HOME/{Bureau,.local/share/applications}; do
+	for sShortcutF in ${HOME}/{Bureau,.local/share/applications}; do
 		sShortcut=${sShortcutF}/${sShctName}
-		echo -e "[Desktop Entry]\nName=Assistance Gwen\nExec=terminator -e $HOME/bin/gwen/straxui-setup/assist-ssh.sh\n#Terminal=true\nType=Application\nIcon=network-transmit\nComment=Lance le reverse tunnel SSH pour connexion bureau distant via VNC " > "${sShortcut}"
-		if [ ! -x truc ]; then chmod +x "${sShortcut}"; fi 
+		echo -e "[Desktop Entry]\nName=Assistance Gwen\nExec=terminator -e ${HOME}/bin/gwen/straxui-setup/assist-ssh.sh\n#Terminal=true\nType=Application\nIcon=network-transmit\nComment=Lance le reverse tunnel SSH pour connexion bureau distant via VNC " > "${sShortcut}"
+		if [[ ! -x truc ]]; then chmod +x "${sShortcut}"; fi 
 	done
 }
 localAssistantCommands() {
@@ -129,16 +129,16 @@ remoteAssistedCommands() {
 	for sVncSrvApp in x11vnc wayvnc waypipe; do
 		killall ${sVncSrvApp} || true
 	done
-	if [ "${sLocalSessionType}" = "x11" ]; then
+	if [[ "${sLocalSessionType}" = "x11" ]]; then
 		echo -e "\t>>> x11 session detected, processsing with x11vnc"
 		installX11vnc
 		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -noxdamage -notruecolor -speeds dsl -rfbportv6 -1 &
 		
-	elif [ "${sLocalSessionType}" = "wayland" ] && false; then #wayvnc works only with wlroots based WM/DE
+	elif [[ "${sLocalSessionType}" = "wayland" ]] && false; then #wayvnc works only with wlroots based WM/DE
 		echo -e "\t>>> wayland & wlroots based session detected, processsing with wayvnc"
 		installWayvnc
 		wayvnc # to complete
-	elif [ "${sLocalSessionType}" = "wayland" ] && true; then
+	elif [[ "${sLocalSessionType}" = "wayland" ]] && true; then
 		echo -e "\t>>> wayland & non wlroots based session detected, processsing with waypipe"
 		installWaypipe
 		#waypipe ssh user@127.0.0.1 wayland
@@ -148,7 +148,7 @@ remoteAssistedCommands() {
 	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t>>> Success"; fi
 }
 selectUserAssistOrAssistedCommands() {
-	if [ ! $EUID = 0 ]; then
+	if [[ ! ${EUID} = 0 ]]; then
 		sLoggedUser=$(whoami)
 	else
 		echo -e "\t>>> Please don't use as root !!!" 
@@ -156,26 +156,26 @@ selectUserAssistOrAssistedCommands() {
 	fi
 	iAssisted=0
 	for sAssistedUser in "${tabAssistedUser[@]}"; do
-		if [ "${sLoggedUser}" = "${sAssistedUser}" ]; then
+		if [[ "${sLoggedUser}" = "${sAssistedUser}" ]]; then
 			remoteAssistedCommands "${sLoggedUser}"
 			iAssisted=$(( iAssisted + 1 )) # bAssisted=true
 		#else 
 			#bAssisted=$(${bAssisted:-} || echo "false")
 		fi
 	done
-	if [ ${iAssisted} -eq 0 ] ; then #! ${bAssisted}; then
-		if [ "${sLoggedUser}" = "${sLocalAssistantUser}" ]; then
+	if [[ ${iAssisted} -eq 0 ]]; then #! ${bAssisted}; then
+		if [[ "${sLoggedUser}" = "${sLocalAssistantUser}" ]]; then
 			echo -e "\t>>> Do you plan to Send (1) or Receive(2) screen? 1/2?"
 			read -rp " " -n 1 iAnswer
-			if [ "${iAnswer}" -eq "1" ]; then
+			if [[ "${iAnswer}" -eq "1" ]]; then
 				remoteAssistedCommands "${sLoggedUser}"
-			elif [ "${iAnswer}" -eq 2 ]; then
+			elif [[ "${iAnswer}" -eq 2 ]]; then
 				localAssistantCommands "${sAssistedUser}" #sLocalAssistantUser
 			fi
 		fi
 	fi
 }
-sLocalDisplay=$(getLocalDisplay) #$DISPLAY
+sLocalDisplay=$(getLocalDisplay) #${DISPLAY}
 main() {
 	selectUserAssistOrAssistedCommands
 }
