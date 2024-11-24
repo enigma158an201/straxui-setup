@@ -16,7 +16,7 @@ source "${sLaunchDir}/include/test-superuser-privileges.sh"
 
 sAptSourcesListFile="/etc/apt/sources.list"
 sAptSourcesListSubfolder=${sAptSourcesListFile}.d
-sourcesListContent="$(cat "${sAptSourcesListFile}")"
+sSourcesListContent="$(cat "${sAptSourcesListFile}")"
 sTiersRepos="$(find ${sAptSourcesListSubfolder} -iwholename '*.list')"
 bHasSudo=$(command -v sudo && echo "true" || echo "false")
 bHasDoas=$(command -v doas && echo "true" || echo "false")
@@ -27,7 +27,7 @@ getDebianVersion() {
 }
 
 getNonFreeToNonFreeFirmware() {
-	if [[ ${sourcesListContent} =~ non-free ]] && [[ ${sourcesListContent} =~ non-free-firmware ]]; then
+	if [[ ${sSourcesListContent} =~ non-free ]] && [[ ! ${sSourcesListContent} =~ non-free-firmware ]]; then
 		if ${bHasSudo}; then
 			sudo sed -i 's/ non-free/ non-free non-free-firmware /g' "${sAptSourcesListSubfolder}"
 		elif ${bHasDoas}; then
