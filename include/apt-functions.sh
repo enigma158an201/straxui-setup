@@ -23,7 +23,7 @@ checkDpkgInstalledTests() {
 		#echo "${element} ";read -rp " "
 		#[[ ${element} == ${pkgNamePrefix} ]] && sPkgInstalled+=("${element}")
 	#done
-	#if [ -z "${sPkgInstalled[@]}" ]; then echo "false"; exit 1; else echo "true"; exit 0; fi
+	#if [[ -z "${sPkgInstalled[@]}" ]]; then echo "false"; exit 1; else echo "true"; exit 0; fi
 	#unset sPkgInstalled
 	package_name=pkg-to-test
 	if dpkg -l | grep -q -w "${package_name}"; then

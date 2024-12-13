@@ -4,7 +4,7 @@ set -euo pipefail #; set -x
 
 # this script requires super user privileges and do not contain any suExec
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 #source "${sLaunchDir}/include/test-superuser-privileges.sh"
 source "${sLaunchDir}/include/file-edition.sh"
 
@@ -14,7 +14,7 @@ sshd-config-settings() {
 	for sSshdConfigFile in "${sLaunchDir}"/etc/sshd_config.d/*.conf; do
 		sSshdConfigDst="/etc/ssh/sshd_config.d/${sSshdConfigFile}"
 		sSshdConfigSrc="${sLaunchDir}${sSshdConfigDst}"
-		if [ -d "$(dirname "${sSshdConfigDst}")" ] && [ -f "${sSshdConfigSrc}" ]; then 
+		if [[ -d "$(dirname "${sSshdConfigDst}")" ]] && [[ -f "${sSshdConfigSrc}" ]]; then 
 			install -o root -g root -m 0744 -pv "${sSshdConfigSrc}" "${sSshdConfigDst}"
 		fi
 	done
@@ -28,7 +28,7 @@ disable-systemd-sleep() {
 	#suExecCommand "bash -c \"${sLaunchDir}/include/disable-systemd-sleep.sh\""
 	sSystemdSleepDst="/etc/systemd/sleep.conf"
 	sSystemdSleepSrc="${sLaunchDir}${sSystemdSleepDst}"
-	if [ -d "$(dirname "${sSystemdSleepDst}")" ] && [ -f "${sSystemdSleepSrc}" ]; then
+	if [[ -d "$(dirname "${sSystemdSleepDst}")" ]] && [[ -f "${sSystemdSleepSrc}" ]]; then
 		echo -e "\t>>> désactivation des mises en veille systemd"
 		install -o root -g root -m 0744 -pv "${sSystemdSleepSrc}" "${sSystemdSleepDst}"
 		systemctl daemon-reload
@@ -62,7 +62,7 @@ main_common() {
 	echo -e "\t>>> initialisation des paramètres du serveur ssh"
 	if command -v sshd &> /dev/null; then 											sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 sDisableWireless
-	if [ ! "${sDisableWireless^^}" = "N" ] && [ ! "${sDisableWireless}" = "" ]; then 	disable-wireless-connections; fi
+	if [[ ! "${sDisableWireless^^}" = "N" ]] && [[ ! "${sDisableWireless}" = "" ]]; then 	disable-wireless-connections; fi
 	echo -e "\t>>> désactivation de cups"
 	disable-cups-services
 	echo -e "\t>>> désactivation de systemd-sleep"

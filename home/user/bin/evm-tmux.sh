@@ -6,7 +6,7 @@ set -euo pipefail # set -euxo pipefail
 # to allow aliases in script as in `bash -i`
 
 sCommand="$*"
-if [ ! "${1:-}" = "" ]; then 	sArg=${1,,}; fi
+if [[ ! "${1:-}" = "" ]]; then 	sArg=${1,,}; fi
  
 sTmuxSession="sky41"
 sTmuxWindow="evm"
@@ -36,7 +36,7 @@ preCheck() {
 	if ! command -v tmux &> /dev/null; then 
 		echo -e "\t>>> tmux not found, please install tmux, aborting";
 		echo -e "\t>>> Install tmux with \`sudo apt-get install tmux\` command"; read -rp "(y/N) ?" -n 1 sTmuxInstall
-		if [ ! "${sTmuxInstall^^}" = "N" ] && [ ! "${sTmuxInstall}" = "" ]; then 	
+		if [[ ! "${sTmuxInstall^^}" = "N" ]] && [[ ! "${sTmuxInstall}" = "" ]]; then 	
 			if sudo apt-get install tmux; then
 				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
@@ -46,7 +46,7 @@ preCheck() {
 	if ! command -v tput &> /dev/null; then
 		echo -e "\t>>> tput not found, please install tput, aborting";
 		echo -e "\t>>> Install tput with \`sudo apt-get install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
-		if [ ! "${sTputInstall^^}" = "N" ] && [ ! "${sTputInstall}" = "" ]; then 	
+		if [[ ! "${sTputInstall^^}" = "N" ]] && [[ ! "${sTputInstall}" = "" ]]; then 	
 			if sudo apt-get install ncurses-bin; then
 				echo -e "\t>>> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"
 			fi
@@ -56,7 +56,7 @@ preCheck() {
 }
 stopMainnetTmux() {
 	for iWindow in 4 3 2 1; do
-	if [ "$(tmux list-panes | wc -l)" -eq "${iWindow}" ] ; then 	
+	if [[ "$(tmux list-panes | wc -l)" -eq "${iWindow}" ]]; then 	
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" C-c
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" 'exit' C-m
 	fi
@@ -79,26 +79,26 @@ startMainnetTmux() {
 	tmux set-option -g mouse on		#deprecated: tmux set-option -g mouse-select-pane on
 
 	# Split the window into four panes: two panes on the left and two (one higher) on the right
-	if [ "$(tmux list-panes | wc -l)" -eq "1" ] && { [ "${TMUX_PANE:-}" = "%1" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
+	if [[ "$(tmux list-panes | wc -l)" -eq "1" ]] && { [[ "${TMUX_PANE:-}" = "%1" ]] || [[ "${TMUX_PANE:-}" = "" ]] ;}; then
 		tmux select-pane -t "${sTmuxSession}:${sTmuxWindow}.0"
 		tmux split-window -h -t "${sTmuxSession}:${sTmuxWindow}"
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "2" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
+	if [[ "$(tmux list-panes | wc -l)" -eq "2" ]] && { [[ "${TMUX_PANE:-}" = "%2" ]] || [[ "${TMUX_PANE:-}" = "" ]] ;}; then
 		tmux select-pane -t "${sTmuxSession}:${sTmuxWindow}.0" #-P 'p1'
 		tmux split-window -v -t "${sTmuxSession}:${sTmuxWindow}" #-n 'p2'
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "3" ] && { [ "${TMUX_PANE:-}" = "%2" ] || [ "${TMUX_PANE:-}" = "" ] ;}; then
+	if [[ "$(tmux list-panes | wc -l)" -eq "3" ]] && { [[ "${TMUX_PANE:-}" = "%2" ]] || [[ "${TMUX_PANE:-}" = "" ]] ;}; then
 		tmux select-pane -t "${sTmuxSession}:${sTmuxWindow}.2" #-n 'p3'
 		tmux split-window -v -t "${sTmuxSession}:${sTmuxWindow}" -l 5 #-p 90 #-t "${sTmuxSession}"
 	fi
-	if [ "$(tmux list-panes | wc -l)" -eq "4" ]; then
+	if [[ "$(tmux list-panes | wc -l)" -eq "4" ]]; then
 		# Execute specific commands in each pane: 0 1 2 are names of panes
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.0" "${sAlias1}" C-m
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.1" "${sAlias2}" C-m
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.2" "${sAlias3}" C-m #validator
 	fi
 	# alway echo this line at right bottom
-	#if [ "${TMUX_PANE:-}" = "%4" ]; then
+	#if [[ "${TMUX_PANE:-}" = "%4" ]]; then
 		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.3" "echo -e ' > hide tmux (detach and keep running): press ctrl+b then d or enter \`tmux detach\`\n \
 		> navigate next|previous window: press ctrl+b then n or press ctrl+b then p\n \
 		> kill tmux window: press ctrl+b then & or enter \`tmux kill-window -t ${sTmuxWindow}\`\n \
@@ -122,9 +122,9 @@ upgradeBinTmuxEvmScript() {
 }
 main_evm() {
 	preCheck
-	if [ "${sArg:-}" = "upgrade" ] || [ "${sArg:-}" = "update" ]; then 	upgradeBinTmuxEvmScript # 1st find git source, and locally installed script, then upgrade if necessary
-	elif [ "${sArg:-}" = "start" ] || [ "${sArg:-}" = "" ]; then 		startMainnetTmux 		# start script
-	elif [ "${sArg:-}" = "stop" ] || [ "${sArg:-}" = "kill" ]; then 	stopMainnetTmux 		# stop script
+	if [[ "${sArg:-}" = "upgrade" ]] || [[ "${sArg:-}" = "update" ]]; then 	upgradeBinTmuxEvmScript # 1st find git source, and locally installed script, then upgrade if necessary
+	elif [[ "${sArg:-}" = "start" ]] || [[ "${sArg:-}" = "" ]]; then 		startMainnetTmux 		# start script
+	elif [[ "${sArg:-}" = "stop" ]] || [[ "${sArg:-}" = "kill" ]]; then 	stopMainnetTmux 		# stop script
 	fi
 }
 main_evm

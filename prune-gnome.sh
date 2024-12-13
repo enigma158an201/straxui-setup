@@ -5,28 +5,28 @@ installedString="[installed]"
 
 pruneDebianDefaultSoftware() {
   sPkgListFile=include/debian-software-debloat.txt
-  if test -f $sPkgListFile; then
+  if test -f ${sPkgListFile}; then
     #shellcheck disable=SC2013
-    for sPkg in $(grep -v ^# $sPkgListFile); do 
-      echo -e "\t>>> Removing $sPkg package"; sudo apt-get autoremove "${sPkg}"
+    for sPkg in $(grep -v ^# ${sPkgListFile}); do 
+      echo -e "\t>>> Removing ${sPkg} package"; sudo apt-get autoremove "${sPkg}"
     done
   fi
 }
 
 pruneObsoletePkg() {
   sPkgObsolete="$(apt list ~o | tail -n +2)"
-  if [ -n "${sPkgObsolete}" ]; then
+  if [[ -n "${sPkgObsolete}" ]]; then
     echo -e "\t>>> the Following packages are not in your apt repositories, proceed to autoremove ?\n${sPkgObsolete}"
     read -rp "y/N" -n 1 sAutoremovePkg
-    if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~o; fi
+    if [[ "${sAutoremovePkg^^}" = "Y" ]]; then apt-get autoremove --purge ~o; fi
   fi
 }
 pruneUndeletedConf() {
   sPkgUndeleted="$(apt list ~c | tail -n +2)"
-  if [ -n "${sPkgUndeleted}" ]; then
+  if [[ -n "${sPkgUndeleted}" ]]; then
     echo -e "\t>>> the Following packages were not completely removed, proceed to autoremove remaining configs ?\n${sPkgUndeleted}"
     read -rp "y/N" -n 1 sAutoremovePkg
-    if [ "${sAutoremovePkg^^}" = "Y" ]; then apt-get autoremove --purge ~c; fi
+    if [[ "${sAutoremovePkg^^}" = "Y" ]]; then apt-get autoremove --purge ~c; fi
   fi
 }
 

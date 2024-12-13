@@ -3,7 +3,7 @@
 set -euo pipefail #; set -x
 
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
 sSystemdHostnameFile=/etc/hostname
 sHostsFile=/etc/hosts
@@ -13,7 +13,7 @@ getSystemdHostnameFileContent() {
 	cat "${sSystemdHostnameFile}"
 }
 getOsRelease() {
-	if [ -r "${sOsReleaseFile}" ]; then
+	if [[ -r "${sOsReleaseFile}" ]]; then
 		sOsIdLine=$(grep -i '^ID=' "${sOsReleaseFile}")
 		echo "${sOsIdLine//ID=/}" #sOsId=
 	else
@@ -35,11 +35,11 @@ getNewHostname() {
 	fi
 }
 updateHostname() {
-	if [ ! "${sOldHostname}" = "${sNewHostname}" ]; then
+	if [[ ! "${sOldHostname}" = "${sNewHostname}" ]]; then
 		echo -e "\t>>> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sSystemdHostnameFile}"
-		if [ -w "${sSystemdHostnameFile}" ]; then		
+		if [[ -w "${sSystemdHostnameFile}" ]]; then		
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
-		elif [ -r "${sSystemdHostnameFile}" ]; then
+		elif [[ -r "${sSystemdHostnameFile}" ]]; then
 			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
 		else
 			return 1
@@ -49,10 +49,10 @@ updateHostname() {
 updateHosts() {
 	if (grep -w "${sOldHostname}" "${sHostsFile}" && ! grep -w "${sNewHostname}" "${sHostsFile}" ); then
 		echo -e "\t>>> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sHostsFile}"
-		if [ -w "${sHostsFile}" ]; then
+		if [[ -w "${sHostsFile}" ]]; then
 			echo "-w"
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sHostsFile}"
-		elif [ -r "${sHostsFile}" ]; then
+		elif [[ -r "${sHostsFile}" ]]; then
 			echo "-r"
 			suExecCommandNoPreserveEnv sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
 		else

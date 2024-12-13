@@ -6,7 +6,7 @@
 ## configure and install minimal xfce desktop environment
 
 ## check for sudo/root
-if ! [ "$(id -u)" = "0" ]; then
+if ! [[ "$(id -u)" = "0" ]]; then
   echo "This script must run with sudo, try again..."
   exit 1
 fi

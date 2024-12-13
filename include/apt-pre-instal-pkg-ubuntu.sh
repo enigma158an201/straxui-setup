@@ -2,7 +2,7 @@
 set -euo pipefail #; set -x
 
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/apt-functions.sh"
 
 aptPreinstallPkg() {
@@ -12,7 +12,7 @@ aptPreinstallPkg() {
 	for sPkgToInstall in "${tPkgsToInstall[@]}" #${tPkgsToInstall[*]}
 	do
 		#echo "verification si paquet ${tPkgToInstall} installé" #; read -rp " "
-		#if [ "$(checkDpkgInstalled "${tPkgToInstall}")" = "false" ]; then
+		#if [[ "$(checkDpkgInstalled "${tPkgToInstall}")" = "false" ]]; then
 			apt-get -y install "${sPkgToInstall}" || true
 		#fi
 	done
@@ -30,7 +30,7 @@ aptUnbloatPkg() {
 
 	for sPkgToRemove in "${tPkgsToRemove[@]}" #${tPkgsToRemove[*]}
 	do
-		if [ "$(checkDpkgInstalled "${sPkgToRemove}")" = "true" ]; then
+		if [[ "$(checkDpkgInstalled "${sPkgToRemove}")" = "true" ]]; then
 			apt-get -y autoremove "${sPkgToRemove}" || true
 		fi
 	done

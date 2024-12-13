@@ -4,7 +4,7 @@ set -euo pipefail #; set -x
 
 # this script requires super user privileges and do not contain any suExec
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 #source "${sLaunchDir}/include/test-superuser-privileges.sh"
 #source "${sLaunchDir}/include/file-edition.sh"
 
@@ -17,7 +17,7 @@ set-sysctl-kernel-modules() {
 	for sSysctlFile in "${tSysctlKernelFiles[@]}"; do
 		sSysCtlFileDst="/etc/sysctl.d/${sSysctlFile}"
 		sSysCtlFileSrc="${sLaunchDir}${sSysCtlFileDst}"
-		if [ ! -f "${sSysCtlFileDst}" ]; then
+		if [[ ! -f "${sSysCtlFileDst}" ]]; then
 			echo -e "\t>>> proceed add ${sSysCtlFileSrc} to ${sSysCtlFileDst}"
 			suExecCommand "mkdir -p \"$(dirname "${sSysCtlFileDst}")\""
 			suExecCommand "install -o root -g root -m 0744 -pv ${sSysCtlFileSrc} ${sSysCtlFileDst}"

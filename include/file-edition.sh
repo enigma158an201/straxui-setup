@@ -2,7 +2,7 @@
 
 set -euo pipefail #; set -x
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
 
 comment() {
@@ -10,33 +10,33 @@ comment() {
 	local sFile="${2:?}"
 	local sCommentMark="${3:-#}"
 	local sCommand="sed -ri \"s:^([ ]*)(${sRegex}):\\1${sCommentMark}\\2:\" ${sFile}"
-	if [ -f "${sFile}" ]; then suExecCommand "${sCommand}"; fi
+	if [[ -f "${sFile}" ]]; then suExecCommand "${sCommand}"; fi
 }
 uncomment() {
 	local sRegex="${1:?}"
 	local sFile="${2:?}"
 	local sCommentMark="${3:-#}"
 	#local sCommand="sed -ri s:^([ ]*)[${sCommentMark}]+[ ]?([ ]*${sRegex}):\\1\\2: ${sFile}"
-	if [ -f "${sFile}" ]; then sed -ri "s:^([ ]*)[${sCommentMark}]+[ ]?([ ]*${sRegex}):\\1\\2:" "${sFile}"; fi #echo "${sCommand}"; fi #suExecCommand "${sCommand}"; fi
+	if [[ -f "${sFile}" ]]; then sed -ri "s:^([ ]*)[${sCommentMark}]+[ ]?([ ]*${sRegex}):\\1\\2:" "${sFile}"; fi #echo "${sCommand}"; fi #suExecCommand "${sCommand}"; fi
 }
 appendLineAtEnd() {
 	local sNewLine="${1:?}"
 	local sFile="${2:?}"
-	if [ -f "${sFile}" ]; then echo -e "${sNewLine}" | suExecCommand tee -a "${sFile}"; fi
+	if [[ -f "${sFile}" ]]; then echo -e "${sNewLine}" | suExecCommand tee -a "${sFile}"; fi
 }
 insertLineBefore() {
 	local sRegex="${1:?}"
 	local sNewLine="${2:?}"
 	local sFile="${3:?}"
 	local sCommand="sed -ri \"/^([ ]*)(${sRegex})/i ${sNewLine}\" ${sFile}"
-	if [ -f "${sFile}" ]; then suExecCommand "${sCommand}"; fi		#sed -ri "s:^([ ]*)(${sRegex}):\\1${sNewLine}\n\\2:" "${sFile}"
+	if [[ -f "${sFile}" ]]; then suExecCommand "${sCommand}"; fi		#sed -ri "s:^([ ]*)(${sRegex}):\\1${sNewLine}\n\\2:" "${sFile}"
 }
 insertLineAfter() {
 	local sRegex="${1:?}"
 	local sNewLine="${2:?}"
 	local sFile="${3:?}"
 	local sCommand="sed -ri \"/^([ ]*)(${sRegex})/a ${sNewLine}\" ${sFile}"
-	if [ -f "${sFile}" ]; then suExecCommand ; fi
+	if [[ -f "${sFile}" ]]; then suExecCommand ; fi
 }
 setParameterInFile() {
 	# 2 cas de figures: 1/ le parametre est present et il faut le remplacer 2/ le parametre n'est pas présent, il sera ajouté à la fin
@@ -45,16 +45,16 @@ setParameterInFile() {
 	local sSetNewParam="$3"
 
 	for s in "|" "#" "/" ":" ";" "~"; do 
-		if [ "$(grep "${s}" <<< "${sFindText}")" = "" ]; then 			sSedDelim="$"; break; fi
+		if [[ "$(grep "${s}" <<< "${sFindText}")" = "" ]]; then 			sSedDelim="$"; break; fi
 	done
-	if [ "$(grep -i "${sSetNewParam}" "${sInputFile}")" = "" ]; then	bAlreadySet="false"
+	if [[ "$(grep -i "${sSetNewParam}" "${sInputFile}")" = "" ]]; then	bAlreadySet="false"
 	else																bAlreadySet="true"
 	fi
-	if [ "${bAlreadySet}" = "false" ]; then
-		if [ "$(grep -i "${sFindText}" "${sInputFile}")" = "" ]; then	bPresent="false"
+	if [[ "${bAlreadySet}" = "false" ]]; then
+		if [[ "$(grep -i "${sFindText}" "${sInputFile}")" = "" ]]; then	bPresent="false"
 		else															bPresent="true"
 		fi
-		if [ "${bPresent}" = "true" ]; then								sCmdArg="s${sSedDelim}.*${sFindText}.*${sSedDelim}${sSetNewParam}${sSedDelim}""g";	
+		if [[ "${bPresent}" = "true" ]]; then								sCmdArg="s${sSedDelim}.*${sFindText}.*${sSedDelim}${sSetNewParam}${sSedDelim}""g";	
 																		suExecCommand "sed -Ei_old \"${sCmdArg}\" \"${sInputFile}\"" # 'g' "${sInputFile}" # | tee "${sInputFile}" -
 		else 															suExecCommand "echo \"${sSetNewParam}\" | tee -a \"${sInputFile}\" -" #echo "${sSetNewParam}" | ${sPfxSu} tee -a "${sInputFile}" -
 		fi

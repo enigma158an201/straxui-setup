@@ -6,7 +6,7 @@ set -euo pipefail # set -euxo pipefail
 sEtcOsReleasePath=/etc/os-release
 
 checkIfDebianId() {
-	if [ -r "${sEtcOsReleasePath}" ]; then
+	if [[ -r "${sEtcOsReleasePath}" ]]; then
         sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
 		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
 		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then

@@ -3,30 +3,30 @@
 set -euo pipefail #; set -x
 
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 #source for getting ip addresses
 source "${sLaunchDir}/include/get-network-settings.sh"
 sSshDir="${HOME}/.ssh/"
 sPubAutKeysFile="${sSshDir}authorized_keys"
 
 set_ssh_nonroot_user_keys() {
-	if [ ! "${EUID}" = "0" ]; then		
+	if [[ ! "${EUID}" = "0" ]]; then		
 		sPrvIP4="$(getIpAddr4)"
 		sPubIP4="$(getWanIpAddr4)"
 		
 		(mkdir -p "${sSshDir}" && cd "${sSshDir}" || exit 1) || exit 1
 		sOutPrvKeyFilePath="${sSshDir}${HOSTNAME}_${USER}_$(date +%Y%m%d%H%M%S)"
 		sKeysAlreadySet=$(LANG=C find "${sSshDir}" -iwholename "*${HOSTNAME}_${USER}_*" | grep -v ".pub$" || echo "false")
-		if [ "${sKeysAlreadySet}" = "false" ] || [ "${sKeysAlreadySet}" = "" ]; then	# si pas de clé on crée une paire de clés ed25519
+		if [[ "${sKeysAlreadySet}" = "false" ]] || [[ "${sKeysAlreadySet}" = "" ]]; then	# si pas de clé on crée une paire de clés ed25519
 			sSshPrvKeyPath="${sOutPrvKeyFilePath}"
 			sSshPrvKeyName="$(basename "${sSshPrvKeyPath}")"
 			#read -rp "Générer une nouvelle paire de clés ssh (type ed25519)? o/N"  -n 1 genNewKeyPair
-			#if [ ! "${genNewKeyPair^^}" = "N" ] && [ ! "${genNewKeyPair}" = "" ]; then
+			#if [[ ! "${genNewKeyPair^^}" = "N" ]] && [[ ! "${genNewKeyPair}" = "" ]]; then
 				ssh-keygen -t ed25519 -f "${sSshPrvKeyPath}" -C "${sSshPrvKeyName}"
 			#fi
 		else
 			read -rp "Générer une nouvelle paire de clés ssh (type ed25519)? o/N"  -n 1 genNewKeyPair
-			if [ ! "${genNewKeyPair^^}" = "N" ] && [ ! "${genNewKeyPair}" = "" ]; then
+			if [[ ! "${genNewKeyPair^^}" = "N" ]] && [[ ! "${genNewKeyPair}" = "" ]]; then
 				bNewKey="true"
 				sSshPrvKeyPath="${sOutPrvKeyFilePath}"
 				sSshPrvKeyName="$(basename "${sSshPrvKeyPath}")"
@@ -36,7 +36,7 @@ set_ssh_nonroot_user_keys() {
 			fi
 			echo -e "\t"
 			read -rp "change passphrase ${sKeysAlreadySet} ? o/N"  -n 1 genNewKeyPass
-			if [ ! "${genNewKeyPass^^}" = "N" ] && [ ! "${genNewKeyPass}" = "" ]; then
+			if [[ ! "${genNewKeyPass^^}" = "N" ]] && [[ ! "${genNewKeyPass}" = "" ]]; then
 				bNewPass="true"
 				for keyAlreadySet in ${sKeysAlreadySet}; do
 					sSshPrvKeyPath="${keyAlreadySet}"
@@ -46,7 +46,7 @@ set_ssh_nonroot_user_keys() {
 			else
 				bNewPass="false"
 			fi
-			if [ "${bNewKey}" = "false" ] && [ "${bNewPass}" = "false" ]; then	sSshPrvKeyPath="${sKeysAlreadySet}"; fi
+			if [[ "${bNewKey}" = "false" ]] && [[ "${bNewPass}" = "false" ]]; then	sSshPrvKeyPath="${sKeysAlreadySet}"; fi
 			echo -e ""
 		fi
 		sKeysAlreadySet=$(LANG=C find "${sSshDir}" -iwholename "*${HOSTNAME}_${USER}_*" | grep -v ".pub$" || echo "false")
@@ -54,7 +54,7 @@ set_ssh_nonroot_user_keys() {
 			sSshPrvKeyName="$(basename "${keyAlreadySet}")"	# sSshPrvKeyPath
 			sSshPubKeyFilePath="${keyAlreadySet}.pub"		# sSshPrvKeyPath
 			#ssh-copy-id -p "${SSH_PORT}" -i "${sSshDir}/${outKeyFileName}.pub" "${USER}@localhost" # for remote key install
-			if [ ! -f "${sPubAutKeysFile}" ]; then touch "${sPubAutKeysFile}"; fi
+			if [[ ! -f "${sPubAutKeysFile}" ]]; then touch "${sPubAutKeysFile}"; fi
 			sSshPubKeyFileContent="$(cat "${sSshPubKeyFilePath}")" # 1>/dev/null)" #		echo "${sSshPubKeyFileContent}"
 			if (! grep "${sSshPubKeyFileContent}" "${sPubAutKeysFile}"); then echo -e "\n${sSshPubKeyFileContent}" | tee -a "${sPubAutKeysFile}"; fi
 		done

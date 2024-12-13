@@ -6,7 +6,7 @@ set -euo pipefail # set -euxo pipefail
 #https://www.ssh-audit.com/hardening_guides.html#debian_12
 
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
 #source "${sLaunchDir}/include/set-common-settings.sh"
 
@@ -71,7 +71,7 @@ updateSshdConfig() {
 		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\${sSshdConfigFileName}
 		sSshdConfigSrc=${sLaunchDir}\${sSshdConfigDst}
-		if [ -d \$(dirname \"\${sSshdConfigDst}\") ] && [ -f \"\${sSshdConfigSrc}\" ]; then
+		if [[ -d \$(dirname \"\${sSshdConfigDst}\") ]] && [[ -f \"\${sSshdConfigSrc}\" ]]; then
 			install -o root -g root -m 0744 -pv \${sSshdConfigSrc} \${sSshdConfigDst}
 		fi
 	done

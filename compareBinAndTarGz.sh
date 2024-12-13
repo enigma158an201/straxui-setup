@@ -4,7 +4,7 @@
 set -euo pipefail # set -euxo pipefail
 
 # Check if the correct number of arguments are provided
-if [ "$#" -ne 3 ]; then
+if [[ "$#" -ne 3 ]]; then
 	echo "Usage: $0 </path/to/binary_on_disk> </path/to/file.tar.gz> <binary_in_tar.gz>"
 	exit 1
 fi

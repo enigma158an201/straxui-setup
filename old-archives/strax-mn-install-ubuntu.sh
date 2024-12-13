@@ -3,7 +3,7 @@
 set -euo pipefail #set -x
 
 sLaunchDir="$(dirname "$0")"
-if [ "${sLaunchDir}" = "." ]; then sLaunchDir="$(pwd)"; elif [ "${sLaunchDir}" = "include" ]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"	
+if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"	
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
 #source "${sLaunchDir}/include/file-edition.sh"
 source "${sLaunchDir}/include/set-common-settings.sh"
@@ -29,7 +29,7 @@ setupDotNet() {
 		#suExecCommand curl -SL -o dotnet.tar.gz "https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 		sDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
-	if [ ! -f "${sTmpDotNetArchive}" ]; then /usr/bin/curl -SL -o "${sTmpDotNetArchive}" "${sDotNetArchUrl}"; fi
+	if [[ ! -f "${sTmpDotNetArchive}" ]]; then /usr/bin/curl -SL -o "${sTmpDotNetArchive}" "${sDotNetArchUrl}"; fi
 	echo -e "\t>>> extract then install dotnet archive"
 	suExecCommandNoPreserveEnv "mkdir -p \"${sTargetDotNetInstall}\"; \
 	tar -zxf \"${sTmpDotNetArchive}\" -C \"${sTargetDotNetInstall}\"; \
@@ -53,7 +53,7 @@ setupNode() {
 		sDotNetArchUrl="https://github.com/stratisproject/StratisFullNode/releases/download/1.1.1.1/Stratis.StraxD-linux-arm.zip"
 	fi
 	sTmpNodeArchive=/tmp/SNode.zip
-	if [ ! -f "${sTmpNodeArchive}" ]; then wget -O "${sTmpNodeArchive}" "${sDotNetArchUrl}"; fi
+	if [[ ! -f "${sTmpNodeArchive}" ]]; then wget -O "${sTmpNodeArchive}" "${sDotNetArchUrl}"; fi
 	echo -e "\t>>> extract then install node archive"
 	suExecCommandNoPreserveEnv "targetNodeInstall=\${HOME}/StraxNode/; \
 	unzip \"${sTmpNodeArchive}\" -d \"\${targetNodeInstall}\"; \

@@ -77,7 +77,7 @@ gitRepoLatestBinUrl() {
 		#echo -e "${sCrit}\t${sUrl}"; read -rp " "
 		sUrl="$(echo "${sUrl}" | grep "${sCrit}" || echo "false")"
 		read -rp " "
-		if [ "${sUrl}" = "false" ]; then sUrl="${sUrl#*\: }"; break; fi
+		if [[ "${sUrl}" = "false" ]]; then sUrl="${sUrl#*\: }"; break; fi
 	done
 	sUrl="${sUrl#*\: }"
 	sUrl="${sUrl%,*}"
@@ -103,7 +103,7 @@ preRequisitesInstall() {
 			if ! command -v curl 1>dev/null 2>&1; then 		sudo apt-get install curl; fi	#curl
 		fi		
 	fi
-	if [ -d "${HOME}/.config/gh" ] || ! gh auth status; then 	gh auth login; fi
+	if [[ -d "${HOME}/.config/gh" ]] || ! gh auth status; then 	gh auth login; fi
 }
 main() {
 	for sStratisFile in "${tStratisFile[@]}"; do #for sStratisUrl in "${tRepoUrl[@]}"; do
@@ -114,7 +114,7 @@ main() {
 						#for sStratisBin in "${tLocalBins[@]}"; do
 						#	#getLocalBinVersion "${sStratisBin}"
 						#	sBinUrl="$(gitRepoLatestBinUrl "${sGitRepoContent}" "${sStratisBin}")"
-						#	if [ ! "${sBinUrl}" = "false" ]; then break; fi
+						#	if [[ ! "${sBinUrl}" = "false" ]]; then break; fi
 						#done
 		sBinUrl="$(gitRepoLatestBinUrl "${sGitRepoContent}" "${tLocalBin["${sStratisFile}"]}")"
 		read -rp " "

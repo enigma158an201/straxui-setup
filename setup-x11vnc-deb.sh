@@ -9,7 +9,7 @@ sVncPasswd="${sVncConfDir}/passwd"
 sX11vncrc=${HOME}/.x11vncrc
 	
 checkIfDebianId() {
-	if [ -r "${sEtcOsReleasePath}" ]; then
+	if [[ -r "${sEtcOsReleasePath}" ]]; then
         sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
 		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
 		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then
