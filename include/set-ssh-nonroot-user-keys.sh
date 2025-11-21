@@ -58,7 +58,7 @@ set_ssh_nonroot_user_keys() {
 			sSshPubKeyFileContent="$(cat "${sSshPubKeyFilePath}")" # 1>/dev/null)" #		echo "${sSshPubKeyFileContent}"
 			if (! grep "${sSshPubKeyFileContent}" "${sPubAutKeysFile}"); then echo -e "\n${sSshPubKeyFileContent}" | tee -a "${sPubAutKeysFile}"; fi
 		done
-		echo -e "  >>> penser si usage d'alias, à:
+		echo -e "  --> penser si usage d'alias, à:
 		\t >> 1/ copier la clé privée uniquement ~/.ssh/${sSshPrvKeyName} sur le client de connexion distant
 		\t >> 2/ changer les permissions de la clé privée ~/.ssh/${sSshPrvKeyName} sur le client de connexion distant
 		\t\t > exemples de commandes: $ chown ${USER}:${USER} ~/.ssh/${sSshPrvKeyName}; chmod 0600 ~/.ssh/${sSshPrvKeyName}
@@ -69,7 +69,7 @@ set_ssh_nonroot_user_keys() {
 \t\tPort \${sSshPort}              #replace by router port if necessary or 22 by default
 \t\tUser ${USER}               #user for ssh host|server
 \t\tIdentityFile ~/.ssh/${sSshPrvKeyName}
-  >>> nota: possibilité de remplacer l'adresse IP ${sPubIP4} par ${sPrvIP4} si pas de connection WAN souhaitée ou par une autre adresse IP4 WAN, c'est-à-dire ne commencant par 
+  --> nota: possibilité de remplacer l'adresse IP ${sPubIP4} par ${sPrvIP4} si pas de connection WAN souhaitée ou par une autre adresse IP4 WAN, c'est-à-dire ne commencant par 
   \t 127.x.y.z	\t ni 10.x.y.z	\t ni 192.168.y.z	\t ni entre 172.16.0.0 et 172.31.255.255 )"
 	else
 		echo "par sécurité, pas de clé générée pour l'user système root, abandon de la création de clés"
@@ -78,7 +78,7 @@ set_ssh_nonroot_user_keys() {
 }
 
 main_set_ssh_keys() {
-	echo -e "\t>>> Ce script va tenter d'effectuer une configuration semi automatique pour cet hote ssh d'une paire de clés en procédant de la facon suivante
+	echo -e "\t--> Ce script va tenter d'effectuer une configuration semi automatique pour cet hote ssh d'une paire de clés en procédant de la facon suivante
 	\t>> 1. déterminer les IPv4 (LAN+WAN) et éventuelles IPv6
 	\t>> 2. vérifier l'eventuelle présence de clés existantes selon ce schéma de noms de fichiers: ${HOSTNAME}_${USER}_\*
 	\t>> 3. Créer une paire de clés ed25519 si pas de clé trouvée

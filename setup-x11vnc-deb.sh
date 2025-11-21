@@ -25,7 +25,7 @@ checkIfDebianId() {
 }
 
 installX11vncDeb() {
-	echo -e "\t>>> Install x11vnc terminal multiplexer for debian"
+	echo -e "\t--> Install x11vnc terminal multiplexer for debian"
 	sudo apt-get install -y x11vnc	
 }
 setupVncPassword() {
@@ -33,7 +33,7 @@ setupVncPassword() {
 }
 
 setupX11vncConf() {
-	echo -e "\t>>> setup x11vnc config at ${sX11vncrc}"
+	echo -e "\t--> setup x11vnc config at ${sX11vncrc}"
 	echo "# x11vnc configuration
 
 display :0	# Overides DISPLAY to use local framebuffer
@@ -48,7 +48,7 @@ nopw		# uncomment nopw ONLY if localhost uncommented
 }
 main() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: ${bIsDebian}"
+	echo -e "\t--> debian check: ${bIsDebian}"
 	if ${bIsDebian}; then
 		installX11vncDeb
 		setupX11vncConf

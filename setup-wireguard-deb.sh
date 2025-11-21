@@ -36,7 +36,7 @@ checkIfDebianId() {
 	fi
 }
 installWireguardDeb() {
-	echo -e "\t>>> Install wireguard for debian"
+	echo -e "\t--> Install wireguard for debian"
 	suExecCommand "apt-get install -y wireguard"	
 }
 setWgKeysName() {
@@ -47,7 +47,7 @@ setWgKeysName() {
 	export sClientPrvKey sClientPubKey sServerPubKey sServerPrvKey
 }
 setKeysWireguard() {
-	echo -e "\t>>> set private and pulic keys for wireguard"
+	echo -e "\t--> set private and pulic keys for wireguard"
 	if [[ "${1}" -eq "1" ]]; then
 		sPubKey=${sClientPubKey}
 		sPrvKey=${sClientPrvKey}
@@ -69,7 +69,7 @@ setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
 	sIp4FwdSrc="${sLaunchDir}${sIp4FwdDst}"
 	if [[ ! -f "${sIp4FwdDst}" ]] || [[ ! "$(sysctl net.ipv4.ip_forward)" = "net.ipv4.ip_forward = 1" ]]; then
-		echo -e "\t>>> proceed add enable ipv4 forward file to ${sIp4FwdDst} in /etc/sysctl.d/ "
+		echo -e "\t--> proceed add enable ipv4 forward file to ${sIp4FwdDst} in /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "${sIp4FwdDst}")\""
 		suExecCommand "install -o root -g root -m 0744 -pv ${sIp4FwdSrc} ${sIp4FwdDst}"
 	fi
@@ -79,7 +79,7 @@ setIp6ForwardSysctl() {
 	sIp6FwdDst="/etc/sysctl.d/99-enable-ip6-forward.conf"
 	sIp6FwdSrc="${sLaunchDir}${sIp6FwdDst}"
 	if [[ ! -f "${sIp6FwdDst}" ]] || [[ ! "$(sysctl net.ipv6.ip_forward)" = "net.ipv6.ip_forward = 1" ]]; then
-		echo -e "\t>>> proceed add enable ipv6 formward file to /etc/sysctl.d/ "
+		echo -e "\t--> proceed add enable ipv6 formward file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "${sIp6FwdDst}")\""
 		suExecCommand "install -o root -g root -m 0744 -pv ${sIp6FwdSrc} ${sIp6FwdDst}"
 	fi
@@ -87,9 +87,9 @@ setIp6ForwardSysctl() {
 }
 applyIpForwardParameters() {
 	if [[ ! "$(sysctl net.ipv4.ip_forward)" = "net.ipv4.ip_forward = 1" ]] || ( [[ ! "$(sysctl net.ipv6.ip_forward)" = "net.ipv6.ip_forward = 1" ]] && false ); then
-		echo -e "\t>>> proceed update kernel image(s) with ipv4 forward enabled, please wait (this may take a few minutes)"
+		echo -e "\t--> proceed update kernel image(s) with ipv4 forward enabled, please wait (this may take a few minutes)"
 		suExecCommand "update-initramfs -u -k all"
-		echo -e "\t>>> kernel need restart to finish ipv4|ipv6 forwarding, and try to reload sysctl files"
+		echo -e "\t--> kernel need restart to finish ipv4|ipv6 forwarding, and try to reload sysctl files"
 		suExecCommand "sysctl --system"
 	fi
 }
@@ -215,12 +215,12 @@ main_wireguard_client() {
 
 main_wireguard() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: ${bIsDebian}"
+	echo -e "\t--> debian check: ${bIsDebian}"
 	if ${bIsDebian}; then
 		installWireguardDeb
 	fi
 	#if false; then
-		echo -e "\t>>>please confirm if running machine has to be a wireguard client [1] (default choice) or wireguard server [2]"; read -rp "1/2" -n 1 iUserChoice
+		echo -e "\t-->please confirm if running machine has to be a wireguard client [1] (default choice) or wireguard server [2]"; read -rp "1/2" -n 1 iUserChoice
 		if [[ "${iUserChoice:-}" -eq "1" ]] || [[ "${iUserChoice:-}" -eq "" ]]; then 		bClient="true"
 		elif [[ "${iUserChoice:-}" -eq "2" ]]; then										bClient="false"
 		else 																			exit 1; fi

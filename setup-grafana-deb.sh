@@ -22,12 +22,12 @@ checkIfDebianId() {
 }
 
 installPrometheusDeb() {
-	echo -e "\t>>> Install prometheus for debian"
+	echo -e "\t--> Install prometheus for debian"
 	sudo apt-get install -y prometheus	
 }
 
 installGrafanaDeb() {
-	echo -e "\t>>> Install prometheus / Grafana (repositories for debian)"
+	echo -e "\t--> Install prometheus / Grafana (repositories for debian)"
 	#1. Install the prerequisite packages:
 	sudo apt-get install -y apt-transport-https software-properties-common wget
 	#2. Import the GPG key:
@@ -48,7 +48,7 @@ installGrafanaDeb() {
 }
 main_prometheus_grafana() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: ${bIsDebian}"
+	echo -e "\t--> debian check: ${bIsDebian}"
 	if ${bIsDebian}; then
 		installPrometheusDeb
 		installGrafanaDeb

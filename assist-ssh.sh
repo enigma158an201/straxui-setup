@@ -25,7 +25,7 @@ tabAssistedUser=( assist david guillaume sky )
 sLocalSessionType=${XDG_SESSION_TYPE,,}
 
 oldRemoteAssistedCommands() {
-	echo -e "\t>>>\$DISPLAY Value for assistant\n${DISPLAY}"
+	echo -e "\t-->\$DISPLAY Value for assistant\n${DISPLAY}"
 	ssh-keygen -t ed25519
 	#ssh-copy-id -i "${sEd25519PubKeyPath}" ${sLocalAssistantUser}@${sAssistantIp}
 	#ssh -L 5900:localhost:5900 user@brother_ip "x11vnc -display :0 -localhost -nopw"
@@ -60,7 +60,7 @@ getLocalDisplay() {
 }
 installTerminator() {
 	if command -v terminator &> /dev/null; then
-		echo -e "\t>>> terminator already installed, skipping $0 !!!"
+		echo -e "\t--> terminator already installed, skipping $0 !!!"
 	elif ! command -v terminator &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install terminator; fi
 	else
@@ -69,7 +69,7 @@ installTerminator() {
 }
 installOpensshServer() {
 	if command -v sshd &> /dev/null || [[ -x /usr/sbin/sshd ]]; then
-		echo -e "\t>>> openssh-server already installed, skipping $0 !!!"
+		echo -e "\t--> openssh-server already installed, skipping $0 !!!"
 	elif ! command -v sshd &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install openssh-server; fi
 	else
@@ -78,7 +78,7 @@ installOpensshServer() {
 }
 installX11vnc() {
 	if command -v x11vnc &> /dev/null; then
-		echo -e "\t>>> x11vnc already installed, skipping $0 !!!"
+		echo -e "\t--> x11vnc already installed, skipping $0 !!!"
 	elif ! command -v x11vnc &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install x11vnc; fi
 	else
@@ -87,7 +87,7 @@ installX11vnc() {
 }
 installWayvnc() { #wayvnc works only with wlroots based WM/DE
 	if command -v wayvnc &> /dev/null; then
-		echo -e "\t>>> wayvnc already installed, skipping $0 !!!"
+		echo -e "\t--> wayvnc already installed, skipping $0 !!!"
 	elif ! command -v wayvnc &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install wayvnc; fi
 	else
@@ -101,7 +101,7 @@ installWayvnc() { #wayvnc works only with wlroots based WM/DE
 }
 installWaypipe() {
 	if command -v waypipe &> /dev/null; then
-		echo -e "\t>>> waypipe already installed, skipping $0 !!!"
+		echo -e "\t--> waypipe already installed, skipping $0 !!!"
 	elif ! command -v waypipe &> /dev/null && command -v sudo &> /dev/null; then
 		if command -v apt-get &> /dev/null; then 	sudo apt-get install waypipe; fi
 	else
@@ -117,7 +117,7 @@ installShortcuts() {
 	done
 }
 localAssistantCommands() {
-	echo -e "\t>>> give remote user name, be careful to letter case !!!"
+	echo -e "\t--> give remote user name, be careful to letter case !!!"
 	read -rp " " sAssitedRemoteUser
 	ssh -p ${sAssistedRemoteSshPort} localhost -L ${sRemoteVncPort}:localhost:${sRemoteVncPort} "remmina -c vnc://${sAssitedRemoteUser}@localhost &" #"x11vnc -display :0 -localhost -nopw"
 }
@@ -130,28 +130,28 @@ remoteAssistedCommands() {
 		killall ${sVncSrvApp} || true
 	done
 	if [[ "${sLocalSessionType}" = "x11" ]]; then
-		echo -e "\t>>> x11 session detected, processsing with x11vnc"
+		echo -e "\t--> x11 session detected, processsing with x11vnc"
 		installX11vnc
 		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -noxdamage -notruecolor -speeds dsl -rfbportv6 -1 &
 		
 	elif [[ "${sLocalSessionType}" = "wayland" ]] && false; then #wayvnc works only with wlroots based WM/DE
-		echo -e "\t>>> wayland & wlroots based session detected, processsing with wayvnc"
+		echo -e "\t--> wayland & wlroots based session detected, processsing with wayvnc"
 		installWayvnc
 		wayvnc # to complete
 	elif [[ "${sLocalSessionType}" = "wayland" ]] && true; then
-		echo -e "\t>>> wayland & non wlroots based session detected, processsing with waypipe"
+		echo -e "\t--> wayland & non wlroots based session detected, processsing with waypipe"
 		installWaypipe
 		#waypipe ssh user@127.0.0.1 wayland
 	fi
 	sleep 2
-	echo -e "\t>>> Press Ctrl+C when this window is activated to exit connection"
-	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t>>> Success"; fi
+	echo -e "\t--> Press Ctrl+C when this window is activated to exit connection"
+	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t--> Success"; fi
 }
 selectUserAssistOrAssistedCommands() {
 	if [[ ! ${EUID} = 0 ]]; then
 		sLoggedUser=$(whoami)
 	else
-		echo -e "\t>>> Please don't use as root !!!" 
+		echo -e "\t--> Please don't use as root !!!" 
 		exit 1
 	fi
 	iAssisted=0
@@ -165,7 +165,7 @@ selectUserAssistOrAssistedCommands() {
 	done
 	if [[ ${iAssisted} -eq 0 ]]; then #! ${bAssisted}; then
 		if [[ "${sLoggedUser}" = "${sLocalAssistantUser}" ]]; then
-			echo -e "\t>>> Do you plan to Send (1) or Receive(2) screen? 1/2?"
+			echo -e "\t--> Do you plan to Send (1) or Receive(2) screen? 1/2?"
 			read -rp " " -n 1 iAnswer
 			if [[ "${iAnswer}" -eq "1" ]]; then
 				remoteAssistedCommands "${sLoggedUser}"

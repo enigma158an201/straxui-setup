@@ -88,18 +88,18 @@ isDebianLike="${isUbuntuLike}${isDebian}${isDeepin}"
 main_installStrax() {
 	# read -rp "Mettre à jour Strax o/N" -n 1 upgradeStratis
 	# if [[ ! "${upgradeStratis^^}" = "N" ]] && [[ ! "${upgradeStratis}" = "" ]]; then
-		echo -e "/t>>> install des paquets pré requis et ajust hostname before ssh configuration"
+		echo -e "/t--> install des paquets pré requis et ajust hostname before ssh configuration"
 		#apt-get update && apt-get install ipcalc ipv6calc dnsutils jq curl;
 		suExecCommandNoPreserveEnv "${sLaunchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \		
 		${sLaunchDir}/include/set-common-settings.sh" # suExecCommandNoPreserveEnv "${sLaunchDir}/include/set-hostname.sh"
-		echo -e "/t>>> create ssh keys pair"
+		echo -e "/t--> create ssh keys pair"
 		bash -c "${sLaunchDir}/include/set-ssh-nonroot-user-keys.sh" # remember never put -i here
 
 		if [[ ! "${isDebianLike}" = "" ]]; then
 			dlDir="/tmp/"
 			#sudo /usr/bin/apt-get install -y git jq curl
 			#libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2
-			echo -e "/t>>> check and/or install straxui deps"
+			echo -e "/t--> check and/or install straxui deps"
 			if [[ ! "${isBuster}" = "" ]]; then
 				#suExecCommandNoPreserveEnv "bash -v -c \"source ${sLaunchDir}/include/apt-pre-instal-pkg-ubuntu.sh; \
 				#tPkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
@@ -123,7 +123,7 @@ main_installStrax() {
 				sProjectLatestContentDeb="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[0] | .browser_download_url')"
 				sFileNameDeb="${dlDir}$(basename "${sProjectLatestContentDeb}")"
 				if [[ ! -f "${sFileNameDeb}" ]]; then wget -O "${sFileNameDeb}" "${sProjectLatestContentDeb}"; fi
-				echo -e "/t>>> check and/or install straxui .deb package"
+				echo -e "/t--> check and/or install straxui .deb package"
 				sDebVersion=$(dpkg-deb -I "${sFileNameDeb}" | grep -Ei "^ Version:")
 				sDebVersion="${sDebVersion##* }"
 				sDpkgVersion="$(dpkg-query -l straxui | grep ^ii | awk '{ print $3 }' || echo "false")"
@@ -154,7 +154,7 @@ main_installStrax() {
 				projectlatestcontentgz="$(curl -s https://api.github.com/repos/stratisproject/StraxUI/releases/latest | jq -r '.assets[1] | .browser_download_url')"
 				sFilenameGz="${dlDir}$(basename "${projectlatestcontentgz}")"
 				if [[ ! -f "${sFilenameGz}" ]]; then wget -O "${sFilenameGz}" "${projectlatestcontentgz}"; fi			
-				echo -e "/t>>> extract and install straxui .gz archive"
+				echo -e "/t--> extract and install straxui .gz archive"
 				#shellcheck disable=SC1083
 				suExecCommand "folderinsidetar=$(tar --exclude=\"*/*\" -tf \"\${sFilenameGz}\"); straxuidestfolder=/opt/straxui/; mkdir -p \${straxuidestfolder}; \ 
 				tar --strip-components=1 -C \"\${straxuidestfolder}" -xvzf "\${sFilenameGz}\" \"\${folderinsidetar}" # /opt/straxui

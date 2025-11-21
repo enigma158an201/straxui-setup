@@ -8,7 +8,7 @@ pruneDebianDefaultSoftware() {
   if test -f ${sPkgListFile}; then
     #shellcheck disable=SC2013
     for sPkg in $(grep -v ^# ${sPkgListFile}); do 
-      echo -e "\t>>> Removing ${sPkg} package"; sudo apt-get autoremove "${sPkg}"
+      echo -e "\t--> Removing ${sPkg} package"; sudo apt-get autoremove "${sPkg}"
     done
   fi
 }
@@ -16,7 +16,7 @@ pruneDebianDefaultSoftware() {
 pruneObsoletePkg() {
   sPkgObsolete="$(apt list ~o | tail -n +2)"
   if [[ -n "${sPkgObsolete}" ]]; then
-    echo -e "\t>>> the Following packages are not in your apt repositories, proceed to autoremove ?\n${sPkgObsolete}"
+    echo -e "\t--> the Following packages are not in your apt repositories, proceed to autoremove ?\n${sPkgObsolete}"
     read -rp "y/N" -n 1 sAutoremovePkg
     if [[ "${sAutoremovePkg^^}" = "Y" ]]; then apt-get autoremove --purge ~o; fi
   fi
@@ -24,7 +24,7 @@ pruneObsoletePkg() {
 pruneUndeletedConf() {
   sPkgUndeleted="$(apt list ~c | tail -n +2)"
   if [[ -n "${sPkgUndeleted}" ]]; then
-    echo -e "\t>>> the Following packages were not completely removed, proceed to autoremove remaining configs ?\n${sPkgUndeleted}"
+    echo -e "\t--> the Following packages were not completely removed, proceed to autoremove remaining configs ?\n${sPkgUndeleted}"
     read -rp "y/N" -n 1 sAutoremovePkg
     if [[ "${sAutoremovePkg^^}" = "Y" ]]; then apt-get autoremove --purge ~c; fi
   fi
@@ -35,7 +35,7 @@ pruneDpkg() {
   do
     for pkg1 in $(dpkg -l | grep ^ii | awk '{ print $2 }' | grep "${pkg3}" | grep -vE "${sExceptions}")
     do
-      echo -e "\t>>> suppression de ${pkg1}"
+      echo -e "\t--> suppression de ${pkg1}"
       apt-get autoremove "${pkg1}"
     done
   done
@@ -43,7 +43,7 @@ pruneDpkg() {
 pruneAptSearch() {
   for pkg2 in $(LANG=C apt search gnome | grep "${installedString}" | grep -v "^ " | awk '{ print $1 }' | grep -vE "${sExceptions}") # apt-get search not valid
   do
-    echo -e "\t>>> suppression de ${pkg2}"
+    echo -e "\t--> suppression de ${pkg2}"
     apt-get autoremove "${pkg2%%/*}"
   done
 }

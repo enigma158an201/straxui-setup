@@ -108,7 +108,7 @@ preRequisitesInstall() {
 main() {
 	for sStratisFile in "${tStratisFile[@]}"; do #for sStratisUrl in "${tRepoUrl[@]}"; do
 		sStratisUrl="${tRepoUrl["${sStratisFile}"]}"
-		echo -e "\t>>> waiting for answer ${sStratisUrl}, please wait..."
+		echo -e "\t--> waiting for answer ${sStratisUrl}, please wait..."
 		sGitRepoContent="$(gitRepoContent "${sStratisUrl}")"
 		sRepoVersion=$(gitRepoBinVersion "${sGitRepoContent}")
 						#for sStratisBin in "${tLocalBins[@]}"; do
@@ -124,9 +124,9 @@ main() {
 test() {
 	for sBinFileName in "${tStratisFile[@]}"; do
 		sOwnerAndRepo="${tStratisRepoOwnerAndName[${sBinFileName}]}"
-		echo -e "\t>>> Getting repo ${BBlue}${sOwnerAndRepo}${normal} releases for ${BBlue}${sBinFileName}${normal} binary, please wait!"
+		echo -e "\t--> Getting repo ${BBlue}${sOwnerAndRepo}${normal} releases for ${BBlue}${sBinFileName}${normal} binary, please wait!"
 		getGhRepoReleases "${sOwnerAndRepo}" #gitRepoBinVersion ""
-		if true; then 	dlGhReleaseTarball "${sOwnerAndRepo}" "${sBinFileName}"; fi #|| echo -e "\t>>> File Already downloaded"
+		if true; then 	dlGhReleaseTarball "${sOwnerAndRepo}" "${sBinFileName}"; fi #|| echo -e "\t--> File Already downloaded"
 	done
 }
 #preRequisitesInstall

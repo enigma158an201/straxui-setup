@@ -22,13 +22,13 @@ checkIfDebianId() {
 }
 
 installTmuxDeb() {
-	echo -e "\t>>> Install tmux terminal multiplexer for debian"
+	echo -e "\t--> Install tmux terminal multiplexer for debian"
 	sudo apt-get install -y tmux	
 }
 
 setupTmuxConf() {
 	sTmuxConf=${HOME}/.tmux.conf
-	echo -e "\t>>> setup tmux config at ${sTmuxConf}"
+	echo -e "\t--> setup tmux config at ${sTmuxConf}"
 	#3. To add a repository for stable releases, run the following command:
 	echo "# Permet de définir le shell utilisé par défaut
 set-option -g default-shell /usr/bin/bash
@@ -42,7 +42,7 @@ set -g mouse on" | tee "${sTmuxConf}"
 }
 main_tmux() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t>>> debian check: ${bIsDebian}"
+	echo -e "\t--> debian check: ${bIsDebian}"
 	if ${bIsDebian}; then
 		installTmuxDeb
 		setupTmuxConf

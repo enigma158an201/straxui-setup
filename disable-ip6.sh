@@ -6,7 +6,7 @@ sLaunchDir="$(dirname "$0")"
 if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
 source "${sLaunchDir}/include/file-edition.sh"
-echo -e "\t>>> proceed set-common-settings.sh"
+echo -e "\t--> proceed set-common-settings.sh"
 suExecCommand "bash -c \"${sLaunchDir}/include/set-common-settings.sh\""
 
 blacklist-ip6-kernel-modules() {
@@ -19,7 +19,7 @@ blacklist-ip6-kernel-modules-sysctl() {
 	sIp6BcklDst="/etc/sysctl.d/00-disable-ip6-R13.conf"
 	sIp6BcklSrc="${sLaunchDir}${sIp6BcklDst}"
 	if [[ ! -f "${sIp6BcklDst}" ]]; then
-		echo -e "\t>>> proceed add disable ipv6 file to /etc/sysctl.d/ "
+		echo -e "\t--> proceed add disable ipv6 file to /etc/sysctl.d/ "
 		suExecCommand "mkdir -p \"$(dirname "${sIp6BcklDst}")\""
 		suExecCommand "install -o root -g root -m 0744 -pv ${sIp6BcklSrc} ${sIp6BcklDst}"
 	fi
@@ -29,7 +29,7 @@ blacklist-ip6-kernel-modules-grub() {
 	bDisabledIpV6="$(grep ^GRUB_CMDLINE_LINUX= /etc/default/grub | grep ipv6.disable || echo "false")"
 	bDisabledDefaultIpV6="$(grep ^GRUB_CMDLINE_LINUX_DEFAULT= /etc/default/grub | grep ipv6.disable || echo "false")"
 	if [[ "${bDisabledIpV6}" = "false" ]] || [[ "${bDisabledDefaultIpV6}" = "false" ]]; then
-		echo -e "\t>>> proceed add disable ipv6 to grub kernel parameters"
+		echo -e "\t--> proceed add disable ipv6 to grub kernel parameters"
 		suExecCommandNoPreserveEnv "bash -x -c \"${sLaunchDir}/include/set-grub-kernel-parameter.sh\""
 	fi
 	unset bDisabled{,Default}IpV6
@@ -37,7 +37,7 @@ blacklist-ip6-kernel-modules-grub() {
 blacklist-ip6-NetworkManagement() {
 	#non persistant, but take effect immediately
 	if false; then
-		echo -e "\t>>> proceed set disable ipv6 to sysctl kernel parameters"
+		echo -e "\t--> proceed set disable ipv6 to sysctl kernel parameters"
 		suExecCommand "sysctl -w net.ipv6.conf.all.disable_ipv6=1; \
 		sysctl -w net.ipv6.conf.default.disable_ipv6=1; \
 		sysctl -w net.ipv6.conf.lo.disable_ipv6=1; \
@@ -46,7 +46,7 @@ blacklist-ip6-NetworkManagement() {
 
 	if (command -v nmcli &> /dev/null) && (systemctl status NetworkManager); then
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "${first}"
-		echo -e "\t>>> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
+		echo -e "\t--> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
 		suExecCommand "bash -c \"for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
 			nmcli connection modify \${ConnectionName} ipv6.method disabled || true ; 
@@ -66,7 +66,7 @@ disable-etc-hosts-ipv6() {
 disable-sshd-config-ipv6() {
 	sSshdDst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
 	sSshdSrc="${sLaunchDir}${sSshdDst}"
-	echo -e "\t>>> proceed set disable ipv6 to sshd_config" 
+	echo -e "\t--> proceed set disable ipv6 to sshd_config" 
 	suExecCommand "bash -c \"if [[ -d $(dirname ${sSshdDst}) ]] && [[ -f ${sSshdSrc} ]]; then 	install -o root -g root -m 0744 -pv ${sSshdSrc} ${sSshdDst}; fi; \
 	systemctl reload sshd.service\""
 	unset sSshdSrc{Dst,Src}
@@ -74,7 +74,7 @@ disable-sshd-config-ipv6() {
 disable-postfix-ipv6() {
 	# sPostfixSrc="${sLaunchDir}${sPostfixDst}" -> pas de install mais un sed
 	if command -v postfix &> /dev/null; then
-		echo -e "\t>>> proceed set disable ipv6 to postfix mail" 
+		echo -e "\t--> proceed set disable ipv6 to postfix mail" 
 		suExecCommand "bash -c \"sPostfixDst=/etc/postfix/main.cf;
 		if [[ -f \${sPostfixDst} ]]; then
 			if (grep -iE '^inet_interfaces = localhost' \${sPostfixDst}); then 		comment 'inet_interfaces = localhost' \${sPostfixDst}; fi;
@@ -85,14 +85,14 @@ disable-postfix-ipv6() {
 }
 disable-etc-ntp-ipv6() {
 	sNtpdDst="/etc/ntp.conf"
-	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then 	echo -e "\t>>> proceed set disable ipv6 to ntp (network time protocol)"
+	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then 	echo -e "\t--> proceed set disable ipv6 to ntp (network time protocol)"
 																				suExecCommand "comment \"restrict ::1\" ${sNtpdDst}"
 	fi
 	unset sNtpdDst
 }
 disable-etc-chrony-ipv6() {
 	sChronyDst="/etc/chrony.conf"
-	if [[ -f "${sChronyDst}" ]] && (grep -i "^OPTIONS=\"-4\"" "${sChronyDst}"); then 	echo -e "\t>>> proceed set disable ipv6 to chrony (network time protocol)"
+	if [[ -f "${sChronyDst}" ]] && (grep -i "^OPTIONS=\"-4\"" "${sChronyDst}"); then 	echo -e "\t--> proceed set disable ipv6 to chrony (network time protocol)"
 																					suExecCommand "appendLineAtEnd \"OPTIONS=\"-4\"\" ${sChronyDst}"
 	fi
 	unset sChronyDst
@@ -100,7 +100,7 @@ disable-etc-chrony-ipv6() {
 disable-etc-netconfig-ipv6() {
 	sNetConfigDst=/etc/netconfig;
 	if [[ -f "${sNetConfigDst}" ]]; then
-		echo -e "\t>>> proceed set disable ipv6 to netconfig file";
+		echo -e "\t--> proceed set disable ipv6 to netconfig file";
 		suExecCommand "source ${sLaunchDir}/include/file-edition.sh;		
 		if (grep -i ^udp6 ${sNetConfigDst}); then 	comment udp6 ${sNetConfigDst}; fi;
 		if (grep -i ^tcp6 ${sNetConfigDst}); then 	comment tcp6 ${sNetConfigDst}; fi"
@@ -110,7 +110,7 @@ disable-etc-netconfig-ipv6() {
 disable-etc-dhcpcdconf-ipv6() {
 	sDhcpcdConfigDst=/etc/dhcpcd.conf;
 	if [[ -f "${sDhcpcdConfigDst}" ]]; then
-		echo -e "\t>>> proceed set disable ipv6 to netconfig file"
+		echo -e "\t--> proceed set disable ipv6 to netconfig file"
 		suExecCommand "source ${sLaunchDir}/include/file-edition.sh;
 		if (grep -i ^noipv6rs ${sDhcpcdConfigDst}); then 		appendLineAtEnd \"noipv6rs\" ${sDhcpcdConfigDst}; fi;
 		if (grep -i ^noipv6 ${sDhcpcdConfigDst}); then 			appendLineAtEnd \"noipv6\" ${sDhcpcdConfigDst}; fi"
@@ -122,7 +122,7 @@ disable-ipv6-cron-task() {
 	sCronIp6JobDst="/usr/local/bin/${scriptFilename}"
 	sCronIp6JobSrc="${sLaunchDir}/${scriptFilename}"
 	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
-	echo -e "\t>>> proceed set install crontab job"
+	echo -e "\t--> proceed set install crontab job"
 	suExecCommand "install -o root -g root -m 0755 -pv ${sCronIp6JobSrc} ${sCronIp6JobDst}; \
 	(crontab -l 2>/dev/null; echo \"0 * * * * root ${sCronIp6JobDst}\") | crontab -"
 	unset sCronIp6Job{Src,Dst}

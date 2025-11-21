@@ -36,7 +36,7 @@ getNewHostname() {
 }
 updateHostname() {
 	if [[ ! "${sOldHostname}" = "${sNewHostname}" ]]; then
-		echo -e "\t>>> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sSystemdHostnameFile}"
+		echo -e "\t--> le nom de la machine ne correspond à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sSystemdHostnameFile}"
 		if [[ -w "${sSystemdHostnameFile}" ]]; then		
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sSystemdHostnameFile}"
 		elif [[ -r "${sSystemdHostnameFile}" ]]; then
@@ -48,7 +48,7 @@ updateHostname() {
 }
 updateHosts() {
 	if (grep -w "${sOldHostname}" "${sHostsFile}" && ! grep -w "${sNewHostname}" "${sHostsFile}" ); then
-		echo -e "\t>>> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sHostsFile}"
+		echo -e "\t--> le nom de la machine ne correspond pas à celui determiné par le script, tentative de remplacement du nom ${sOldHostname} par ${sNewHostname} dans le fichier ${sHostsFile}"
 		if [[ -w "${sHostsFile}" ]]; then
 			echo "-w"
 			sed -i.old s/"${sOldHostname}"/"${sNewHostname}"/g "${sHostsFile}"

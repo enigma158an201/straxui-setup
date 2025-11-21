@@ -30,7 +30,7 @@ setupDotNet() {
 		sDotNetArchUrl="https://dotnetcli.blob.core.windows.net/dotnet/Sdk/master/dotnet-sdk-latest-linux-arm.tar.gz"
 	fi
 	if [[ ! -f "${sTmpDotNetArchive}" ]]; then /usr/bin/curl -SL -o "${sTmpDotNetArchive}" "${sDotNetArchUrl}"; fi
-	echo -e "\t>>> extract then install dotnet archive"
+	echo -e "\t--> extract then install dotnet archive"
 	suExecCommandNoPreserveEnv "mkdir -p \"${sTargetDotNetInstall}\"; \
 	tar -zxf \"${sTmpDotNetArchive}\" -C \"${sTargetDotNetInstall}\"; \
 	ln -sfv \"${sTargetDotNetInstall}/dotnet\" /usr/bin/dotnet"
@@ -54,7 +54,7 @@ setupNode() {
 	fi
 	sTmpNodeArchive=/tmp/SNode.zip
 	if [[ ! -f "${sTmpNodeArchive}" ]]; then wget -O "${sTmpNodeArchive}" "${sDotNetArchUrl}"; fi
-	echo -e "\t>>> extract then install node archive"
+	echo -e "\t--> extract then install node archive"
 	suExecCommandNoPreserveEnv "targetNodeInstall=\${HOME}/StraxNode/; \
 	unzip \"${sTmpNodeArchive}\" -d \"\${targetNodeInstall}\"; \
 	screen dotnet \"\${targetNodeInstall}/Stratis.StraxD.dll\" run -mainnet
@@ -69,7 +69,7 @@ setupWalletCli() {
 	sTargetWalletCliInstall=${HOME}/StraxCLI/
 	sUrlWalletCli="https://github.com/stratisproject/StraxCLI/archive/refs/tags/StraxCLI-1.0.0.zip"
 	sNameFile=$(basename "${sUrlWalletCli}" .zip)
-	echo -e "\t>>> extract then install wallet cli archive"
+	echo -e "\t--> extract then install wallet cli archive"
 	suExecCommand "wget -O ${sTmpWalletCliArchive} ${sUrlWalletCli};
 	unzip ${sTmpWalletCliArchive} -d ${sTargetWalletCliInstall};
 	python3 ${sTargetWalletCliInstall}/StraxCLI-${sNameFile}/straxcli.py"
@@ -84,7 +84,7 @@ setupSecurityConsiderations() {
 	sIpAddr6=$(getIpAddr6)
 	sNetAddr6="$(getNetworkAddress 6 "${sIpAddr6}")"
 	if false; then
-		echo -e "\t>>> install then set ufw firewall"
+		echo -e "\t--> install then set ufw firewall"
 		suExecCommand "apt-get -y install ufw;
 		ufw enable;
 		ufw allow from ${sNetAddr4}/24 to any port 22
@@ -92,7 +92,7 @@ setupSecurityConsiderations() {
 	fi
 }
 main_mn() {
-	echo -e "\t>>> install needed deps packages for script usage"
+	echo -e "\t--> install needed deps packages for script usage"
 	suExecCommand "source ${sLaunchDir}/include/apt-pre-instal-pkg-ubuntu.sh; aptPreinstallPkg; aptUnbloatPkg"
 	setupDotNet
 	setupNode

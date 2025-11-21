@@ -28,21 +28,21 @@ sSshLocalAuthKeys=${HOME}/${sSshAuthKeys}
 
 installSshAlias() {
 	#sLoggedUser=$(whoami)
-	echo -e "\t>>> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
+	echo -e "\t--> setup ssh alias config at ${sSshLocalAliasConfig}{,.d/}"
 	mkdir -p "${sSshLocalAliasConfigd}"
 	install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfig}" "${sSshLocalAliasConfig}"
 	for sAliasConfigSrc in "${sSshRepoAliasConfigd}"/*; do 
 		#install -o "${USER}" -g "${USER}" -pv -m 0644 "${sSshRepoAliasConfigd}/${sAliasConfigSrc}" "${sSshLocalAliasConfigd}/${sAliasConfigSrc}"
 		sAliasConfigDst="${sAliasConfigSrc/${sSshRepoSource}/${HOME}}"
 		#if [[ ${sAliasConfigDst} =~ ${sLoggedUser} ]]; then
-			echo -e "\t>>> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
+			echo -e "\t--> proceed file ${sAliasConfigSrc} to ${sAliasConfigDst}"
 			install -o "${USER}" -g "${USER}" -pv -m 0644 "${sAliasConfigSrc}" "${sAliasConfigDst}"
 		#fi
 	done
 }
 installSshKeys() {
-	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"
-	echo -e "\t>>> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
+	echo -e "\t--> setup ssh keys at ${sSshLocalConf}"
+	echo -e "\t--> checking ssh authorized_keys keys at ${sSshLocalAuthKeys}"
 	if ! test -e "${sSshLocalAuthKeys}"; then 	touch "${sSshLocalAuthKeys}"; fi
 	install -o "${USER}" -g "${USER}" -pv truc machin
 	for sAliasPubKey in "${sSshRepoConf}"/*.pub; do 
@@ -51,7 +51,7 @@ installSshKeys() {
 	done
 }
 importSshKeys() {
-	echo -e "\t>>> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
+	echo -e "\t--> setup ssh keys at ${sSshLocalConf}"	#ssh-copy-id -i debian_server.pub pragmalin@debianvm
 	#for sSshPubKey in "${sSshRepoConf}"/*.pub; do
 		for sSshAlias in SKY41 testsalonk wtestsalonk #freebox-delta-wan
 		do
@@ -61,7 +61,7 @@ importSshKeys() {
 	#done
 }
 updateSshdConfig() {
-	echo -e "\t>>> application des fichiers config sshd"
+	echo -e "\t--> application des fichiers config sshd"
 	declare -a sConfList
 	#sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
 	#sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") )

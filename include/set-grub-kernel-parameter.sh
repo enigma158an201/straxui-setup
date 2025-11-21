@@ -41,7 +41,7 @@ setPasswordGrub() {
 	sGrubDir=$(dirname ${sGrubUsersDst})
 	mkdir -p "${sGrubDir}" && chmod -R 0700 "${sGrubDir}"
 	if [[ ! -f ${sGrubUsersDst} ]]; then
-		echo -e "\t>>> proceed add grub password ${sGrubUsersDst}"
+		echo -e "\t--> proceed add grub password ${sGrubUsersDst}"
 		#suExecCommand "mkdir -p \"$(dirname "${sGrubUsersDst}")\""
 		install -o root -g root -m 0700 -pv "${sGrubUsersSrc}" "${sGrubUsersDst}"
 		if command -v grub-mkpasswd-pbkdf2 &> /dev/null; then 		grub-mkpasswd-pbkdf2
