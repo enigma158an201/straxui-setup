@@ -85,15 +85,15 @@ disable-postfix-ipv6() {
 }
 disable-etc-ntp-ipv6() {
 	sNtpdDst="/etc/ntp.conf"
-	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then 	echo -e "\t--> proceed set disable ipv6 to ntp (network time protocol)"
-																				suExecCommand "comment \"restrict ::1\" ${sNtpdDst}"
+	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then 			echo -e "\t--> proceed set disable ipv6 to ntp (network time protocol)"
+																						suExecCommand "comment \"restrict ::1\" ${sNtpdDst}"
 	fi
 	unset sNtpdDst
 }
 disable-etc-chrony-ipv6() {
 	sChronyDst="/etc/chrony.conf"
 	if [[ -f "${sChronyDst}" ]] && (grep -i "^OPTIONS=\"-4\"" "${sChronyDst}"); then 	echo -e "\t--> proceed set disable ipv6 to chrony (network time protocol)"
-																					suExecCommand "appendLineAtEnd \"OPTIONS=\"-4\"\" ${sChronyDst}"
+																						suExecCommand "appendLineAtEnd \"OPTIONS=\"-4\"\" ${sChronyDst}"
 	fi
 	unset sChronyDst
 }

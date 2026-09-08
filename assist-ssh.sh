@@ -54,44 +54,29 @@ oldCreateUser() {
 		fi
 	fi
 }
-getLocalDisplay() {
-	if [[ ! "${DISPLAY:-}" = "" ]]; then 	echo "${DISPLAY}"
-	else 								echo "empty"; fi
-}
+getLocalDisplay() { if [[ ! "${DISPLAY:-}" = "" ]]; then echo "${DISPLAY}"; else echo "empty"; fi; }
 installTerminator() {
-	if command -v terminator &> /dev/null; then
-		echo -e "\t--> terminator already installed, skipping $0 !!!"
-	elif ! command -v terminator &> /dev/null && command -v sudo &> /dev/null; then
-		if command -v apt-get &> /dev/null; then 	sudo apt-get install terminator; fi
-	else
-		exit 1
+	if command -v terminator &> /dev/null; then 										echo -e "\t--> terminator already installed, skipping $0 !!!"
+	elif ! command -v terminator &> /dev/null && command -v sudo &> /dev/null; then 	if command -v apt-get &> /dev/null; then 	sudo apt-get install terminator; fi
+	else 																				exit 1
 	fi
 }
 installOpensshServer() {
-	if command -v sshd &> /dev/null || [[ -x /usr/sbin/sshd ]]; then
-		echo -e "\t--> openssh-server already installed, skipping $0 !!!"
-	elif ! command -v sshd &> /dev/null && command -v sudo &> /dev/null; then
-		if command -v apt-get &> /dev/null; then 	sudo apt-get install openssh-server; fi
-	else
-		exit 1
+	if command -v sshd &> /dev/null || [[ -x /usr/sbin/sshd ]]; then 					echo -e "\t--> openssh-server already installed, skipping $0 !!!"
+	elif ! command -v sshd &> /dev/null && command -v sudo &> /dev/null; then			if command -v apt-get &> /dev/null; then 	sudo apt-get install openssh-server; fi
+	else 																				exit 1
 	fi
 }
 installX11vnc() {
-	if command -v x11vnc &> /dev/null; then
-		echo -e "\t--> x11vnc already installed, skipping $0 !!!"
-	elif ! command -v x11vnc &> /dev/null && command -v sudo &> /dev/null; then
-		if command -v apt-get &> /dev/null; then 	sudo apt-get install x11vnc; fi
-	else
-		exit 1
+	if command -v x11vnc &> /dev/null; then 											echo -e "\t--> x11vnc already installed, skipping $0 !!!"
+	elif ! command -v x11vnc &> /dev/null && command -v sudo &> /dev/null; then 		if command -v apt-get &> /dev/null; then 	sudo apt-get install x11vnc; fi
+	else 																				exit 1
 	fi
 }
 installWayvnc() { #wayvnc works only with wlroots based WM/DE
-	if command -v wayvnc &> /dev/null; then
-		echo -e "\t--> wayvnc already installed, skipping $0 !!!"
-	elif ! command -v wayvnc &> /dev/null && command -v sudo &> /dev/null; then
-		if command -v apt-get &> /dev/null; then 	sudo apt-get install wayvnc; fi
-	else
-		exit 1
+	if command -v wayvnc &> /dev/null; then 											echo -e "\t--> wayvnc already installed, skipping $0 !!!"
+	elif ! command -v wayvnc &> /dev/null && command -v sudo &> /dev/null; then 		if command -v apt-get &> /dev/null; then 	sudo apt-get install wayvnc; fi
+	else 																				exit 1
 	fi
 	sWayvncConf=${HOME}/.config/wayvnc/config
 	if [[ ! -e "${sWayvncConf}" ]]; then
@@ -100,12 +85,9 @@ installWayvnc() { #wayvnc works only with wlroots based WM/DE
 	fi
 }
 installWaypipe() {
-	if command -v waypipe &> /dev/null; then
-		echo -e "\t--> waypipe already installed, skipping $0 !!!"
-	elif ! command -v waypipe &> /dev/null && command -v sudo &> /dev/null; then
-		if command -v apt-get &> /dev/null; then 	sudo apt-get install waypipe; fi
-	else
-		exit 1
+	if command -v waypipe &> /dev/null; then 											echo -e "\t--> waypipe already installed, skipping $0 !!!"
+	elif ! command -v waypipe &> /dev/null && command -v sudo &> /dev/null; then 		if command -v apt-get &> /dev/null; then 	sudo apt-get install waypipe; fi
+	else 																				exit 1
 	fi
 }
 installShortcuts() {
@@ -126,21 +108,13 @@ remoteAssistedCommands() {
 	installTerminator
 	installOpensshServer
 	installShortcuts
-	for sVncSrvApp in x11vnc wayvnc waypipe; do
-		killall ${sVncSrvApp} || true
-	done
+	for sVncSrvApp in x11vnc wayvnc waypipe; do killall ${sVncSrvApp} || true; done
 	if [[ "${sLocalSessionType}" = "x11" ]]; then
-		echo -e "\t--> x11 session detected, processsing with x11vnc"
-		installX11vnc
-		x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -noxdamage -notruecolor -speeds dsl -rfbportv6 -1 &
-		
+		echo -e "\t--> x11 session detected, processsing with x11vnc" && installX11vnc && x11vnc -ncache 10 -display "${sLocalDisplay}" -localhost -nopw -forever -nodpms -noxdamage -notruecolor -speeds dsl -rfbportv6 -1 &
 	elif [[ "${sLocalSessionType}" = "wayland" ]] && false; then #wayvnc works only with wlroots based WM/DE
-		echo -e "\t--> wayland & wlroots based session detected, processsing with wayvnc"
-		installWayvnc
-		wayvnc # to complete
+		echo -e "\t--> wayland & wlroots based session detected, processsing with wayvnc" && installWayvnc && wayvnc # to complete
 	elif [[ "${sLocalSessionType}" = "wayland" ]] && true; then
-		echo -e "\t--> wayland & non wlroots based session detected, processsing with waypipe"
-		installWaypipe
+		echo -e "\t--> wayland & non wlroots based session detected, processsing with waypipe" && installWaypipe
 		#waypipe ssh user@127.0.0.1 wayland
 	fi
 	sleep 2
@@ -148,35 +122,24 @@ remoteAssistedCommands() {
 	if ssh -p ${sTunnelSshPort} -NR "${sRemoteVncPort}:localhost:${sRemoteVncPort}" "${sLocalAssistedUser}@${sAssistantIp}"; then echo -e "\t--> Success"; fi
 }
 selectUserAssistOrAssistedCommands() {
-	if [[ ! ${EUID} = 0 ]]; then
-		sLoggedUser=$(whoami)
-	else
-		echo -e "\t--> Please don't use as root !!!" 
-		exit 1
+	if [[ ! ${EUID} = 0 ]]; then 	sLoggedUser=$(whoami)
+	else 							echo -e "\t--> Please don't use as root !!!" ; exit 1
 	fi
 	iAssisted=0
 	for sAssistedUser in "${tabAssistedUser[@]}"; do
-		if [[ "${sLoggedUser}" = "${sAssistedUser}" ]]; then
-			remoteAssistedCommands "${sLoggedUser}"
-			iAssisted=$(( iAssisted + 1 )) # bAssisted=true
-		#else 
-			#bAssisted=$(${bAssisted:-} || echo "false")
+		if [[ "${sLoggedUser}" = "${sAssistedUser}" ]]; then 	remoteAssistedCommands "${sLoggedUser}" && 	iAssisted=$(( iAssisted + 1 )) # bAssisted=true
+		#else 													bAssisted=$(${bAssisted:-} || echo "false")
 		fi
 	done
 	if [[ ${iAssisted} -eq 0 ]]; then #! ${bAssisted}; then
 		if [[ "${sLoggedUser}" = "${sLocalAssistantUser}" ]]; then
 			echo -e "\t--> Do you plan to Send (1) or Receive(2) screen? 1/2?"
 			read -rp " " -n 1 iAnswer
-			if [[ "${iAnswer}" -eq "1" ]]; then
-				remoteAssistedCommands "${sLoggedUser}"
-			elif [[ "${iAnswer}" -eq 2 ]]; then
-				localAssistantCommands "${sAssistedUser}" #sLocalAssistantUser
+			if [[ "${iAnswer}" -eq "1" ]]; then 	remoteAssistedCommands "${sLoggedUser}"
+			elif [[ "${iAnswer}" -eq 2 ]]; then 	localAssistantCommands "${sAssistedUser}" #sLocalAssistantUser
 			fi
 		fi
 	fi
 }
 sLocalDisplay=$(getLocalDisplay) #${DISPLAY}
-main() {
-	selectUserAssistOrAssistedCommands
-}
-main
+selectUserAssistOrAssistedCommands

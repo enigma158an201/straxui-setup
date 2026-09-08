@@ -14,7 +14,7 @@ main_disable_sleep() {
 		#read -rp "${sleepLine}"
 		uncomment			"${sLineWithoutVal}"	"${sSleepconfDir}"
 		lineNo="${sLineWithoutVal}no"
-		setParameterInFile "${sSleepconfDir}"	"${sLineWithoutVal}"		"${lineNo}"
+		setParameterInFile "${sSleepconfDir}"		"${sLineWithoutVal}"		"${lineNo}"
 	done
 	systemctl daemon-reload
 }

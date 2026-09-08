@@ -45,7 +45,7 @@ setParameterInFile() {
 	local sSetNewParam="$3"
 
 	for s in "|" "#" "/" ":" ";" "~"; do 
-		if [[ "$(grep "${s}" <<< "${sFindText}")" = "" ]]; then 			sSedDelim="$"; break; fi
+		if [[ "$(grep "${s}" <<< "${sFindText}")" = "" ]]; then 		sSedDelim="$"; break; fi
 	done
 	if [[ "$(grep -i "${sSetNewParam}" "${sInputFile}")" = "" ]]; then	bAlreadySet="false"
 	else																bAlreadySet="true"
@@ -54,14 +54,10 @@ setParameterInFile() {
 		if [[ "$(grep -i "${sFindText}" "${sInputFile}")" = "" ]]; then	bPresent="false"
 		else															bPresent="true"
 		fi
-		if [[ "${bPresent}" = "true" ]]; then								sCmdArg="s${sSedDelim}.*${sFindText}.*${sSedDelim}${sSetNewParam}${sSedDelim}""g";	
+		if [[ "${bPresent}" = "true" ]]; then							sCmdArg="s${sSedDelim}.*${sFindText}.*${sSedDelim}${sSetNewParam}${sSedDelim}""g";	
 																		suExecCommand "sed -Ei_old \"${sCmdArg}\" \"${sInputFile}\"" # 'g' "${sInputFile}" # | tee "${sInputFile}" -
 		else 															suExecCommand "echo \"${sSetNewParam}\" | tee -a \"${sInputFile}\" -" #echo "${sSetNewParam}" | ${sPfxSu} tee -a "${sInputFile}" -
 		fi
 	fi
 }
-addCronJob() {
- 	if true; then
- 	 	echo "" > /etc/cron.hourly/
- 	fi
-}
+addCronJob() { if true; then echo "" > /etc/cron.hourly/; fi; }

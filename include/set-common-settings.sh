@@ -14,9 +14,7 @@ sshd-config-settings() {
 	for sSshdConfigFile in "${sLaunchDir}"/etc/sshd_config.d/*.conf; do
 		sSshdConfigDst="/etc/ssh/sshd_config.d/${sSshdConfigFile}"
 		sSshdConfigSrc="${sLaunchDir}${sSshdConfigDst}"
-		if [[ -d "$(dirname "${sSshdConfigDst}")" ]] && [[ -f "${sSshdConfigSrc}" ]]; then 
-			install -o root -g root -m 0744 -pv "${sSshdConfigSrc}" "${sSshdConfigDst}"
-		fi
+		if [[ -d "$(dirname "${sSshdConfigDst}")" ]] && [[ -f "${sSshdConfigSrc}" ]]; then install -o root -g root -m 0744 -pv "${sSshdConfigSrc}" "${sSshdConfigDst}"; fi
 	done
 	systemctl restart sshd.service
 }
@@ -37,8 +35,8 @@ disable-systemd-sleep() {
 disable-wireless-connections() {
 	echo -e "\t--> désactivation des connexions wireless"
 	if systemctl status wpa_supplicant.service 1>/dev/null; then 	systemctl disable --now wpa_supplicant.service; fi
-	if command -v nmcli &> /dev/null; then 					nmcli radio wifi off; fi
-	if command -v rfkill &> /dev/null; then 					rfkill block wlan bluetooth; fi
+	if command -v nmcli &> /dev/null; then 							nmcli radio wifi off; fi
+	if command -v rfkill &> /dev/null; then 						rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	echo -e "\t--> désactivation cups (impression)"
@@ -47,27 +45,18 @@ disable-cups-services() {
 		systemctl disable --now cups.service
 	fi
 }
-cronjob-disable-ipv6() {
-	echo -e "\t--> création du job cron en cas de reactivation ipV6"
-	if systemctl status cron.service &> /dev/null; then systemctl enable --now cron.service; fi
-}
-set-newhostname() {
-	echo -e "\t--> renommage de la machine suivant schéma modèle+distro"
-	bash -c "${sLaunchDir}/include/set-hostname.sh"
-}
+cronjob-disable-ipv6() { echo -e "\t--> création du job cron en cas de reactivation ipV6" && if systemctl status cron.service &> /dev/null; then systemctl enable --now cron.service; fi; }
+set-newhostname() { echo -e "\t--> renommage de la machine suivant schéma modèle+distro" && bash -c "${sLaunchDir}/include/set-hostname.sh"; }
 main_common() {
 	#source "${sLaunchDir}/include/test-superuser-privileges.sh"
 	whoami
 	#set-newhostnam || true		# set new host name has to be done before sshd config
 	echo -e "\t--> initialisation des paramètres du serveur ssh"
-	if command -v sshd &> /dev/null; then 											sshd-config-settings; fi
+	if command -v sshd &> /dev/null; then 													sshd-config-settings; fi
 	read -rp "Désactiver les connections wifi et bluetooth? o/N"  -n 1 sDisableWireless
 	if [[ ! "${sDisableWireless^^}" = "N" ]] && [[ ! "${sDisableWireless}" = "" ]]; then 	disable-wireless-connections; fi
-	echo -e "\t--> désactivation de cups"
-	disable-cups-services
-	echo -e "\t--> désactivation de systemd-sleep"
-	disable-systemd-sleep
-	echo -e "\t--> désactivation de ipv6"
-	cronjob-disable-ipv6
+	echo -e "\t--> désactivation de cups" && 			disable-cups-services
+	echo -e "\t--> désactivation de systemd-sleep" && 	disable-systemd-sleep
+	echo -e "\t--> désactivation de ipv6" && 			cronjob-disable-ipv6
 }
 main_common

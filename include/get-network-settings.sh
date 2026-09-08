@@ -6,16 +6,13 @@ export iSshPort
 getNetworkManagement() {
 	sNetPlanDst="/etc/netplan/"
 	if [[ -d "${sNetPlanDst}" ]]; then
-		for sFile in "${sNetPlanDst}"*; do
-			sNetworkRenderer="$(grep -i 'renderer' "${sFile}")"
-			echo -e "${sNetworkRenderer##* }\n" #echo "${A##* }"
-		done
+		for sFile in "${sNetPlanDst}"*; do sNetworkRenderer="$(grep -i 'renderer' "${sFile}")" && echo -e "${sNetworkRenderer##* }\n"; done #echo "${A##* }"
 	fi
 	unset sNetPlanDst
 }
 checkEnabledIpv6() {
 	iIp6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
-	if [[ "${iIp6Disabled}" -eq "0" ]]; then			echo "true"
+	if [[ "${iIp6Disabled}" -eq "0" ]]; then		echo "true"
 	elif [[ "${iIp6Disabled}" -eq "1" ]]; then		echo "false"
 	fi
 }
@@ -25,39 +22,24 @@ export bIp6Enabled
 getFirstAddressIpRoute() {
 	if [[ "$1" = "4" ]] || [[ "$1" = "-4" ]] || [[ "$1" = "v4" ]] || [[ "$1" = "-v4" ]]; then	sTxt="."
 	elif [[ "$1" = "6" ]] || [[ "$1" = "-6" ]] || [[ "$1" = "v6" ]] || [[ "$1" = "-v6" ]]; then sTxt=":"
-	else 																				exit 1
+	else 																						exit 1
 	fi
-	for sWord in $2; do
-		if [[ ${sWord} =~ ${sTxt} ]]; then 
-			echo "${sWord}"
-			break
-		fi
-	done
+	for sWord in $2; do if [[ ${sWord} =~ ${sTxt} ]]; then echo "${sWord}"; break; fi; done
 }
 getFirstAddressIpAddr() {
 	if [[ "$1" = "4" ]] || [[ "$1" = "-4" ]] || [[ "$1" = "v4" ]] || [[ "$1" = "-v4" ]]; then	sTxt="."
 	elif [[ "$1" = "6" ]] || [[ "$1" = "-6" ]] || [[ "$1" = "v6" ]] || [[ "$1" = "-v6" ]]; then sTxt=":"
-	else 																				exit 1
+	else 																						exit 1
 	fi
-	for sWord in $2; do
-		if [[ ${sWord} =~ ${sTxt}+[0-9a-fA-F] ]]; then 
-			echo "${sWord}"
-			break
-		fi
-	done
+	for sWord in $2; do if [[ ${sWord} =~ ${sTxt}+[0-9a-fA-F] ]]; then echo "${sWord}"; break; fi; done
 }
 getNetworkAddress() {
 	if [[ "$1" = "4" ]] || [[ "$1" = "-4" ]] || [[ "$1" = "v4" ]] || [[ "$1" = "-v4" ]]; then	sTxt='.'; bIp4="true"; bIp6="false"
 	elif [[ "$1" = "6" ]] || [[ "$1" = "-6" ]] || [[ "$1" = "v6" ]] || [[ "$1" = "-v6" ]]; then sTxt=':'; bIp4="false"; bIp6="true"
-	else																				exit 1
+	else 																						exit 1
 	fi
 	sInputAddress=$2 #sInputAddress="$(echo $2 | tr "${sTxt}" " " )"
-	#for sWord in ${sInputAddress}; do
-		#if [[ ${sWord} =~ ${sTxt} ]]; then 
-			#echo "${sWord}"
-			#break
-		#fi
-	#done
+	#for sWord in ${sInputAddress}; do if [[ ${sWord} =~ ${sTxt} ]]; then echo "${sWord}"; break; fi; done
 	if (${bIp4}); then 
 		sOutputAddress="$(ipcalc -b "${sInputAddress}" | grep -i network: | awk '{ print $2 }')" # sOutputAddress="${sInputAddress%"${sTxt}"*}${sTxt}0"
 	elif ${bIp6} && ${bIp6Enabled} && command -v ipv6calc 1>/dev/null; then
@@ -92,10 +74,10 @@ getGlobalIpAddr6() {
 	#Even With ssh:	$ ssh -6 sshmyip.com
 	#bIp6Enabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
 	if (${bIp6Enabled}); then
-		if true; then 						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
+		if true; then	 						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
 		elif command -v awk 1>/dev/null; then 	curl -6 https://ifconfig.co
 		fi			
-	else 									echo "false"
+	else 										echo "false"
 	fi
 }
 test() {
@@ -108,11 +90,11 @@ test() {
 	sPrvIP6="$(getIpAddr6)"
 	sPrvNetworkIP6="$(getNetworkAddress 6 "${sPrvIP6}")"
 	sPubIP6="$(getGlobalIpAddr6)"
-	if [[ ! "${sPrvIP4}" = "false" ]]; then		echo -e "${sPrvIP4}"; fi
-	if [[ ! "${sPrvNetworkIP4}" = "false" ]]; then echo -e "${sPrvNetworkIP4}"; fi
+	if [[ ! "${sPrvIP4}" = "false" ]]; then 		echo -e "${sPrvIP4}"; fi
+	if [[ ! "${sPrvNetworkIP4}" = "false" ]]; then 	echo -e "${sPrvNetworkIP4}"; fi
 	if [[ ! "${sPubIP4}" = "false" ]]; then 		echo -e "${sPubIP4}"; fi
 	if [[ ! "${sPrvIP6}" = "false" ]]; then 		echo -e "${sPrvIP6}"; fi
-	if [[ ! "${sPrvNetworkIP6}" = "false" ]]; then echo -e "${sPrvNetworkIP6}"; fi
+	if [[ ! "${sPrvNetworkIP6}" = "false" ]]; then 	echo -e "${sPrvNetworkIP6}"; fi
 	if [[ ! "${sPubIP6}" = "false" ]]; then 		echo -e "${sPubIP6}"; fi
 }
 test

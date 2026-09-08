@@ -46,22 +46,10 @@ sValidatorUrl=${sStratisEvmUrl}${tStratisRepoName[validator]}/releases/latest	#s
 declare -A tRepoUrl=(["beacon-chain"]="${sBeaconUrl}" ["geth"]="${sGethUrl}" ["validator"]="${sValidatorUrl}")
 declare -A tLocalBin=(["beacon-chain"]="${sBeaconChainBin}" ["geth"]="${sGethBin}" ["validator"]="${sValidatorBin}")
 
-getLocalBinVersion() {
-	sBinPath=${1}
-	eval "${sBinPath} --version"
-}
-oldGitRepoBinVersion() {
-	sBinUrl=${1}
-	curl -s "${sBinUrl}" | grep -i tag_name
-}
-oldGitRepoLatestBinUrl() {
-	sBinUrl=${1}
-	curl -s "${sBinUrl}" | grep -i browser_download_url
-}
-gitRepoContent() {
-	sBinUrl=${1}
-	curl -s "${sBinUrl}"
-}
+getLocalBinVersion() { sBinPath=${1}; eval "${sBinPath} --version"; }
+oldGitRepoBinVersion() { sBinUrl=${1}; curl -s "${sBinUrl}" | grep -i tag_name; }
+oldGitRepoLatestBinUrl() { sBinUrl=${1}; curl -s "${sBinUrl}" | grep -i browser_download_url; }
+gitRepoContent() { sBinUrl=${1}; curl -s "${sBinUrl}"; }
 gitRepoBinVersion() {
 	sContent="${1}"
 	sTag=$(echo "${sContent}" | grep -i tag_name)
@@ -73,20 +61,15 @@ gitRepoLatestBinUrl() {
 	sContent="${1}"
 	sName="${2}"
 	sUrl=$(echo "${sContent}" | grep -i browser_download_url)
-	for sCrit in "$(basename "${sName}")" ${sSystem} ${sArch} ${sRepoFileFormat}; do
-		#echo -e "${sCrit}\t${sUrl}"; read -rp " "
-		sUrl="$(echo "${sUrl}" | grep "${sCrit}" || echo "false")"
-		read -rp " "
+	for sCrit in "$(basename "${sName}")" ${sSystem} ${sArch} ${sRepoFileFormat}; do #echo -e "${sCrit}\t${sUrl}"; read -rp " "
+		sUrl="$(echo "${sUrl}" | grep "${sCrit}" || echo "false")" #read -rp " "
 		if [[ "${sUrl}" = "false" ]]; then sUrl="${sUrl#*\: }"; break; fi
 	done
 	sUrl="${sUrl#*\: }"
 	sUrl="${sUrl%,*}"
 	echo "${sUrl}"
 }
-getGhRepoReleases() {
-	sProject=${1}
-	gh release list --repo "${sProject}" #| grep --color=auto -i latest
-}
+getGhRepoReleases() { sProject=${1}; gh release list --repo "${sProject}"; } #| grep --color=auto -i latest
 dlGhReleaseTarball() {
 	sProject=${1}
 	sBeginFilename=${2}

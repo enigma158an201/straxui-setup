@@ -21,40 +21,26 @@ sTiersRepos="$(find ${sAptSourcesListSubfolder} -iwholename '*.list')"
 bHasSudo=$(command -v sudo && echo "true" || echo "false")
 bHasDoas=$(command -v doas && echo "true" || echo "false")
 
-getDebianVersion() {
-	sDebMainVersion="$(cat /etc/debian_version)"
-	echo "${sDebMainVersion%%.*}"
-}
+getDebianVersion() { sDebMainVersion="$(cat /etc/debian_version)"; echo "${sDebMainVersion%%.*}"; }
 
 getNonFreeToNonFreeFirmware() {
 	if [[ ${sSourcesListContent} =~ non-free ]] && [[ ! ${sSourcesListContent} =~ non-free-firmware ]]; then
-		if ${bHasSudo}; then
-			sudo sed -i 's/ non-free/ non-free non-free-firmware /g' "${sAptSourcesListSubfolder}"
-		elif ${bHasDoas}; then
-			doas sed -i 's/ non-free/ non-free non-free-firmware /g' "${sAptSourcesListSubfolder}"
-		else
-			su - -c "sed -i 's/ non-free/ non-free non-free-firmware /g' ${sAptSourcesListSubfolder}"
+		if ${bHasSudo}; then 	sudo sed -i 's/ non-free/ non-free non-free-firmware /g' "${sAptSourcesListSubfolder}"
+		elif ${bHasDoas}; then 	doas sed -i 's/ non-free/ non-free non-free-firmware /g' "${sAptSourcesListSubfolder}"
+		else 					su - -c "sed -i 's/ non-free/ non-free non-free-firmware /g' ${sAptSourcesListSubfolder}"
 		fi
 	fi
 }
 
 upgradeJessieToStretch() {
 	suExecCommandNoPreserveEnv sed -i.old 's/jessie/stretch/g' ${sAptSourcesListFile}
-	if [[ -n "${sTiersRepos}" ]]; then 
-		for sRepo in ${sTiersRepos}; do
-			suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' ${sRepo}"
-		done
-	fi
+	if [[ -n "${sTiersRepos}" ]]; then for sRepo in ${sTiersRepos}; do suExecCommandNoPreserveEnv "sed -i.old 's/jessie/stretch/g' ${sRepo}"; done; fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ stretch/updates#\ stretch-security#g' ${sAptSourcesListFile}
 }
 
 upgradeStretchToBuster() {
 	suExecCommandNoPreserveEnv sed -i.old 's/stretch/buster/g' ${sAptSourcesListFile} #{,.d/*.list}
-	if [[ -n "${sTiersRepos}" ]]; then 
-		for sRepo in ${sTiersRepos}; do
-			suExecCommandNoPreserveEnv sed -i.old 's/stretch/buster/g' "${sRepo}"
-		done
-	fi
+	if [[ -n "${sTiersRepos}" ]]; then for sRepo in ${sTiersRepos}; do suExecCommandNoPreserveEnv sed -i.old 's/stretch/buster/g' "${sRepo}"; done; fi
 	#suExecCommandNoPreserveEnv sed -i 's#/debian-security\ buster/updates#\ buster-security#g' ${sAptSourcesListFile} 
 }
 
@@ -65,42 +51,27 @@ upgradeBusterToBullseye() {
 	if grep bullseye/updates ${sAptSourcesListFile}; then 
 		suExecCommandNoPreserveEnv sed -i 's#/debian-security\ bullseye/updates#\ bullseye-security#g' ${sAptSourcesListFile}
 	fi
-	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do
-			suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' "${sRepo}"
-		done
-	fi
+	if [[ -n "${sTiersRepos}" ]]; then for sRepo in ${sTiersRepos}; do suExecCommandNoPreserveEnv sed -i.old 's/buster/bullseye/g' "${sRepo}"; done; fi
 }
 
 upgradeBullseyeToBookworm() {
 	suExecCommandNoPreserveEnv sed -i.old 's/bullseye/bookworm/g' ${sAptSourcesListFile}
 	suExecCommandNoPreserveEnv sed -i.old 's/non-free/non-free\ non-free-firmware/g' ${sAptSourcesListFile}
-	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do
-			suExecCommandNoPreserveEnv sed -i.old 's/bullseye/bookworm/g' "${sRepo}"
-		done	
-	fi
+	if [[ -n "${sTiersRepos}" ]]; then for sRepo in ${sTiersRepos}; do suExecCommandNoPreserveEnv sed -i.old 's/bullseye/bookworm/g' "${sRepo}"; done; fi
 	getNonFreeToNonFreeFirmware
 }
 
 upgradeBookwormToTrixie() {
 	suExecCommandNoPreserveEnv sed -i.old 's/bookworm/trixie/g' ${sAptSourcesListFile}
 	#suExecCommandNoPreserveEnv sed -i.old 's/non-free/non-free non-free-firmware/g' ${sAptSourcesListFile}
-	if [[ -n "${sTiersRepos}" ]]; then
-		for sRepo in ${sTiersRepos}; do
-			suExecCommandNoPreserveEnv sed -i.old 's/bookworm/trixie/g' "${sRepo}"
-		done
-	fi
+	if [[ -n "${sTiersRepos}" ]]; then for sRepo in ${sTiersRepos}; do suExecCommandNoPreserveEnv sed -i.old 's/bookworm/trixie/g' "${sRepo}"; done; fi
 	getNonFreeToNonFreeFirmware
 }
 
 upgradeToTesting() {
-	if ${bHasSudo}; then
-		sudo sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}" #/etc/apt/sources.list{,.d/*.list}
-	elif ${bHasDoas}; then
-		doas sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}"
-	else
-		su - -c "sed -i 's/bookworm/testing/g' ${sAptSourcesListSubfolder}"
+	if ${bHasSudo}; then 	sudo sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}" #/etc/apt/sources.list{,.d/*.list}
+	elif ${bHasDoas}; then 	doas sed -i 's/bookworm/testing/g' "${sAptSourcesListSubfolder}"
+	else 					su - -c "sed -i 's/bookworm/testing/g' ${sAptSourcesListSubfolder}"
 	fi
 	getNonFreeToNonFreeFirmware
 }
@@ -114,19 +85,17 @@ upgradeToSid() {
 upgradeSourcesList() {
 	if [[ -r /etc/debian_version ]]; then
 		debInstalledVersion=$(getDebianVersion)
-		if [[ "${debInstalledVersion}" = "8" ]]; then 			upgradeJessieToStretch
+		if [[ "${debInstalledVersion}" = "8" ]]; then 				upgradeJessieToStretch
 		elif [[ "${debInstalledVersion}" = "9" ]]; then 			upgradeStretchToBuster
 		elif [[ "${debInstalledVersion}" = "10" ]]; then 			upgradeBusterToBullseye
 		elif [[ "${debInstalledVersion}" = "11" ]]; then 			upgradeBullseyeToBookworm
 		elif [[ "${debInstalledVersion}" = "12" ]]; then 			echo "trixie not stable at moment of this script version"
 		elif [[ "${debInstalledVersion}" = "13" ]]; then 			echo "forky not stable at moment of this script version"
-			exit 1 #upgradeBookwormToTrixie
-		else
-			echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"
+																	exit 1 #upgradeBookwormToTrixie
+		else 														echo "No stable Release for upgrading to debian $((debInstalledVersion + 1))"
 		fi
-	else
-		echo -e "\\tFile /etc/debian_version doesn't exists"
-		exit 1
+	else															echo -e "\\tFile /etc/debian_version doesn't exists"
+																	exit 1
 	fi
 }
 
