@@ -24,21 +24,14 @@ checkIfDebianId() {
 	if [[ -r "${sEtcOsReleasePath}" ]]; then
         sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
 		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
-		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then
-			echo "true"
-		else
-			echo "false"
-			#exit 1
+		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then 	echo "true"
+		else 																			echo "false" 	#exit 1
 		fi
 	else
-		echo "false"
-		#exit 1
+		echo "false"		#exit 1
 	fi
 }
-installWireguardDeb() {
-	echo -e "\t--> Install wireguard for debian"
-	suExecCommand "apt-get install -y wireguard"	
-}
+installWireguardDeb() { echo -e "\t--> Install wireguard for debian"; suExecCommand "apt-get install -y wireguard"; }
 setWgKeysName() {
 	sClientPubKey=${sEtcWg}/${sHostnameVpnClient}.pub.key
 	sClientPrvKey=${sEtcWg}/${sHostnameVpnClient}.key
@@ -48,22 +41,17 @@ setWgKeysName() {
 }
 setKeysWireguard() {
 	echo -e "\t--> set private and pulic keys for wireguard"
-	if [[ "${1}" -eq "1" ]]; then
-		sPubKey=${sClientPubKey}
-		sPrvKey=${sClientPrvKey}
-	elif [[ "${1}" -eq "2" ]]; then
-		sPubKey=${sServerPubKey}
-		sPrvKey=${sServerPrvKey}
+	if [[ "${1}" -eq "1" ]]; then 		sPubKey=${sClientPubKey}
+										sPrvKey=${sClientPrvKey}
+	elif [[ "${1}" -eq "2" ]]; then 	sPubKey=${sServerPubKey}
+										sPrvKey=${sServerPrvKey}
 	fi
 	suExecCommand "bash -c \"mkdir -p ${sEtcWg} && cd ${sEtcWg}/ || exit 1
 		umask 077
-		if ! test -e ${sPrvKey} && ! test -e ${sPubKey}; then
-			#wg genkey | tee /etc/wireguard/private.key && cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
+		if ! test -e ${sPrvKey} && ! test -e ${sPubKey}; then #wg genkey | tee /etc/wireguard/private.key && cat /etc/wireguard/private.key | wg pubkey | tee /etc/wireguard/public.key
 			wg genkey | tee ${sPrvKey} | wg pubkey > ${sPubKey}
 		fi\"
-		if true; then
-			chmod -R 0600 ${sEtcWg}
-		fi"
+		if true; then chmod -R 0600 ${sEtcWg}; fi"
 }
 setIp4ForwardSysctl() {
 	sIp4FwdDst="/etc/sysctl.d/99-enable-ip4-forward.conf"
@@ -173,16 +161,12 @@ PersistentKeepalive = 20" #| suExecCommand tee ${sEtcWg}/wg0.conf
 }
 getExistingWgInterfaces() {
 	sWgCmdResult=$( (sudo wg | grep -iE ^interface:) || true) #wg
-	for sWgIf in "${sWgCmdResult[@]}"; do #sWgCmdResult
-		sWgIfList+="${sWgIf#* } "
-	done
+	for sWgIf in "${sWgCmdResult[@]}"; do sWgIfList+="${sWgIf#* } "; done #sWgCmdResult
 	echo "${sWgIfList}"
 }
 getExistingWgPeers() {
 	sWgCmdResult=$( (sudo wg | grep -iE ^peer:) || true) #wg
-	for sWgPeer in "${sWgCmdResult[@]}"; do #sWgCmdResult
-		sWgPeerList+="${sWgPeer#* } "
-	done
+	for sWgPeer in "${sWgCmdResult[@]}"; do sWgPeerList+="${sWgPeer#* } "; done #sWgCmdResult
 	echo "${sWgPeerList}"
 }
 
@@ -216,17 +200,15 @@ main_wireguard_client() {
 main_wireguard() {
 	bIsDebian="$(checkIfDebianId)"
 	echo -e "\t--> debian check: ${bIsDebian}"
-	if ${bIsDebian}; then
-		installWireguardDeb
+	if ${bIsDebian}; then installWireguardDeb; fi
+	echo -e "\t-->please confirm if running machine has to be a wireguard client [1] (default choice) or wireguard server [2]"; read -rp "1/2" -n 1 iUserChoice
+	if [[ "${iUserChoice:-}" -eq "1" ]] || [[ "${iUserChoice:-}" -eq "" ]]; then 	bClient="true"
+	elif [[ "${iUserChoice:-}" -eq "2" ]]; then										bClient="false"
+	else 																			exit 1
 	fi
-	#if false; then
-		echo -e "\t-->please confirm if running machine has to be a wireguard client [1] (default choice) or wireguard server [2]"; read -rp "1/2" -n 1 iUserChoice
-		if [[ "${iUserChoice:-}" -eq "1" ]] || [[ "${iUserChoice:-}" -eq "" ]]; then 		bClient="true"
-		elif [[ "${iUserChoice:-}" -eq "2" ]]; then										bClient="false"
-		else 																			exit 1; fi
-		if ! ${bClient}; then 		main_wireguard_server
-		elif ${bClient}; then 		main_wireguard_client; fi
-	#fi
+	if ! ${bClient}; then 		main_wireguard_server
+	elif ${bClient}; then 		main_wireguard_client
+	fi
 	ip a
 }
 main_wireguard

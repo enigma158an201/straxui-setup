@@ -43,14 +43,11 @@ oldCreateUser() {
 	sAssistedUser=$1
 	if ! id "${sAssistedUser}"; then
 		if command -v sudo &> /dev/null; then
-			if command -v adduser &> /dev/null; then
-				sudo adduser --no-create-home "${sAssistedUser}"
-			else
-				sudo useradd -M "${sAssistedUser}"
-				sudo passwd david
+			if command -v adduser &> /dev/null; then 	sudo adduser --no-create-home "${sAssistedUser}"
+			else 										sudo useradd -M "${sAssistedUser}"
+														sudo passwd david
 			fi
-		else
-			exit 1
+		else 											exit 1
 		fi
 	fi
 }
@@ -133,8 +130,7 @@ selectUserAssistOrAssistedCommands() {
 	done
 	if [[ ${iAssisted} -eq 0 ]]; then #! ${bAssisted}; then
 		if [[ "${sLoggedUser}" = "${sLocalAssistantUser}" ]]; then
-			echo -e "\t--> Do you plan to Send (1) or Receive(2) screen? 1/2?"
-			read -rp " " -n 1 iAnswer
+			echo -e "\t--> Do you plan to Send (1) or Receive(2) screen? 1/2?" && read -rp " " -n 1 iAnswer
 			if [[ "${iAnswer}" -eq "1" ]]; then 	remoteAssistedCommands "${sLoggedUser}"
 			elif [[ "${iAnswer}" -eq 2 ]]; then 	localAssistantCommands "${sAssistedUser}" #sLocalAssistantUser
 			fi

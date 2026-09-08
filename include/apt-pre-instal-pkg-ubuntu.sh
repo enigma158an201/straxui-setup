@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -euo pipefail #; set -x
 
 sLaunchDir="$(dirname "$0")"
@@ -9,13 +10,7 @@ aptPreinstallPkg() {
 	declare -a tPkgsToInstall
 	tPkgsToInstall=( net-tools wget curl tar zip grep gawk ipcalc ipv6calc git jq cron rfkill conntrack dnsutils awk ssh-audit x11vnc nmap tmux tput wireguard ) #xinit screen desktop-file-utils
 	apt-get update && apt-get upgrade
-	for sPkgToInstall in "${tPkgsToInstall[@]}" #${tPkgsToInstall[*]}
-	do
-		#echo "verification si paquet ${tPkgToInstall} installé" #; read -rp " "
-		#if [[ "$(checkDpkgInstalled "${tPkgToInstall}")" = "false" ]]; then
-			apt-get -y install "${sPkgToInstall}" || true
-		#fi
-	done
+	for sPkgToInstall in "${tPkgsToInstall[@]}"; do apt-get -y install "${sPkgToInstall}" || true; done #${tPkgsToInstall[*]} #echo "verification si paquet ${tPkgToInstall} installé" #; read -rp " " #if [[ "$(checkDpkgInstalled "${tPkgToInstall}")" = "false" ]]; then
 	unset tPkgsToInstall
 }
 aptUnbloatPkg() {
@@ -27,13 +22,7 @@ aptUnbloatPkg() {
 	# gstreamer1.0-pipewire ibus ibus-data ibus-gtk ibus-gtk3 ibus-gtk4 im-config libcolord-gtk4-1 libflashrom1 libfreerdp-server2-2 libftdi1-2 libfwupd2 libgcab-1.0-0 libgdm1 libgnome-bg-4-2 libgnome-bluetooth-ui-3.0-13 libgnome-rr-4-2
 	# libibus-1.0-5 libjaylink0 libjcat1 libmbim-glib4 libmbim-proxy libmutter-11-0 libnss-myhostname libqmi-glib5 libqmi-proxy libqrtr-glib0 libsmbios-c2 libsnapd-glib-2-1 libtss2-tctildr0 mutter mutter-common pipewire-alsa pipewire-audio
 	# power-profiles-daemon python3-ibus-1.0 realmd switcheroo-control
-
-	for sPkgToRemove in "${tPkgsToRemove[@]}" #${tPkgsToRemove[*]}
-	do
-		if [[ "$(checkDpkgInstalled "${sPkgToRemove}")" = "true" ]]; then
-			apt-get -y autoremove "${sPkgToRemove}" || true
-		fi
-	done
+	for sPkgToRemove in "${tPkgsToRemove[@]}"; do if [[ "$(checkDpkgInstalled "${sPkgToRemove}")" = "true" ]]; then apt-get -y autoremove "${sPkgToRemove}" || true; fi; done #${tPkgsToRemove[*]}
 	unset tPkgsToRemove
 }
 main_preInstall() {

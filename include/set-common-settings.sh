@@ -10,8 +10,7 @@ source "${sLaunchDir}/include/file-edition.sh"
 
 sshd-config-settings() {
 	echo -e "\t--> application des fichiers config sshd"
-	#for sSshdConfigFile in enable-only-ip4.conf prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf; do
-	for sSshdConfigFile in "${sLaunchDir}"/etc/sshd_config.d/*.conf; do
+	for sSshdConfigFile in "${sLaunchDir}"/etc/sshd_config.d/*.conf; do #enable-only-ip4.conf prohibit-root.conf pubkey-only.conf pubkey-accepted-types.conf sshd-port.conf
 		sSshdConfigDst="/etc/ssh/sshd_config.d/${sSshdConfigFile}"
 		sSshdConfigSrc="${sLaunchDir}${sSshdConfigDst}"
 		if [[ -d "$(dirname "${sSshdConfigDst}")" ]] && [[ -f "${sSshdConfigSrc}" ]]; then install -o root -g root -m 0744 -pv "${sSshdConfigSrc}" "${sSshdConfigDst}"; fi
@@ -34,21 +33,20 @@ disable-systemd-sleep() {
 }
 disable-wireless-connections() {
 	echo -e "\t--> désactivation des connexions wireless"
-	if systemctl status wpa_supplicant.service 1>/dev/null; then 	systemctl disable --now wpa_supplicant.service; fi
+	if systemctl status wpa_supplicant.service &>/dev/null; then 	systemctl disable --now wpa_supplicant.service; fi
 	if command -v nmcli &> /dev/null; then 							nmcli radio wifi off; fi
 	if command -v rfkill &> /dev/null; then 						rfkill block wlan bluetooth; fi
 }
 disable-cups-services() {
 	echo -e "\t--> désactivation cups (impression)"
-	if (systemctl status cups-browsed.service 1>/dev/null) || (systemctl status cups.service 1>/dev/null || false); then
+	if (systemctl status cups-browsed.service &>/dev/null) || (systemctl status cups.service &>/dev/null || false); then
 		systemctl disable --now cups-browsed.service
 		systemctl disable --now cups.service
 	fi
 }
 cronjob-disable-ipv6() { echo -e "\t--> création du job cron en cas de reactivation ipV6" && if systemctl status cron.service &> /dev/null; then systemctl enable --now cron.service; fi; }
 set-newhostname() { echo -e "\t--> renommage de la machine suivant schéma modèle+distro" && bash -c "${sLaunchDir}/include/set-hostname.sh"; }
-main_common() {
-	#source "${sLaunchDir}/include/test-superuser-privileges.sh"
+main_common() { #source "${sLaunchDir}/include/test-superuser-privileges.sh"
 	whoami
 	#set-newhostnam || true		# set new host name has to be done before sshd config
 	echo -e "\t--> initialisation des paramètres du serveur ssh"

@@ -44,9 +44,7 @@ setParameterInFile() {
 	local sFindText="$2"
 	local sSetNewParam="$3"
 
-	for s in "|" "#" "/" ":" ";" "~"; do 
-		if [[ "$(grep "${s}" <<< "${sFindText}")" = "" ]]; then 		sSedDelim="$"; break; fi
-	done
+	for s in "|" "#" "/" ":" ";" "~"; do if [[ "$(grep "${s}" <<< "${sFindText}")" = "" ]]; then sSedDelim="$"; break; fi; done
 	if [[ "$(grep -i "${sSetNewParam}" "${sInputFile}")" = "" ]]; then	bAlreadySet="false"
 	else																bAlreadySet="true"
 	fi

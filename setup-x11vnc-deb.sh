@@ -24,14 +24,8 @@ checkIfDebianId() {
 	fi
 }
 
-installX11vncDeb() {
-	echo -e "\t--> Install x11vnc terminal multiplexer for debian"
-	sudo apt-get install -y x11vnc	
-}
-setupVncPassword() {
-	if ! test -e "${sVncPasswd}"; then x11vnc -usepw; fi #echo "" > "${sVncPasswd}"
-}
-
+installX11vncDeb() { echo -e "\t--> Install x11vnc terminal multiplexer for debian" && sudo apt-get install -y x11vnc; }
+setupVncPassword() { if ! test -e "${sVncPasswd}"; then x11vnc -usepw; fi; } #echo "" > "${sVncPasswd}"
 setupX11vncConf() {
 	echo -e "\t--> setup x11vnc config at ${sX11vncrc}"
 	echo "# x11vnc configuration
@@ -49,11 +43,9 @@ nopw		# uncomment nopw ONLY if localhost uncommented
 main() {
 	bIsDebian="$(checkIfDebianId)"
 	echo -e "\t--> debian check: ${bIsDebian}"
-	if ${bIsDebian}; then
-		installX11vncDeb
-		setupX11vncConf
-	else
-		exit 1
+	if ${bIsDebian}; then 	installX11vncDeb
+							setupX11vncConf
+	else 					exit 1
 	fi
 
 }

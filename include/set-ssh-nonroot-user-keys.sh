@@ -55,7 +55,7 @@ set_ssh_nonroot_user_keys() {
 			sSshPubKeyFilePath="${keyAlreadySet}.pub"		# sSshPrvKeyPath
 			#ssh-copy-id -p "${SSH_PORT}" -i "${sSshDir}/${outKeyFileName}.pub" "${USER}@localhost" # for remote key install
 			if [[ ! -f "${sPubAutKeysFile}" ]]; then touch "${sPubAutKeysFile}"; fi
-			sSshPubKeyFileContent="$(cat "${sSshPubKeyFilePath}")" # 1>/dev/null)" #		echo "${sSshPubKeyFileContent}"
+			sSshPubKeyFileContent="$(cat "${sSshPubKeyFilePath}")" # &>/dev/null)" #		echo "${sSshPubKeyFileContent}"
 			if (! grep "${sSshPubKeyFileContent}" "${sPubAutKeysFile}"); then echo -e "\n${sSshPubKeyFileContent}" | tee -a "${sPubAutKeysFile}"; fi
 		done
 		echo -e "  --> penser si usage d'alias, à:
@@ -72,8 +72,7 @@ set_ssh_nonroot_user_keys() {
   --> nota: possibilité de remplacer l'adresse IP ${sPubIP4} par ${sPrvIP4} si pas de connection WAN souhaitée ou par une autre adresse IP4 WAN, c'est-à-dire ne commencant par 
   \t 127.x.y.z	\t ni 10.x.y.z	\t ni 192.168.y.z	\t ni entre 172.16.0.0 et 172.31.255.255 )"
 	else
-		echo "par sécurité, pas de clé générée pour l'user système root, abandon de la création de clés"
-		#exit 1
+		echo "par sécurité, pas de clé générée pour l'user système root, abandon de la création de clés" #exit 1
 	fi
 }
 
@@ -87,4 +86,4 @@ main_set_ssh_keys() {
 	\t>> 6. proposer une configuration d'alias à insérer manuellement sur la/les machine(s) distante(s)"	
  	set_ssh_nonroot_user_keys
 }
-main_set_ssh_keys	
+main_set_ssh_keys

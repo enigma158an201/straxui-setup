@@ -12,56 +12,25 @@ source "${sLaunchDir}/include/test-superuser-privileges.sh"
 source "${sLaunchDir}/include/apt-functions.sh" #apt-pre-instal-pkg-ubuntu.sh"
 #source "${sLaunchDir}/include/set-common-settings.sh"
 
-function determinerOS() {
-	cat /etc/os-release # echo `lsb_release -a`
-}
+function determinerOS() { cat /etc/os-release; } # echo `lsb_release -a`
 sOS=$(determinerOS)
 
-function determineSiUbuntu() {
-	echo "${sOS}" | grep -i Ubuntu || echo "false"
-}
-function determineSiMint() {
-	echo "${sOS}" | grep -i Mint || echo "false"
-} # pas besoin de truc pour différencier si debian ou ubuntu based, si debian on trouve du buster debbie
-function determineSiUbuntuBionic() {
-	echo "${sOS}" | grep -i bionic || echo "false"
-}
-function determineSiUbuntuFocal() {
-	echo "${sOS}" | grep -i focal || echo "false"
-}
-function determineSiUbuntuJammy() {
-	echo "${sOS}" | grep -i jammy || echo "false"
-}
-function determineSiDebian() {
-	echo "${sOS}" | grep -i debian || echo "false"
-}
-function determineSiDebianBuster() {
-	echo "${sOS}" | grep -i buster || echo "false"
-}
-function determineSiDebianBullsEye() {
-	echo "${sOS}" | grep -i bullseye || echo "false"
-}
-function determineSiDebianBookworm() {
-	echo "${sOS}" | grep -i bookworm || echo "false"
-}
-function determineSiDebianTrixie() {
-	echo "${sOS}" | grep -i trixie || echo "false"
-}
-function determineSiDebianForky() {
-	echo "${sOS}" | grep -i forky || echo "false"
-}
-function determineSiDebianTesting() {
-	echo "${sOS}" | grep -i testing || echo "false"
-}
-function determineSiDebianSid() {
-	echo "${sOS}" | grep -i sid || echo "false"
-}
-function determineSiMintLMDE() {
-	echo "${sOS}" | grep -i lmde || echo "false"
-}
-function determineSiDeepin() {
-	echo "${sOS}" | grep -i deepin || echo "false"
-}
+function determineSiUbuntu() { echo "${sOS}" | grep -i Ubuntu || echo "false"; }
+function determineSiMint() { echo "${sOS}" | grep -i Mint || echo "false"; } # pas besoin de truc pour différencier si debian ou ubuntu based, si debian on trouve du buster debbie
+function determineSiUbuntuBionic() { echo "${sOS}" | grep -i bionic || echo "false"; }
+function determineSiUbuntuFocal() { echo "${sOS}" | grep -i focal || echo "false"; }
+function determineSiUbuntuJammy() { echo "${sOS}" | grep -i jammy || echo "false"; }
+function determineSiUbuntuNoble() { echo "${sOS}" | grep -i noble || echo "false"; }
+function determineSiDebian() { echo "${sOS}" | grep -i debian || echo "false"; }
+function determineSiDebianBuster() { echo "${sOS}" | grep -i buster || echo "false"; }
+function determineSiDebianBullsEye() { echo "${sOS}" | grep -i bullseye || echo "false"; }
+function determineSiDebianBookworm() { echo "${sOS}" | grep -i bookworm || echo "false"; }
+function determineSiDebianTrixie() { echo "${sOS}" | grep -i trixie || echo "false"; }
+function determineSiDebianForky() { echo "${sOS}" | grep -i forky || echo "false"; }
+function determineSiDebianTesting() { echo "${sOS}" | grep -i testing || echo "false"; }
+function determineSiDebianSid() { echo "${sOS}" | grep -i sid || echo "false"; }
+function determineSiMintLMDE() { echo "${sOS}" | grep -i lmde || echo "false"; }
+function determineSiDeepin() { echo "${sOS}" | grep -i deepin || echo "false"; }
 
 isUbuntu=$(determineSiUbuntu)
 isMint=$(determineSiMint)
@@ -72,6 +41,7 @@ isUbuntuLike="${isUbuntu}${isMint}"
 	# isBionic=$(determineSiUbuntuBionic)
 	# isFocal=$(determineSiUbuntuFocal)
 	# isJammy=$(determineSiUbuntuJammy)
+	# isNoble=$(determineSiUbuntuNoble)
 #fi
 isDebian=$(determineSiDebian)
 if [[ ! "${isDebian}" = "" ]] || [[ ! "${isMint}" = "" ]]; then
@@ -105,9 +75,7 @@ main_installStrax() {
 				#tPkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2); \
 				#for sPkgToInstall in \${tPkgsToInstall}; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\${sPkgToInstall}\"); \
-				#	if [[ \"\${isInstalled}\" = \"false\" ]]; then \
-				#		/usr/bin/apt-get install -y \${sPkgToInstall}; \
-				#	fi; \
+				#	if [[ \"\${isInstalled}\" = \"false\" ]]; then 	/usr/bin/apt-get install -y \${sPkgToInstall}; fi; \
 				#done\""
 				#source "${sLaunchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				tPkgsToInstall=(libgtk-3-0 libnotify4 libnss3 libxss1 libxtst6 xdg-utils libatspi2.0-0 libappindicator3-1 libsecret-1-0 libasound2)
@@ -136,9 +104,7 @@ main_installStrax() {
 				#tPkgsToInstall=(libappindicator3-0.1-cil{,-dev}); \
 				#for sPkgToInstall in \${tPkgsToInstall}; do \
 				#	isInstalled=\$(checkDpkgInstalled \"\${sPkgToInstall}\"); \
-				#	if [[ \"\${isInstalled}\" = \"false\" ]]; then \
-				#		/usr/bin/apt-get install -y \${sPkgToInstall}; \
-				#	fi; \
+				#	if [[ \"\${isInstalled}\" = \"false\" ]]; then /usr/bin/apt-get install -y \${sPkgToInstall}; fi
 				#done\""
 				#source "${sLaunchDir}/include/apt-pre-instal-pkg-ubuntu.sh"
 				tPkgsToInstall=(libappindicator3-0.1-cil{,-dev})
@@ -158,10 +124,7 @@ main_installStrax() {
 				#shellcheck disable=SC1083
 				suExecCommand "folderinsidetar=$(tar --exclude=\"*/*\" -tf \"\${sFilenameGz}\"); straxuidestfolder=/opt/straxui/; mkdir -p \${straxuidestfolder}; \ 
 				tar --strip-components=1 -C \"\${straxuidestfolder}" -xvzf "\${sFilenameGz}\" \"\${folderinsidetar}" # /opt/straxui
-			fi
-
-			# echo ${projectlatestcontent}
-			
+			fi	# echo ${projectlatestcontent}
 		fi
 	# fi
 }

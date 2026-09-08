@@ -12,9 +12,7 @@ getNetworkManagement() {
 }
 checkEnabledIpv6() {
 	iIp6Disabled="$(cat /sys/module/ipv6/parameters/disable)"
-	if [[ "${iIp6Disabled}" -eq "0" ]]; then		echo "true"
-	elif [[ "${iIp6Disabled}" -eq "1" ]]; then		echo "false"
-	fi
+	if [[ "${iIp6Disabled}" -eq "0" ]]; then echo "true"; elif [[ "${iIp6Disabled}" -eq "1" ]]; then echo "false"; fi
 }
 bIp6Enabled="$(checkEnabledIpv6)"
 export bIp6Enabled
@@ -40,42 +38,34 @@ getNetworkAddress() {
 	fi
 	sInputAddress=$2 #sInputAddress="$(echo $2 | tr "${sTxt}" " " )"
 	#for sWord in ${sInputAddress}; do if [[ ${sWord} =~ ${sTxt} ]]; then echo "${sWord}"; break; fi; done
-	if (${bIp4}); then 
-		sOutputAddress="$(ipcalc -b "${sInputAddress}" | grep -i network: | awk '{ print $2 }')" # sOutputAddress="${sInputAddress%"${sTxt}"*}${sTxt}0"
-	elif ${bIp6} && ${bIp6Enabled} && command -v ipv6calc 1>/dev/null; then
-		#sUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "${sInputAddress}")"
-		#sOutputAddress="${sUncompressedInputAddress%"${sTxt}"*}${sTxt}"
-		sOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "${sInputAddress}" || echo "false")"
-	else
-		sOutputAddress="false"
+	if (${bIp4}); then 															sOutputAddress="$(ipcalc -b "${sInputAddress}" | grep -i network: | awk '{ print $2 }')" # sOutputAddress="${sInputAddress%"${sTxt}"*}${sTxt}0"
+	elif ${bIp6} && ${bIp6Enabled} && command -v ipv6calc &>/dev/null; then 	sOutputAddress="$(ipv6calc --out ipv6addr --printprefix --in ipv6addr "${sInputAddress}" || echo "false")" #sUncompressedInputAddress="$(ipv6calc --addr2uncompaddr "${sInputAddress}")" #sOutputAddress="${sUncompressedInputAddress%"${sTxt}"*}${sTxt}"
+	else 																		sOutputAddress="false"
 	fi
 	echo "${sOutputAddress}"
 }
-
 getIpAddr4() {
-	if command -v  awk 1>/dev/null; then
-		if command -v ip 1>/dev/null; then 				ip -4 route get 1.2.3.4 | awk '{print $7}'					# after src string
-		elif command -v hostname 1>/dev/null; then 		getFirstAddressIpRoute 4 "$(hostname -I)"							# hostname -I | awk '{ print $1 }'
+	if command -v  awk &>/dev/null; then
+		if command -v ip &>/dev/null; then 				ip -4 route get 1.2.3.4 | awk '{print $7}'					# after src string
+		elif command -v hostname &>/dev/null; then 		getFirstAddressIpRoute 4 "$(hostname -I)"							# hostname -I | awk '{ print $1 }'
 		fi
 	fi
 }
 getIpAddr6() {
-	if command -v awk 1>/dev/null; then
-		if command -v ip 1>/dev/null; then 				getFirstAddressIpAddr 6 "$(ip -6 -o addr | grep -v ': lo')" #ip -6 route get 2001:4860:4860::8888 | awk '{print $11}'	# after src string
-		elif command -v hostname 1>/dev/null; then 		getFirstAddressIpRoute 6 "$(hostname -I)" 							# hostname -I | awk '{ print ${x} }'
+	if command -v awk &>/dev/null; then
+		if command -v ip &>/dev/null; then 				getFirstAddressIpAddr 6 "$(ip -6 -o addr | grep -v ': lo')" #ip -6 route get 2001:4860:4860::8888 | awk '{print $11}'	# after src string
+		elif command -v hostname &>/dev/null; then 		getFirstAddressIpRoute 6 "$(hostname -I)" 							# hostname -I | awk '{ print ${x} }'
 		fi
 	fi
 }
-getWanIpAddr4() {
-	dig -4 +short myip.opendns.com @resolver1.opendns.com	#host myip.opendns.com resolver1.opendns.com
-}
+getWanIpAddr4() { dig -4 +short myip.opendns.com @resolver1.opendns.com; } #host myip.opendns.com resolver1.opendns.com
 getGlobalIpAddr6() {
 	#with telnet: 	$ telnet -6 ipv6.telnetmyip.com 
 	#Even With ssh:	$ ssh -6 sshmyip.com
 	#bIp6Enabled="$(checkEnabledIpv6)"		#cat /sys/module/ipv6/parameters/disable
 	if (${bIp6Enabled}); then
-		if true; then	 						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
-		elif command -v awk 1>/dev/null; then 	curl -6 https://ifconfig.co
+		if true; then 	 						dig -t aaaa +short myip.opendns.com @resolver1.opendns.com
+		elif command -v awk &>/dev/null; then 	curl -6 https://ifconfig.co
 		fi			
 	else 										echo "false"
 	fi

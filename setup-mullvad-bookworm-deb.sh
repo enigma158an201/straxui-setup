@@ -9,15 +9,10 @@ checkIfDebianId() {
 	if [[ -r "${sEtcOsReleasePath}" ]]; then
         sIsDebian="$(grep -i "^ID=" "${sEtcOsReleasePath}" || echo "false")"
 		sIsDebianLike="$(grep -i "^ID_LIKE=" "${sEtcOsReleasePath}" || echo "false")"
-		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then
-			echo "true"
-		else
-			echo "false"
-			exit 1
+		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then 	echo "true"
+		else 																			echo "false"; exit 1
 		fi
-	else
-		echo "false"
-		exit 1
+	else 																				echo "false"; exit 1
 	fi
 }
 
@@ -26,14 +21,10 @@ installMullvadDeb() {
 	sudo curl -fsSLo /etc/apt/keyrings/mullvad-keyring.asc https://repository.mullvad.net/deb/mullvad-keyring.asc
 	#3. To add a repository for stable releases, run the following command:
 	echo "deb [signed-by=/etc/apt/keyrings/mullvad-keyring.asc arch=$( dpkg --print-architecture )] https://repository.mullvad.net/deb/stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/mullvad.list
-	sudo apt-get update
-	sudo apt-get install mullvad-vpn
+	sudo apt-get update && sudo apt-get install -y apt-transport-https && sudo apt-get update && sudo apt-get upgrade && sudo apt-get install mullvad-vpn
 }
 main_mullvad() {
 	bIsDebian="$(checkIfDebianId)"
-    echo -e "${bIsDebian}"
-	if ${bIsDebian}; then
-		installMullvadDeb
-	fi
+    echo -e "${bIsDebian}" && if ${bIsDebian}; then installMullvadDeb; fi
 }
 main_mullvad

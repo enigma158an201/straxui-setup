@@ -12,8 +12,7 @@ checkIfDebianId() {
 		if [[ ${sIsDebian,,} =~ debian ]] || [[ ${sIsDebianLike,,} =~ debian ]]; then 	echo "true"
 		else 																			echo "false"; exit 1
 		fi
-	else
-		echo "false"; exit 1
+	else 																				echo "false"; exit 1
 	fi
 }
 installPrometheusDeb() { echo -e "\t--> Install prometheus for debian" && sudo apt-get install -y prometheus; }
@@ -37,7 +36,6 @@ installGrafanaDeb() {
 }
 main_prometheus_grafana() {
 	bIsDebian="$(checkIfDebianId)"
-	echo -e "\t--> debian check: ${bIsDebian}"
-	if ${bIsDebian}; then 	installPrometheusDeb && installGrafanaDeb; else exit 1;	fi
+	echo -e "\t--> debian check: ${bIsDebian}" && if ${bIsDebian}; then 	installPrometheusDeb && installGrafanaDeb; else exit 1;	fi
 }
 main_prometheus_grafana
