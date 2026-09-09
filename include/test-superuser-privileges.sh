@@ -17,8 +17,8 @@ checkUserSudoOrWheelGroup() {
 	sUserGroups="${sUserGroups##*: }"		# sUserGroups="${`groups ${USER}`##*: }"
 	bSudoGroup="false"
 	for sGr in sudo wheel; do
-		for sGr2 in ${sUserGroups}; do 		if [[ "${sGr}" = "${sGr2}" ]]; then 	bSudoGroup="true"; break; fi; done
-		if [[ "${bSudoGroup}" = "true" ]]; then 	break; fi
+		for sGr2 in ${sUserGroups}; do if [[ "${sGr}" = "${sGr2}" ]]; then bSudoGroup="true"; break; fi; done 
+		if [[ "${bSudoGroup}" = "true" ]]; then break; fi
 	done
 	echo "${bSudoGroup}"
 }

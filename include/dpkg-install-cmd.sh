@@ -4,5 +4,7 @@
 
 set -euo pipefail #; set -x
 
-LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/dpkg -i "$1" 3>&1 2>&1
-exit
+if command -v dpkg >/dev/null 2>&1; then
+    LANG=C DEBIAN_FRONTEND=noninteractive /usr/bin/dpkg -i "$1" 3>&1 2>&1
+    exit
+fi

@@ -21,29 +21,12 @@ set -euo pipefail #; set -x
 
 # sIfDevName=enp10s0 # enp4s0
 
-#getSuCmd() {
-	#if command -v sudo &> /dev/null; then		suCmd="/usr/bin/sudo"
-	#elif command -v doas&> /dev/null; then	 	suCmd="/usr/bin/doas"
-	#else										suCmd="su - -c "
-	#fi
-	#echo "$suCmd"
-#}
+#getSuCmd() { if command -v sudo &>/dev/null; then suCmd="/usr/bin/sudo"; elif command -v doas&> /dev/null; then suCmd="/usr/bin/doas"; else suCmd="su - -c "; fi; echo "$suCmd"; }
 #if ! sPfxSu="$(getSuCmd)"; then 		exit 02; fi
 
-#getSuQuotes() {
-	#if command -v sudo &> /dev/null; then		sSuQuotes=(false)
-	#elif command -v doas&> /dev/null; then	 	sSuQuotes=(false)
-	#else										sSuQuotes=('"')
-	#fi
-	#echo "${sSuQuotes[@]}"
-#}
+#getSuQuotes() { if command -v sudo &>/dev/null; then sSuQuotes=(false); elif command -v doas &>/dev/null; then sSuQuotes=(false); else sSuQuotes=('"'); fi; echo "${sSuQuotes[@]}"; }
 #suQuotes="$(getSuQuotes)"
-#suExecCommand() {
-	#sCommand="$*"
-	#if [[ ! "$suQuotes" = "false" ]]; then	"$sPfxSu" $suQuotes$sCommand$suQuotes
-	#else									"$sPfxSu" $sCommand
-	#fi
-#}
+#suExecCommand() { sCommand="$*"; if [[ ! "$suQuotes" = "false" ]]; then "$sPfxSu" $suQuotes$sCommand$suQuotes; else "$sPfxSu" $sCommand; fi; }
 sLaunchDir="$(dirname "$0")"
 if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"
 source "${sLaunchDir}/include/test-superuser-privileges.sh"
@@ -62,8 +45,7 @@ restore-nft-conf() {
 		#echo \"mise en place de la nouvelle version du fichier de configuration nftables\"; \
 		install -o root -g root -m 0744 -pv ${sNftConfSrc} ${sNftConfDst}; \
 	else \
-		echo \"\$isErrorFree\"; \
-		exit 1; \
+		echo \"\$isErrorFree\"; exit 1; \
 	fi"
 	unset sNftConf{Dst,Src}
 }
@@ -71,8 +53,7 @@ blacklist-iptables-kernel-modules() {
 	echo -e "\t--> désactivation totale des modules de iptables"
 	sIptablesBcklDst="/etc/modprobe.d/iptables-blacklist.conf"
 	sIptablesBcklSrc="${sLaunchDir}${sIptablesBcklDst}"
-	suExecCommand install -o root -g root -m 0744 -pv "${sIptablesBcklSrc}" "${sIptablesBcklDst}"
-	unset sIptablesBckl{Dst,Src}
+	suExecCommand install -o root -g root -m 0744 -pv "${sIptablesBcklSrc}" "${sIptablesBcklDst}" && unset sIptablesBckl{Dst,Src}
 }
 mainDisableAndRemoveIptables() {
 	blacklist-iptables-kernel-modules
@@ -92,11 +73,7 @@ mainInstallAndSetupNftable() {
 	${sBinNft} flush ruleset; ${sBinNft} list ruleset"
 	echo -e "\t--> Mise en route du service nftables"
 	restore-nft-conf #&& suExecCommand ${sBinNft} list ruleset
-	suExecCommand "if true; then
-		systemctl enable --now nftables
-	else
-		 systemctl restart nftables
-	fi
+	suExecCommand "if true; then systemctl enable --now nftables; else systemctl restart nftables; fi
 	if (systemctl status NetworkManager); then systemctl restart NetworkManager; fi"
 	
 	if command -v update-alternatives &> /dev/null; then
@@ -107,25 +84,22 @@ mainInstallAndSetupNftable() {
 		if command -v ebtables-nft; then update-alternatives --set ebtables /usr/sbin/ebtables-nft; fi"
 	fi
 }
-
 mainInstallStraxuiDeb() {
 	installStraxuiDeb="${sLaunchDir}/update-or-install-strax-wallet-deb-bullseye.sh"
-	if [[ -f "${installStraxuiDeb}" ]]; then bash "${installStraxuiDeb}"; fi
-	unset installStraxuiDeb
+	if [[ -f "${installStraxuiDeb}" ]]; then bash "${installStraxuiDeb}"; fi && unset installStraxuiDeb
 }
 
 mainInstallStraxuiTargz() {
 	installStraxuiTargz="${sLaunchDir}/install-strax-wallet-gz.sh"
-	if [[ -f "${installStraxuiTargz}" ]]; then bash "${installStraxuiTargz}"; fi
-	unset installStraxuiTargz
+	if [[ -f "${installStraxuiTargz}" ]]; then bash "${installStraxuiTargz}"; fi && unset installStraxuiTargz
 }
 
 main_iptables_to_nftables() {
 	mainDisableAndRemoveIptables
 	mainInstallAndSetupNftable
 	read -rp "Install straxui wallet from deb file (1) or from tarball (2), other key to do nothing" -n 1 installStraxui
-	if [[ "${installStraxui}" = "1" ]]; then	mainInstallStraxuiDeb
-	elif [[ "${installStraxui}" = "2" ]]; then	mainInstallStraxuiTargz
+	if [[ "${installStraxui}" = "1" ]]; then 	mainInstallStraxuiDeb
+	elif [[ "${installStraxui}" = "2" ]]; then 	mainInstallStraxuiTargz
 	fi
 	unset installStraxui
 }
