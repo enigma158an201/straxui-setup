@@ -48,21 +48,14 @@ blacklist-ip6-NetworkManagement() {
 		# all=$(LC_ALL=C nmcli dev status | tail -n +2); first=${all%% *}; echo "${first}"
 		echo -e "\t--> proceed set disable ipv6 to network manager" ## $(nmcli connection show | awk '{ print $1 }')
 		# be careful with connection names including spaces
-		suExecCommand "bash -c \"for ConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do  
-			nmcli connection modify \${ConnectionName} ipv6.method disabled || true ; 
-		done\""
+		suExecCommand "bash -c \"for sConnectionName in $(LC_ALL=C nmcli dev status | tail -n +2 | grep -Eo '^[^ ]+'); do nmcli connection modify \${sConnectionName} ipv6.method disabled || true; done\""
 	fi
 	#if (systemctl status systemd-networkd); then
 		##sed -i '/[Network]/ s/"$/nLinkLocalAddressing=ipv4"/' /etc/systemd/networkd.conf; fi
 		#if (! grep '^LinkLocalAddressing=ipv4' /etc/systemd/networkd.conf); then	suExecCommand sed -i '/^\[Network\].*/a LinkLocalAddressing=ipv4 ' /etc/systemd/networkd.conf ;fi 
 	#fi
 }
-disable-etc-hosts-ipv6() {
-	if (false); then
-		cp -p /etc/hosts /etc/hosts.disableipv6
-		sed -i 's/^[[:space:]]*::/#::/' /etc/hosts
-	fi
-}
+disable-etc-hosts-ipv6() { if (false); then cp -p /etc/hosts /etc/hosts.disableipv6; sed -i 's/^[[:space:]]*::/#::/' /etc/hosts; fi; }
 disable-sshd-config-ipv6() {
 	sSshdDst="/etc/ssh/sshd_config.d/enable-only-ip4.conf"
 	sSshdSrc="${sLaunchDir}${sSshdDst}"
@@ -73,21 +66,19 @@ disable-sshd-config-ipv6() {
 }
 disable-postfix-ipv6() {
 	# sPostfixSrc="${sLaunchDir}${sPostfixDst}" -> pas de install mais un sed
-	if command -v postfix &> /dev/null; then
+	if command -v postfix &>/dev/null; then
 		echo -e "\t--> proceed set disable ipv6 to postfix mail" 
 		suExecCommand "bash -c \"sPostfixDst=/etc/postfix/main.cf;
 		if [[ -f \${sPostfixDst} ]]; then
-			if (grep -iE '^inet_interfaces = localhost' \${sPostfixDst}); then 		comment 'inet_interfaces = localhost' \${sPostfixDst}; fi;
-			if (! grep -iE '^inet_interfaces = 127.0.0.1' \${sPostfixDst}); then 	insertLineAfter 'inet_interfaces = localhost' 'inet_interfaces = 127.0.0.1' \${sPostfixDst}; fi;
+			if (grep -iE '^inet_interfaces = localhost' \${sPostfixDst} &>/dev/null ); then 	comment 'inet_interfaces = localhost' \${sPostfixDst}; fi;
+			if (! grep -iE '^inet_interfaces = 127.0.0.1' \${sPostfixDst} &>/dev/null); then 	insertLineAfter 'inet_interfaces = localhost' 'inet_interfaces = 127.0.0.1' \${sPostfixDst}; fi;
 		fi;
 		systemctl reload postfix\""
 	fi
 }
 disable-etc-ntp-ipv6() {
 	sNtpdDst="/etc/ntp.conf"
-	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then 			echo -e "\t--> proceed set disable ipv6 to ntp (network time protocol)"
-																						suExecCommand "comment \"restrict ::1\" ${sNtpdDst}"
-	fi
+	if [[ -f "${sNtpdDst}" ]] && (grep -i "^restrict ::1" "${sNtpdDst}"); then echo -e "\t--> proceed set disable ipv6 to ntp (network time protocol)"; suExecCommand "comment \"restrict ::1\" ${sNtpdDst}"; fi
 	unset sNtpdDst
 }
 disable-etc-chrony-ipv6() {
@@ -101,9 +92,9 @@ disable-etc-netconfig-ipv6() {
 	sNetConfigDst=/etc/netconfig;
 	if [[ -f "${sNetConfigDst}" ]]; then
 		echo -e "\t--> proceed set disable ipv6 to netconfig file";
-		suExecCommand "source ${sLaunchDir}/include/file-edition.sh;		
-		if (grep -i ^udp6 ${sNetConfigDst}); then 	comment udp6 ${sNetConfigDst}; fi;
-		if (grep -i ^tcp6 ${sNetConfigDst}); then 	comment tcp6 ${sNetConfigDst}; fi"
+		suExecCommand "source ${sLaunchDir}/include/file-edition.sh
+		if (grep -i ^udp6 ${sNetConfigDst} &>/dev/null); then 	comment udp6 ${sNetConfigDst}; fi
+		if (grep -i ^tcp6 ${sNetConfigDst} &>/dev/null); then 	comment tcp6 ${sNetConfigDst}; fi"
 	fi
 	unset sNetConfigDst
 }
@@ -112,22 +103,20 @@ disable-etc-dhcpcdconf-ipv6() {
 	if [[ -f "${sDhcpcdConfigDst}" ]]; then
 		echo -e "\t--> proceed set disable ipv6 to netconfig file"
 		suExecCommand "source ${sLaunchDir}/include/file-edition.sh;
-		if (grep -i ^noipv6rs ${sDhcpcdConfigDst}); then 		appendLineAtEnd \"noipv6rs\" ${sDhcpcdConfigDst}; fi;
-		if (grep -i ^noipv6 ${sDhcpcdConfigDst}); then 			appendLineAtEnd \"noipv6\" ${sDhcpcdConfigDst}; fi"
+		if (grep -i ^noipv6rs ${sDhcpcdConfigDst} &>/dev/null ); then 	appendLineAtEnd \"noipv6rs\" ${sDhcpcdConfigDst}; fi;
+		if (grep -i ^noipv6 ${sDhcpcdConfigDst} &>/dev/null); then 		appendLineAtEnd \"noipv6\" ${sDhcpcdConfigDst}; fi"
 	fi
 	unset sDhcpcdConfigDst
 }
-disable-ipv6-cron-task() {
+disable-ipv6-cron-task() { #example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
 	scriptFilename="disable-ip6.sh"
 	sCronIp6JobDst="/usr/local/bin/${scriptFilename}"
-	sCronIp6JobSrc="${sLaunchDir}/${scriptFilename}"
-	#example: (crontab -l 2>/dev/null; echo "*/5 * * * * /path/to/job -with args") | crontab -
+	sCronIp6JobSrc="${sLaunchDir}/${scriptFilename}"	
 	echo -e "\t--> proceed set install crontab job"
 	suExecCommand "install -o root -g root -m 0755 -pv ${sCronIp6JobSrc} ${sCronIp6JobDst}; \
 	(crontab -l 2>/dev/null; echo \"0 * * * * root ${sCronIp6JobDst}\") | crontab -"
 	unset sCronIp6Job{Src,Dst}
 }
-
 main_DisableIpv6() {
 	blacklist-ip6-kernel-modules
 	# blacklist-ip6-NetworkManagement
@@ -140,5 +129,4 @@ main_DisableIpv6() {
 	#disable-etc-dhcpcdconf-ipv6
 	if command -v crontab &> /dev/null; then 	disable-ipv6-cron-task; fi
 }
-
 main_DisableIpv6

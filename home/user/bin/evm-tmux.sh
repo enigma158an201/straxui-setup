@@ -28,9 +28,7 @@ else
 	shopt -s expand_aliases || exit 1
 	source "${HOME}/.bashrc"
 fi
-#if ! command -v detach; then alias detach='tmux detach'; fi
-#if ! command -v attach; then alias attach="tmux -a -t ${sTmuxWindow}"; fi # does not work
-#if ! command -v stop; then alias stop='tmux detach'; fi
+#if ! command -v detach; then alias detach='tmux detach'; fi; if ! command -v stop; then alias stop='tmux detach'; fi; if ! command -v attach; then alias attach="tmux -a -t ${sTmuxWindow}"; fi # does not work
 
 preCheck() {
 	if ! command -v tmux &> /dev/null; then 
@@ -45,30 +43,25 @@ preCheck() {
 		echo -e "\t--> tput not found, please install tput, aborting";
 		echo -e "\t--> Install tput with \`sudo apt-get install ncurses-bin\` command"; read -rp "(y/N) ?" -n 1 sTputInstall
 		if [[ ! "${sTputInstall^^}" = "N" ]] && [[ ! "${sTputInstall}" = "" ]]; then 	
-			if sudo apt-get install ncurses-bin; then echo -e "\t--> install tmux success, you can restart the command you entered:\n\`${sCommand}\`"; fi
+			if sudo apt-get install ncurses-bin; then echo -e "\t--> install ncurses-bin success, you can restart the command you entered:\n\`${sCommand}\`"; fi
 		fi
 		exit 1
 	fi
 }
 stopMainnetTmux() {
 	for iWindow in 4 3 2 1; do
-	if [[ "$(tmux list-panes | wc -l)" -eq "${iWindow}" ]]; then 	
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" C-c
-		tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" 'exit' C-m
-	fi
+		if [[ "$(tmux list-panes | wc -l)" -eq "${iWindow}" ]]; then 	
+			tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" C-c
+			tmux send-keys -t "${sTmuxSession}:${sTmuxWindow}.$((iWindow - 1))" 'exit' C-m
+		fi
 	done
 }
-startMainnetTmux() {
-	# Check if the tmux session "${sTmuxSession}" exists, # If it doesn't exist, create a new session named "${sTmuxSession}": tmux new-session -A -s "${sTmuxSession}"
+startMainnetTmux() { # Check if the tmux session "${sTmuxSession}" exists, # If it doesn't exist, create a new session named "${sTmuxSession}": tmux new-session -A -s "${sTmuxSession}"
 	if ! tmux has-session -t "${sTmuxSession}" 2>/dev/null; then
-		echo -e "\t Creating new session ${sTmuxSession}"
-		tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
+		echo -e "\t Creating new session ${sTmuxSession}" && tmux new-session -s "${sTmuxSession}" -d -x "$(tput cols)" -y "$(tput lines)"
 	fi
-	
-	if ! tmux list-windows -t "${sTmuxSession}" | grep "${sTmuxWindow}"; then
-		# Create a window named ""${sTmuxWindow}"" if not exists in the "${sTmuxSession}" session
-		echo -e "\t Creating new window ${sTmuxWindow} in existing session ${sTmuxSession}"
-		tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
+	if ! tmux list-windows -t "${sTmuxSession}" | grep "${sTmuxWindow}"; then # Create a window named ""${sTmuxWindow}"" if not exists in the "${sTmuxSession}" session
+		echo -e "\t Creating new window ${sTmuxWindow} in existing session ${sTmuxSession}" && tmux new-window -t "${sTmuxSession}": -n "${sTmuxWindow}" #-P 'p1'
 	fi
 
 	#iTmuxWindow=$(tmux list-windows | grep -F "${sTmuxWindow}" | cut -d: -f1)
@@ -103,10 +96,7 @@ startMainnetTmux() {
 	tmux attach-session -t "${sTmuxSession}"	#tmux attach-session -t "${sTmuxSession}" -c "${sTmuxWindow}"	# Attach to the "${sTmuxSession}" session
 }
 upgradeBinTmuxEvmScript() {
-	if command -v evm-tmux.sh &> /dev/null; then
-		sTmuxEvmPath=$(command -v evm-tmux.sh) #
-		echo "${sTmuxEvmPath}"
-	fi
+	if command -v evm-tmux.sh &>/dev/null; then sTmuxEvmPath=$(command -v evm-tmux.sh) && echo "${sTmuxEvmPath}"; fi
 	if true; then
 		mkdir -p "${HOME}/bin"
 		#if ! test -z "${sTmuxEvmPath:-}"; then 

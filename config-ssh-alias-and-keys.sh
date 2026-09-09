@@ -61,13 +61,12 @@ importSshKeys() {
 	#done
 }
 updateSshdConfig() {
-	echo -e "\t--> application des fichiers config sshd"
+	echo -e "\t--> application des fichiers config sshd" 
 	declare -a sConfList
-	#sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
-	#sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") )
-	mapfile -t sConfList < <(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')
+	mapfile -t sConfList < <(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf') #sConfList=( $(ls "${sLaunchDir}/etc/ssh/sshd_config.d/*.conf") ) #sConfList=( "$(find "${sLaunchDir}/etc/ssh/sshd_config.d/" -iname '*.conf')" ) #	sConfList=${sConfList//'\n'/' '}
 	export sConfList
-	suExecCommand "bash -x -c 'for sSshdConfigFile in ${sConfList[*]}; do
+	#shellcheck disable=SC2145
+	suExecCommand "bash -x -c 'for sSshdConfigFile in \"${sConfList[@]}\"; do
 		sSshdConfigFileName=\$(basename \"\${sSshdConfigFile}\")
 		sSshdConfigDst=/etc/ssh/sshd_config.d/\${sSshdConfigFileName}
 		sSshdConfigSrc=${sLaunchDir}\${sSshdConfigDst}
@@ -77,6 +76,7 @@ updateSshdConfig() {
 	done
 	rm /etc/ssh/ssh_host_*dsa* || true
 	systemctl restart sshd.service'"
+	unset sConfList
 }
 cleanModuli() {
 	suExecCommand "awk '\$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe;

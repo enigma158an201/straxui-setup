@@ -72,18 +72,15 @@ gitRepoLatestBinUrl() {
 getGhRepoReleases() { sProject=${1}; gh release list --repo "${sProject}"; } #| grep --color=auto -i latest
 dlGhReleaseTarball() {
 	sProject=${1}
-	sBeginFilename=${2}
-	#cd "${sStratisRepoHome}" || exit 1
-	#gh release download --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*" --pattern "*${sSystem}*" --pattern "*${sArch}*" --pattern "*${sRepoFileFormat}"
-	gh release download --dir "${sStratisRepoHome}" --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*${sSystem}*${sArch}*${sRepoFileFormat}"
-	#echo $?
-}
+	sBeginFilename=${2} #cd "${sStratisRepoHome}" || exit 1
+	gh release download --dir "${sStratisRepoHome}" --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*${sSystem}*${sArch}*${sRepoFileFormat}" #gh release download --skip-existing --repo "${sProject}" --pattern "*${sBeginFilename}*" --pattern "*${sSystem}*" --pattern "*${sArch}*" --pattern "*${sRepoFileFormat}"
+} #echo $?
 preRequisitesInstall() {
-	if command -v sudo 1>dev/null 2>&1; then
-		if command -v apt-get 1>dev/null 2>&1; then
+	if command -v sudo &>/dev/null; then
+		if command -v apt-get &>/dev/null; then
 			sudo apt-get update
-			if ! command -v gh 1>dev/null 2>&1; then 		sudo apt-get install gh; fi		#github-cli
-			if ! command -v curl 1>dev/null 2>&1; then 		sudo apt-get install curl; fi	#curl
+			if ! command -v gh &>/dev/null; then 		sudo apt-get install gh; fi		#github-cli
+			if ! command -v curl &>/dev/null; then 		sudo apt-get install curl; fi	#curl
 		fi		
 	fi
 	if [[ -d "${HOME}/.config/gh" ]] || ! gh auth status; then 	gh auth login; fi
@@ -94,11 +91,7 @@ main() {
 		echo -e "\t--> waiting for answer ${sStratisUrl}, please wait..."
 		sGitRepoContent="$(gitRepoContent "${sStratisUrl}")"
 		sRepoVersion=$(gitRepoBinVersion "${sGitRepoContent}")
-						#for sStratisBin in "${tLocalBins[@]}"; do
-						#	#getLocalBinVersion "${sStratisBin}"
-						#	sBinUrl="$(gitRepoLatestBinUrl "${sGitRepoContent}" "${sStratisBin}")"
-						#	if [[ ! "${sBinUrl}" = "false" ]]; then break; fi
-						#done
+		#for sStratisBin in "${tLocalBins[@]}"; do sBinUrl="$(gitRepoLatestBinUrl "${sGitRepoContent}" "${sStratisBin}")";	if [[ ! "${sBinUrl}" = "false" ]]; then break; fi; done #getLocalBinVersion "${sStratisBin}"
 		sBinUrl="$(gitRepoLatestBinUrl "${sGitRepoContent}" "${tLocalBin["${sStratisFile}"]}")"
 		read -rp " "
 		echo -e "${sStratisFile}\t${sStratisUrl}\t${sBinUrl}\n${sRepoVersion}\n\n" #${sStratisBin}

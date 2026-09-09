@@ -3,15 +3,14 @@
 set -euo pipefail #; set -x
 sLaunchDir="$(dirname "$0")"
 if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}" = "include" ]]; then eval sLaunchDir="$(pwd)"; fi; sLaunchDir="${sLaunchDir//include/}"; sLaunchDir="${sLaunchDir//\/\//}"
+source "${sLaunchDir}/include/file-edition.sh"
 
 main_disable_sleep() {
- 	source "${sLaunchDir}/include/file-edition.sh"
 	sSleepconfDir=/etc/systemd/sleep.conf
 	sSleepLines="AllowSuspend=yes AllowHibernation=yes AllowSuspendThenHibernate=yes AllowHybridSleep=yes"
 	for sleepLine in ${sSleepLines}; do
 		sLineWithoutVal="${sleepLine/yes/}"
-		sLineWithoutVal="${sleepLine/no/}"
-		#read -rp "${sleepLine}"
+		sLineWithoutVal="${sleepLine/no/}" 		#read -rp "${sleepLine}"
 		uncomment			"${sLineWithoutVal}"	"${sSleepconfDir}"
 		lineNo="${sLineWithoutVal}no"
 		setParameterInFile "${sSleepconfDir}"		"${sLineWithoutVal}"		"${lineNo}"

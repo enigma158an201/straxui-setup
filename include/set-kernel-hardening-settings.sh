@@ -8,11 +8,10 @@ if [[ "${sLaunchDir}" = "." ]]; then sLaunchDir="$(pwd)"; elif [[ "${sLaunchDir}
 #source "${sLaunchDir}/include/test-superuser-privileges.sh"
 #source "${sLaunchDir}/include/file-edition.sh"
 
-tSysctlKernelFiles=( 00-disable-ip6-R13.conf 10-magic-sysrq.conf 99-enable-ip4-forward.conf )
-
 set-sysctl-kernel-modules() {
 	#todo check if include /etc/systctl.d present -> not necessary
 	#disable-sysrq-kernel-modules-sysctl
+	mapfile -t tSysctlKernelFiles < <(find "${sLaunchDir}/etc/sysctl.d" -name "*.conf" -type f) #tSysctlKernelFiles=( 00-disable-ip6-R13.conf 10-magic-sysrq.conf 99-enable-ip4-forward.conf )
 	echo -e "\t--> this script will add following non existing files to /etc/sysctl.d\n${tSysctlKernelFiles[*]}"
 	for sSysctlFile in "${tSysctlKernelFiles[@]}"; do
 		sSysCtlFileDst="/etc/sysctl.d/${sSysctlFile}"
